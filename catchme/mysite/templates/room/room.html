@@ -1,0 +1,41 @@
+{% load static %}
+<!doctype html>
+<html lang="ko">
+<body>
+
+<!-- 기본 템플릿 안에 삽입될 내용 Start -->
+{% block content %}
+{% endblock %}
+<!-- 기본 템플릿 안에 삽입될 내용 End -->
+<!-- Bootstrap JS -->
+
+<!-- 자바스크립트 Start -->
+{% block script %}
+<!-- 개발자 도구에서 스크립트 코드 보이지 않도록 보안작업이 필요할 듯-->
+<script>
+    fetch('api/room_info/')
+    .then(response => response.json())
+    .then(data => {
+        // Display room info
+        const room_rno = data[0].rno;
+        const room_rname = data[0].rname;
+        document.getElementById('rno').innerText = room_rno;
+        document.getElementById('rname').innerText = room_rname;
+
+        // Display JSON data
+        const jsonDataDisplay = document.getElementById('json-data');
+        jsonDataDisplay.textContent = JSON.stringify(data, null, 2);
+        
+    })
+</script>
+{% endblock %}
+<!-- 자바스크립트 End -->
+
+<a id="rno"></a>
+<a id="rname"></a>
+
+<!-- JSON 데이터 표시 -->
+<pre id="json-data"></pre>
+
+</body>
+</html>
