@@ -129,10 +129,6 @@ class room(models.Model):
     rno = models.AutoField(primary_key=True)
     #방 제목
     rname = models.TextField()
-    #접속한 남성의 수
-    #mnum = models.IntegerField(default=0)
-    #접속한 여성의 수
-    #wnum = models.IntegerField(default=0)
     #방 생성 시간
     created_at = models.DateTimeField(auto_now_add=True)
     #방 안에서 미팅 성사 개수
@@ -173,7 +169,7 @@ class menParty(models.Model):
     major = models.CharField(max_length=50, null=True, blank=True)
     height = models.IntegerField(null=True, blank=True)
     body = models.CharField(max_length=10, null=True, blank=True)
-
+    selected = models.BooleanField(default = False)
 
     def __str__(self):
         return f"{self.mkid} - {self.pnum}"
