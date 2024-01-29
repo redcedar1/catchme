@@ -8,7 +8,7 @@ class userInfo(models.Model):
 # Create your models here.
 class menInfo(models.Model):
     #남성 카톡 고유번호(기본키)
-    mkid = models.IntegerField(primary_key=True)
+    mkid = models.BigIntegerField(primary_key=True, db_index=True) #IntegerField를 BigIntegerField로 수정, db_index 추가
     #앱 내에서 사용할 닉네임
     nickname = models.TextField()
 
@@ -24,6 +24,7 @@ class menInfo(models.Model):
     eyes = models.CharField(max_length=10, null=True, blank=True)
     face = models.CharField(max_length=10, null=True, blank=True)
     hobby = models.CharField(max_length=100, null=True, blank=True)
+    animal = models.CharField(max_length=20, null=True, blank=True) #animal 속성 추가
 
     #레디 여부
     ready = models.BooleanField(default=False)
@@ -40,6 +41,7 @@ class menInfo(models.Model):
     w_eyes = models.CharField(max_length=10, null=True, blank=True)
     w_face = models.CharField(max_length=10, null=True, blank=True)
     w_hobby = models.CharField(max_length=100, null=True, blank=True)
+    w_animal = models.CharField(max_length=20, null=True, blank=True) #w_animal 속성 추가
 
     #자유로운 자기소개
     free = models.TextField(null=True, blank=True)
@@ -48,7 +50,7 @@ class menInfo(models.Model):
     #친구 초대 링크
     link = models.CharField(max_length=20, null=True, blank=True)
     #보유 코인
-    coin = models.IntegerField(null=True)
+    coin = models.IntegerField(default=0) #default 값을 0으로 수정
     #현재 참가한 방 번호(남성의 외래키이자 방의 기본키)
     rno = models.ForeignKey('room', on_delete=models.SET_NULL, null=True, blank=True, db_column='rno',related_name = 'men_infos')
     #매칭된 여성의 카톡 고유번호(남성의 외래키이자 여성의 기본키)
@@ -69,7 +71,7 @@ class menNotice(models.Model):
 
 class womenInfo(models.Model):
     #여성 카톡 고유번호(기본키)
-    wkid = models.IntegerField(primary_key=True)
+    wkid = models.BigIntegerField(primary_key=True, db_index=True) #IntegerField를 BigIntegerField로 수정, db_index 추가
     #앱 내에서 사용할 닉네임
     nickname = models.TextField()
 
@@ -84,6 +86,7 @@ class womenInfo(models.Model):
     eyes = models.CharField(max_length=10, null=True, blank=True)
     face = models.CharField(max_length=10, null=True, blank=True)
     hobby = models.CharField(max_length=100, null=True, blank=True)
+    animal = models.CharField(max_length=20, null=True, blank=True) #animal 속성 추가
 
     #레디 여부
     ready = models.BooleanField(default=False)
@@ -101,6 +104,7 @@ class womenInfo(models.Model):
     m_eyes = models.CharField(max_length=10, null=True, blank=True)
     m_face = models.CharField(max_length=10, null=True, blank=True)
     m_hobby = models.CharField(max_length=100, null=True, blank=True)
+    m_animal = models.CharField(max_length=20, null=True, blank=True) #m_animal 속성 추가
 
     #자유로운 자기소개
     free = models.TextField(null=True, blank=True)
@@ -109,7 +113,7 @@ class womenInfo(models.Model):
     #친구 초대 링크
     link = models.CharField(max_length=20, null=True, blank=True)
     #보유 코인
-    coin = models.IntegerField(null=True)
+    coin = models.IntegerField(default=0) #default 값을 0으로 수정
     #현재 참가한 방 번호(여성의 외래키이자 방의 기본키)
     rno = models.ForeignKey('room', on_delete=models.SET_NULL, null=True, blank=True, db_column='rno', related_name = 'women_infos')
     #매칭된 남성의 카톡 고유번호(여성의 외래키이자 남성의 기본키)
@@ -159,13 +163,14 @@ class matchingInfo(models.Model):
     def __str__(self):
         return str(self.pk)
 
+
+#친구 이름 속성 삭제
 class menParty(models.Model):
     #접속한 남성의 카톡 고유번호(menParty의 기본키, 외래키이자 남성의 기본키)
     mkid = models.ForeignKey('menInfo', on_delete=models.CASCADE,related_name = 'men_party')
     #친구 고유 번호(기본키)
     pnum = models.AutoField(primary_key=True)
     #친구 정보
-    name = models.CharField(max_length = 10, null = True, blank = True)
     age = models.IntegerField(null=True)
     animal = models.CharField(max_length=20, null=True, blank=True)
     job = models.CharField(max_length=50, null=True, blank=True)
@@ -178,13 +183,14 @@ class menParty(models.Model):
     def __str__(self):
         return f"{self.mkid} - {self.pnum}"
 
+
+#친구 이름 속성 삭제
 class womenParty(models.Model):
     #접속한 여성의 카톡 고유번호(womenParty의 기본키, 외래키이자 여성의 기본키)
     wkid = models.ForeignKey('womenInfo', on_delete=models.CASCADE,related_name = 'women_party')
     #친구 고유 번호(기본키)
     pnum = models.AutoField(primary_key=True)
     #친구 정보
-    name = models.CharField(max_length = 10, null = True, blank = True)
     age = models.IntegerField(null=True)
     animal = models.CharField(max_length=20, null=True, blank=True)
     job = models.CharField(max_length=50, null=True, blank=True)
