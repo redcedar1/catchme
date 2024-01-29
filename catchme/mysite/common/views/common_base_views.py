@@ -1,11 +1,33 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 import requests
+from ..models import *
 # Create your views here.
 
 def index(request):
-    
+    print(request.session['location'])
     return render(request, "common/index.html")
+
+def introduction(request):
+    if request.method == "POST":
+        gender = request.POST.get('gender')
+        request.session['location'] = request.POST.get('location')
+        user = userInfo()
+        user.location = request.POST.get('location')
+        if gender =="male":
+            man = menInfo(user_info = user.id)
+            man.nickname = "도윤"
+            man.save()
+        else:
+            woman = womenInfo(user_info = user.id)
+            woman.nickname = "수영"
+            woman.save()
+        user.save()    
+        return redirect('common:index')
+    else:
+        return render(request, "common/introduction.html")
+
+
 
 def kakaoLoginLogic(request):
     access_token = request.session.get("access_token",None)
@@ -27,7 +49,7 @@ def kakaoLoginLogicRedirect(request):
     request.session['access_token'] = _result['access_token']#access token만 세션에 저장
     request.session.modified = True
     
-    return redirect("common:index") #로그인 완료 후엔 home페이지로
+    return redirect("common:introduction") #로그인 완료 후엔 home페이지로
 
 def kakaoLogout(request):
     access_token = request.session.get("access_token",None)

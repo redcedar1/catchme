@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Introduction</title>
+</head>
+<body>
+    <!-- Django에서 제공하는 CSRF 토큰을 포함해야 합니다 -->
+    {% csrf_token %}
+    
+    <form method="post">
+        <!-- CSRF 토큰 -->
+        {% csrf_token %}
+        
+        <!-- location 입력 필드 -->
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required><br><br>
+        
+        <!-- gender 선택 라디오 버튼 -->
+        <label>Gender:</label><br>
+        <input type="radio" id="male" name="gender" value="male">
+        <label for="male">Male</label><br>
+        <input type="radio" id="female" name="gender" value="female">
+        <label for="female">Female</label><br><br>
+        
+        <!-- 제출 버튼 -->
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

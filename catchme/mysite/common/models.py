@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class userInfo(models.Model):
+    id = models.IntegerField(primary_key=True)
+    location = models.CharField(max_length=50)
+
 # Create your models here.
 class menInfo(models.Model):
     #남성 카톡 고유번호(기본키)
@@ -49,7 +53,7 @@ class menInfo(models.Model):
     rno = models.ForeignKey('room', on_delete=models.SET_NULL, null=True, blank=True, db_column='rno',related_name = 'men_infos')
     #매칭된 여성의 카톡 고유번호(남성의 외래키이자 여성의 기본키)
     wkid = models.ForeignKey('womenInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='wkid')
-
+    user_info = models.ForeignKey('userInfo', on_delete=models.SET_NULL, null=True, blank=True)
     def __str__(self):
         return str(self.pk)
 
@@ -110,7 +114,7 @@ class womenInfo(models.Model):
     rno = models.ForeignKey('room', on_delete=models.SET_NULL, null=True, blank=True, db_column='rno', related_name = 'women_infos')
     #매칭된 남성의 카톡 고유번호(여성의 외래키이자 남성의 기본키)
     mkid = models.ForeignKey('menInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='mkid')
-
+    user_info = models.ForeignKey('userInfo', on_delete=models.SET_NULL, null=True, blank=True)
     def __str__(self):
         return str(self.pk)
 
