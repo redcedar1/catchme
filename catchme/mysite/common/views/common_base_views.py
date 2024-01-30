@@ -6,23 +6,22 @@ from ..models import *
 
 def index(request):
     print(request.session['location'])
+    
     return render(request, "common/index.html")
 
 def introduction(request):
     if request.method == "POST":
         gender = request.POST.get('gender')
-        request.session['location'] = request.POST.get('location')
-        user = userInfo()
-        user.location = request.POST.get('location')
+        location = request.POST.get('location')
+        
+        user = userInfo(location = location, kid = "1250812")
+        user.save()
         if gender =="male":
-            man = menInfo(user_info = user.id)
-            man.nickname = "도윤"
+            man = menInfo(nickname = "james",user_info = user)
             man.save()
         else:
-            woman = womenInfo(user_info = user.id)
-            woman.nickname = "수영"
-            woman.save()
-        user.save()    
+            woman = womenInfo(nickname = "julia",user_info = user)
+            woman.save()        
         return redirect('common:index')
     else:
         return render(request, "common/introduction.html")

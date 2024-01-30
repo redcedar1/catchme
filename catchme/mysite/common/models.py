@@ -1,14 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class userInfo(models.Model):
-    id = models.IntegerField(primary_key=True)
+class userInfo(models.Model): # menInfo와 womenInfo가 foreignkey로 연결하므로
+                                # userInfo삭제시 연동된 menInfo나 womenInfo가 삭제됨
+    kid = models.BigIntegerField(primary_key=True, db_index=True)
     location = models.CharField(max_length=50)
 
 # Create your models here.
 class menInfo(models.Model):
-    #남성 카톡 고유번호(기본키)
-    mkid = models.BigIntegerField(primary_key=True, db_index=True) #IntegerField를 BigIntegerField로 수정, db_index 추가
+    mkid = models.OneToOneField("userInfo",primary_key = True, on_delete = models.CASCADE) #IntegerField를 BigIntegerField로 수정, db_index 추가
     #앱 내에서 사용할 닉네임
     nickname = models.TextField()
 
@@ -55,14 +55,14 @@ class menInfo(models.Model):
     rno = models.ForeignKey('room', on_delete=models.SET_NULL, null=True, blank=True, db_column='rno',related_name = 'men_infos')
     #매칭된 여성의 카톡 고유번호(남성의 외래키이자 여성의 기본키)
     wkid = models.ForeignKey('womenInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='wkid')
-    user_info = models.ForeignKey('userInfo', on_delete=models.SET_NULL, null=True, blank=True)
+    
     def __str__(self):
         return str(self.pk)
 
-class menNotice(models.Model):
-    #남성 카톡 고유번호(menNotice의 기본키이자 외래키, 남성의 기본키)
-    mkid = models.ForeignKey('menInfo', on_delete=models.CASCADE)
-    #menNotice의 고유번호(기본키)
+class Notice(models.Model):
+    #카톡 고유번호(Notice의 기본키이자 외래키, userInfo의 기본키)
+    kid = models.ForeignKey('userInfo', on_delete=models.CASCADE)
+    #Notice의 고유번호(기본키)
     num = models.AutoField(primary_key=True)
     #알림 내용
     notice = models.TextField(null=True, blank=True)
@@ -70,8 +70,7 @@ class menNotice(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 class womenInfo(models.Model):
-    #여성 카톡 고유번호(기본키)
-    wkid = models.BigIntegerField(primary_key=True, db_index=True) #IntegerField를 BigIntegerField로 수정, db_index 추가
+    wkid = models.OneToOneField("userInfo",primary_key = True, on_delete = models.CASCADE)
     #앱 내에서 사용할 닉네임
     nickname = models.TextField()
 
@@ -118,19 +117,10 @@ class womenInfo(models.Model):
     rno = models.ForeignKey('room', on_delete=models.SET_NULL, null=True, blank=True, db_column='rno', related_name = 'women_infos')
     #매칭된 남성의 카톡 고유번호(여성의 외래키이자 남성의 기본키)
     mkid = models.ForeignKey('menInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='mkid')
-    user_info = models.ForeignKey('userInfo', on_delete=models.SET_NULL, null=True, blank=True)
+    
     def __str__(self):
         return str(self.pk)
 
-class womenNotice(models.Model):
-    #여성 카톡 고유번호(womenNotice의 기본키이자 외래키, 여성의 기본키)
-    wkid = models.ForeignKey('womenInfo', on_delete=models.CASCADE)
-    #womenNotice의 고유번호(기본키)
-    num = models.AutoField(primary_key=True)
-    #알림내용
-    notice = models.TextField(null=True, blank=True)
-    #알림 생성 시간
-    created_at = models.DateTimeField(auto_now_add=True)
 
 class room(models.Model):
     #방의 고유번호(방의 기본키)
