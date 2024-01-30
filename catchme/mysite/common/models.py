@@ -213,8 +213,8 @@ class womenParty(models.Model):
         return f"{self.wkid} - {self.pnum}"
 
 class payment(models.Model):
-    #결제 내역 기본키
-    pay_num = models.AutoField(primary_key=True)
+    #결제 내역 기본키(고유 번호)
+    tid = models.CharField(primary_key=True, max_length=20)
     #결제 성공 시점
     created_at = models.DateTimeField(auto_now_add=True)
     #결제 사용자 아이디(결제 내역 외래키, userInfo 기본키)
