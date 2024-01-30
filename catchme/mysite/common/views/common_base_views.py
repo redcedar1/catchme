@@ -5,7 +5,6 @@ from ..models import *
 # Create your views here.
 
 def index(request):
-    print(request.session['location'])
     
     return render(request, "common/index.html")
 
