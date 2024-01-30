@@ -3,22 +3,22 @@ from django.contrib.auth.models import User
 
 class userInfo(models.Model):
     #사용자 카톡 고유 번호(기본키)
-    id = models.IntegerField(primary_key=True)
+    id = models.BigIntegerField(primary_key=True, db_index=True)
     #사용자 위치 정보
     location = models.CharField(max_length=50)
     #사용자가 남성이면 mno를 통해 정보 조회(userInfo의 외래키, 남성의 기본키)
-    mno = models.ForeignKey('menInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='mno')
+    mkid = models.ForeignKey('menInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='mkid')
     #사용자가 여성이면 wno를 통해 정보 조회(userInfo의 외래키, 여성의 기본키)
-    wno = models.ForeignKey('womenInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='wno')
+    wkid = models.ForeignKey('womenInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='wkid')
 
 # Create your models here.
 class menInfo(models.Model):
     #남성 고유 번호(기본키)
-    mno = models.AutoField(primary_key=True)
+    mkid = models.BigIntegerField(primary_key=True, db_index=True)
     #앱 내에서 사용할 닉네임
     nickname = models.TextField()
-    #방 내에서의 채팅 내용
-    chat_text = models.TextField()
+    #사용자가 선택한 말풍선 종류
+    chat = models.CharField(max_length=10, null=True, blank=True)
 
     #자기소개 시 입력되는 내 정보
     age = models.IntegerField(null=True)
@@ -62,13 +62,13 @@ class menInfo(models.Model):
     #현재 참가한 방 번호(남성의 외래키이자 방의 기본키)
     rno = models.ForeignKey('room', on_delete=models.SET_NULL, null=True, blank=True, db_column='rno',related_name = 'men_infos')
     #매칭된 여성의 카톡 고유번호(남성의 외래키이자 여성의 기본키)
-    wno = models.ForeignKey('womenInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='wno')
+    wkid = models.ForeignKey('womenInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='wkid')
     def __str__(self):
         return str(self.pk)
 
 class menNotice(models.Model):
     #남성 고유번호(menNotice의 기본키이자 외래키, 남성의 기본키)
-    mno = models.ForeignKey('menInfo', on_delete=models.CASCADE, db_column='mno')
+    mkid = models.ForeignKey('menInfo', on_delete=models.CASCADE, db_column='mkid')
     #menNotice의 고유번호(기본키)
     num = models.AutoField(primary_key=True)
     #알림 내용
@@ -78,11 +78,11 @@ class menNotice(models.Model):
 
 class womenInfo(models.Model):
     #여성 고유 번호(기본키)
-    wno = models.AutoField(primary_key=True)
+    wkid = models.BigIntegerField(primary_key=True, db_index=True)
     #앱 내에서 사용할 닉네임
     nickname = models.TextField()
-    #방 내에서의 채팅 내용
-    chat_text = models.TextField()
+    #사용자가 선택한 말풍선 종류
+    chat = models.CharField(max_length=10, null=True, blank=True)
 
     #자기소개 시 입력되는 내 정보
     age = models.IntegerField(null=True)
@@ -126,13 +126,13 @@ class womenInfo(models.Model):
     #현재 참가한 방 번호(여성의 외래키이자 방의 기본키)
     rno = models.ForeignKey('room', on_delete=models.SET_NULL, null=True, blank=True, db_column='rno', related_name = 'women_infos')
     #매칭된 남성의 카톡 고유번호(여성의 외래키이자 남성의 기본키)
-    mno = models.ForeignKey('menInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='mno')
+    mkid = models.ForeignKey('menInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='mkid')
     def __str__(self):
         return str(self.pk)
 
 class womenNotice(models.Model):
     #여성 고유번호(womenNotice의 기본키이자 외래키, 여성의 기본키)
-    wno = models.ForeignKey('womenInfo', on_delete=models.CASCADE, db_column='wno')
+    wkid = models.ForeignKey('womenInfo', on_delete=models.CASCADE, db_column='wkid')
     #womenNotice의 고유번호(기본키)
     num = models.AutoField(primary_key=True)
     #알림내용
@@ -166,9 +166,9 @@ class matchingInfo(models.Model):
     rno = models.ForeignKey('room', on_delete=models.SET_NULL, null=True, blank=True, db_column='rno')
 
     #매칭된 남성의 고유번호(매칭정보의 외래키이자 남성의 기본키)
-    mno = models.ForeignKey('menInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='mno')
+    mkid = models.ForeignKey('menInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='mkid')
     #매칭된 여성의 고유번호(매칭정보의 외래키이자 여성의 기본키)
-    wno = models.ForeignKey('womenInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='wno')
+    wkid = models.ForeignKey('womenInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='wkid')
 
     def __str__(self):
         return str(self.pk)
@@ -177,7 +177,7 @@ class matchingInfo(models.Model):
 #친구 이름 속성 삭제
 class menParty(models.Model):
     #접속한 남성의 고유번호(menParty의 기본키, 외래키이자 남성의 기본키)
-    mno = models.ForeignKey('menInfo', on_delete=models.CASCADE,related_name = 'men_party')
+    mkid = models.ForeignKey('menInfo', on_delete=models.CASCADE,related_name = 'men_party')
     #친구 고유 번호(기본키)
     pnum = models.AutoField(primary_key=True)
     #친구 정보
@@ -197,7 +197,7 @@ class menParty(models.Model):
 #친구 이름 속성 삭제
 class womenParty(models.Model):
     #접속한 여성의 고유번호(womenParty의 기본키, 외래키이자 여성의 기본키)
-    wno = models.ForeignKey('womenInfo', on_delete=models.CASCADE,related_name = 'women_party')
+    wkid = models.ForeignKey('womenInfo', on_delete=models.CASCADE,related_name = 'women_party')
     #친구 고유 번호(기본키)
     pnum = models.AutoField(primary_key=True)
     #친구 정보
@@ -211,3 +211,11 @@ class womenParty(models.Model):
 
     def __str__(self):
         return f"{self.wkid} - {self.pnum}"
+
+class payment(models.Model):
+    #결제 내역 기본키
+    pay_num = models.AutoField(primary_key=True)
+    #결제 성공 시점
+    created_at = models.DateTimeField(auto_now_add=True)
+    #결제 사용자 아이디(결제 내역 외래키, userInfo 기본키)
+    id = models.ForeignKey('userInfo', on_delete=models.SET_NULL, null=True, blank=True, related_name='payment')
