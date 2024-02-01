@@ -8,5 +8,6 @@ urlpatterns = [
     
     path('',common_base_views.index),
     path('main/',include('common.urls')),
+    path('kakaopay/', include('kakaopay.urls')),
     path('room/',include('room.urls')),
 ]
