@@ -5,25 +5,25 @@ from common.models import *
 class MenPartySerializer(serializers.ModelSerializer):
     class Meta:
         model = menParty
-        fields = ['pnum','name','age','school']
+        fields = '__all__'
 
 class WomenPartySerializer(serializers.ModelSerializer):
     class Meta:
         model = womenParty
-        fields = ['pnum','name','age','school']
+        fields = '__all__'
 
 class MenInfoSerializer(serializers.ModelSerializer):
     menPartys = MenPartySerializer(many = True, read_only = True, source = 'men_party')
     class Meta:
         model = menInfo
-        fields = ['nickname','ready','menPartys','school','major']
+        fields = '__all__'
         
 
 class WomenInfoSerializer(serializers.ModelSerializer):
     womenPartys = WomenPartySerializer(many = True, read_only = True, source = 'women_party')
     class Meta:
         model = menInfo
-        fields = ['nickname','ready','womenPartys','school','major']
+        fields = '__all__'
         
 
 class RoomSerializer(serializers.ModelSerializer):
@@ -44,4 +44,4 @@ class RoomSerializer(serializers.ModelSerializer):
 
     class Meta :
         model = room
-        fields = ['rno','rname', 'mnum','wnum','created_at','location','menInfos','womenInfos']
+        fields = '__all__'
