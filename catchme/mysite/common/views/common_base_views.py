@@ -1,6 +1,6 @@
+import requests
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-import requests
 from ..models import *
 # Create your views here.
 
@@ -9,21 +9,42 @@ def index(request):
     return render(request, "common/index.html")
 
 def introduction(request):
-    if request.method == "POST":
-        gender = request.POST.get('gender')
-        location = request.POST.get('location')
-        
-        user = userInfo(location = location, kid = "1250812")
-        user.save()
-        if gender =="male":
-            man = menInfo(nickname = "james",user_info = user)
-            man.save()
-        else:
-            woman = womenInfo(nickname = "julia",user_info = user)
-            woman.save()        
-        return redirect('common:index')
+    access_token = request.session.get("access_token",None)
+
+    if  access_token == None:
+        return redirect('common:kakaoLoginLogic')
+
     else:
-        return render(request, "common/introduction.html")
+        account_info = requests.get("https://kapi.kakao.com/v2/user/me",
+                                    headers={"Authorization": f"Bearer {access_token}"}).json() #사용자 정보를 json 형태로 받아옴
+        kid = account_info.get("id")#3991591359138 이런거
+
+        if request.method == "POST":
+            gender = request.POST.get('gender')
+            
+            if gender == "male":
+                boolean_gender = True #남자면 true
+            
+            else:
+                boolean_gender = False#여자면 false
+            
+            location = request.POST.get('location')
+            
+            if boolean_gender:
+                man = menInfo(nickname = "james", mkid = kid)
+                man.save()
+            
+            else:
+                woman = womenInfo(nickname = "julia",wkid = kid)
+                woman.save()
+            
+        
+
+
+            return redirect('common:index')
+
+        else:
+            return render(request, "common/introduction.html")
 
 
 
