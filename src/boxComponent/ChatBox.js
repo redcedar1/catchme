@@ -1,5 +1,17 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+
+const bounceAnimation = keyframes`
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-20px);
+  }
+  60% {
+    transform: translateY(-10px);
+  }
+`;
 
 const ChatBoxContainer = styled.div`
   display: grid;
@@ -10,22 +22,24 @@ const ChatBoxContainer = styled.div`
 const ChatItem = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center; /* 텍스트 가운데 정렬 */
+  margin-top: 10px;
+  animation: ${bounceAnimation} 1s 5;
 `;
 
 const ChatBox = ({ users }) => {
   const getImagePath = (text) => {
-    // 예를 들어 이미지 파일은 "lion1.jpg", "taeil.jpg"와 같이 저장되어 있다고 가정합니다.
-    return `/path/to/images/${text.toLowerCase()}1.jpg`;
+    return `/image/chatBubble/chat_${text.toLowerCase()}.png`;
   };
 
   return (
     <ChatBoxContainer>
       {users.map((user, index) => (
         <ChatItem  key={index}>
-          <div>{user.text}</div>
-          {/*<img src={getImagePath(user.text)} alt={`${user.text} 이미지`} /> */}
+          <img 
+          src={getImagePath(user.chat)} 
+          alt={`${user.chat} 이미지`} 
+          style={{ width: "70px", height: "70px" }}
+          />
         </ChatItem >
       ))}
     </ChatBoxContainer>

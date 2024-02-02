@@ -6,13 +6,17 @@ import UserBox from "../boxComponent/UserBox";
 import ReadyBox from "../boxComponent/ReadyBox";
 import UserCardBox from "../boxComponent/UserCardBox";
 import ReadyStateBox from "../boxComponent/ReadyStateBox";
+import ReadyConfirmModal  from "../modalComponet/ReadyConfirmModal";
 import MaleChooseModal from "../modalComponet/MaleChooseModal";
+import FemaleChooseModal from "../modalComponet/FemaleChooseModal";
+import SecondModal from "../modalComponet/SecondModal";
+import FinalModal from "../modalComponet/FinalModal";
 
 const RootBodyContainer = styled.div`
 display: grid;
 width: 100%;
 height: 100vh;
-grid-template-rows: 0.1fr 0.1fr 0.15fr 0.1fr 0.15fr 0.1fr 0.18fr 0.05fr;
+grid-template-rows: 0.15fr 0.1fr 0.1fr 0.1fr 0.1fr 0.15fr 0.18fr 0.05fr;
 position: relative;
 `;
 
@@ -20,7 +24,6 @@ const RectangleTable = styled.div`
   position: absolute;
   width: 90%;
   height: 10%;
-  flex-shrink: 0;
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -32,67 +35,214 @@ const RectangleTable = styled.div`
 
 const RoomBody = () => {
 
+  const [roomName, setRoomName] = useState("");
+  const [location, setLocation] = useState("");
+  const [time, setTime] = useState("");
+  const [count, setCount] = useState("");
+  const [maleusers, setMaleusers] = useState([]);
+  const [femaleusers, setFemaleusers] = useState([]);
 
-  let user1 = { gender: "male", name: 'wohyun', text: 'hi', ready: 'READY', univ: '홍익대', major: '공대'};
-  let user2 = { gender: "male", name: 'taeil', text: 'bye', ready: 'READY', univ: '중앙대', major: '공대' };
-  let user3 = { gender: "female", name: 'suhyun', text: 'good', ready: 'READY', univ: '연세대', major: '공대' };
-  let me = { gender: "female", name: 'me', text: 'ㅋ', ready: '', univ: '이화여대', major: '미대' };
-
-  const maleusers = [user1, user2, user3, me].filter(user => user.gender === "male");
-  const femaleusers = [user1, user2, user3, me].filter(user => user.gender === "female");
-
-
-
-  const [isMale, setIsMale] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  
-  const areAllUsersReady = async () => {
-    
-    try {
-      const response = await fetch("");
-      if (response.ok) {
-        const result = await response.json();
-        return result.allUsersReady;
-      } else {
-        console.error("모든 사용자 레디 상태 확인 실패");
-        return false;
-      }
-    } catch (error) {
-      console.error("API 호출 오류:", error);
-      return false;
-    } 
-
-  };
-
+  // API 알고리즘
   useEffect(() => {
-    const checkAllUsersReady = () => {
-      const allReady = [...maleusers, ...femaleusers].every((user) => user.ready === "READY");
-      // 만약 모든 유저가 READY 상태라면 모달을 엽니다.
-      if (allReady) {
-        setShowModal(true);
+
+    /* 
+    // WebSocket 연결, 실시간 소통하려면 서버에서 소켓을 열고 메시지를 보내야함
+    const socket = new WebSocket('ws://your-socket-server');
+
+    // 소켓이 열리면 데이터 요청
+    socket.addEventListener('open', () => {
+      console.log('WebSocket opened');
+      fetchData();
+    });
+
+    // 메시지를 수신하면 데이터 업데이트
+    socket.addEventListener('message', (event) => {
+      const data = JSON.parse(event.data);
+      setRoomName(data.rname);
+      setLocation(data.location);
+      setMaleusers(data.menInfos);
+      setFemaleusers(data.womenInfos);
+    });
+
+    // 컴포넌트가 언마운트되면 소켓을 닫음
+    return () => {
+      socket.close();
+    };
+  }, []);
+  */
+
+  // 나중에 제대로 할 땐 URI/room/(number) 이런식으로 만들기
+    const fetchData = async () => {
+      try {
+        const roomResponse = 
+        await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/', {
+          method: "GET",
+          mode: 'cors'
+        });
+        const MaleusersResponse = 
+        await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/', {
+          method: "GET",
+          mode: 'cors'
+        });
+        const FemaleusersResponse = 
+        await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/', {
+          method: "GET",
+          mode: 'cors'
+        });
+
+        const roomdata = await roomResponse.json();
+        const maledata = await MaleusersResponse.json();
+        const femaledata = await FemaleusersResponse.json();
+        setRoomName(roomdata[0].rname);
+        setLocation(roomdata[0].location);
+        setTime(roomdata[0].created_at);
+        setCount(roomdata[0].count);
+        setMaleusers(maledata[0].menInfos);
+        setFemaleusers(femaledata[0].womenInfos);
+      } catch (error) {
+        console.error('Error fetching room info:', error);
       }
     };
 
-    checkAllUsersReady();
+    fetchData(); // 웹소켓 연동 후 여기 없애기
+  }, []);
 
+  const [showReadyConfirmModal, setShowReadyConfirmModal] = useState(false); 
+  const [showModal, setShowModal] = useState(false);
+
+  const [showSecondModal, setShowSecondModal] = useState(false);
+  const [secondRecommendations, setSecondRecommendations] = useState([]);
+
+  const [showFinalModal, setShowFinalModal] = useState(false);
+  const [final, setFinal] = useState([]);
+
+  // 선택 모달창 여는 알고리즘
+  useEffect(() => {
+
+    const anyNotReady = [...maleusers, ...femaleusers].some((user) => !user.ready);
+    const isMaleFemaleEqual = maleusers.length === femaleusers.length;
+    const isMaleFemaleOver2 = (maleusers.length >1) && (femaleusers.length >1) ;
+    
+    const checkAllUsersReady = async () => {
+      if (!anyNotReady && isMaleFemaleEqual && isMaleFemaleOver2) {
+        if(/*day1*/ true)
+          setShowReadyConfirmModal(true);
+        if(/*day2*/ false) {
+            const isMutualSelected = true;
+
+            if (!isMutualSelected) {
+              try {
+                const response =
+                await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/', {
+                  method: "GET",
+                  mode: 'cors'
+                });
+                if (!response.ok) {
+                  throw new Error('Failed to fetch second recommendations');
+                }
+                const data = await response.json();
+                setSecondRecommendations(data[0].menInfos);
+                setShowSecondModal(true);
+              } catch (error) {
+                console.error('Error fetching second recommendations:', error);
+              }
+            } else if(isMutualSelected) {
+              try {
+                const response =
+                await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/', {
+                  method: "GET",
+                  mode: 'cors'
+                });
+                if (!response.ok) {
+                  throw new Error('Failed to fetch second recommendations');
+                }
+                const data = await response.json();
+                setFinal(data[0].menInfos);
+                setShowFinalModal(true);
+              } catch (error) {
+                console.error('Error fetching second recommendations:', error);
+              }
+            } 
+        } else {
+          setShowSecondModal(false);
+        }
+      } else {
+        setShowReadyConfirmModal(false);
+      }
+    }
+    checkAllUsersReady();
   }, [maleusers, femaleusers]);
 
+  const [isMale, setIsMale] = useState(true);
+  const filteredMaleUsers = maleusers.filter((user) => user.ready);
+  const filteredFemaleUsers = femaleusers.filter((user) => user.ready);
+
+  const handleGenderChange = (newIsMale) => {
+    setIsMale(newIsMale);
+  };
+
   return (
+    // 기본 방 구조
     <RootBodyContainer>
-      <InfoBox />
-      <ChatBox users={isMale ? maleusers : femaleusers} />
-      <UserBox users={isMale ? maleusers : femaleusers} />
+      <InfoBox roomName={roomName} location={location} time={time} count={count} />
+      <ChatBox users={isMale ? filteredMaleUsers : filteredFemaleUsers} />
+      <UserBox users={isMale ? 
+        filteredMaleUsers.map(user => ({ ...user, gender: 'Male' })) 
+        : filteredFemaleUsers.map(user => ({ ...user, gender: 'Female' }))} 
+      />
       <RectangleTable />
-      <ChatBox users={!isMale ? maleusers : femaleusers} />
-      <UserBox users={!isMale ? maleusers : femaleusers} />
-      <ReadyBox />
-      <UserCardBox users={isMale ? maleusers : femaleusers} />
-      <ReadyStateBox users={isMale ? maleusers : femaleusers} /*areAllUsersReady={areAllUsersReady}*/ />
+      <ChatBox users={isMale ? filteredFemaleUsers : filteredMaleUsers} />
+      <UserBox users={isMale ? 
+        filteredFemaleUsers.map(user => ({ ...user, gender: 'Female' })) 
+        : filteredMaleUsers.map(user => ({ ...user, gender: 'Male' }))} 
+      />
+      <ReadyBox onGenderChange={handleGenderChange} isMale={isMale} />
+      <UserCardBox users={isMale ? 
+        filteredMaleUsers.map(user => ({ ...user, gender: 'Male' })) 
+        : filteredFemaleUsers.map(user => ({ ...user, gender: 'Female' }))} 
+      />
+      <ReadyStateBox users={isMale ? filteredMaleUsers : filteredFemaleUsers} />
+
+    {/* 선택창 모달 구조 */}
+      {showReadyConfirmModal && (
+        <ReadyConfirmModal
+          isOpen={showReadyConfirmModal}
+          onClose={() => setShowReadyConfirmModal(false)}
+          onConfirm={() => setShowModal(true)}
+        />
+      )} 
       {showModal && (
-        // 모달 컴포넌트 추가
-        <MaleChooseModal isOpen={true} onClose={() => setShowModal(false)} maleusers={maleusers}>
-        </MaleChooseModal>
+        (isMale)
+        ? (
+          <FemaleChooseModal 
+            isOpen={true} 
+            onClose={() => setShowModal(false)} 
+            femaleusers={femaleusers}
+          />
+        ) : (
+          <MaleChooseModal 
+            isOpen={true} 
+            onClose={() => setShowModal(false)} 
+            maleusers={maleusers}
+          />
+        )
       )}
+      {showSecondModal && 
+        <SecondModal
+          isOpen={showSecondModal}
+          onClose={() => setShowSecondModal(false)}
+          recommendations={secondRecommendations}
+          gender={isMale ? "Male" : "Female"}
+        />
+      } 
+      {showFinalModal && 
+        <FinalModal
+          isOpen={showFinalModal}
+          onClose={() => setShowFinalModal(false)}
+          me={final[0]}
+          you={final[1]}
+        />
+      }
     </RootBodyContainer>
   );
 };

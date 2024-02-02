@@ -7,13 +7,12 @@ const customModalStyles = {
     backgroundColor: "rgba(0, 0, 0, 0)",
   },
   content: {
-    top: "63%", // 수직 위치를 화면의 중간으로 조정
-    left: "50%", // 수평 위치를 화면의 중간으로 조정
-    transform: "translate(-50%, -50%)", // 말풍선을 가운데로 정렬
+    top: "55%", 
+    left: "50%", 
+    transform: "translate(-50%, -50%)",
     width: "50%",
-    height: "20px",
+    height: "3%",
     borderRadius: "10%",
-    opacity: 0.8,
     padding: "5px",
     boxShadow: "4px 4px 11px 0px rgba(0, 0, 0, 0.22)",
   },
@@ -27,33 +26,49 @@ const UserBoxContainer = styled.div`
 const UserItem = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
   cursor: ${({ isMe }) => (isMe ? "pointer" : "default")};
 `;
 
 const ModalText = styled.div`
   color: #000;
   text-align: center;
-  font-family: Inter;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
+`;
+
+const speechBubbleImages = {
+  good: "good.png",
+  heart: "heart.png",
+  hello: "hello.png",
+  love: "love.png",
+  mad: "mad.png",
+  oh: "oh.png",
+  sad: "sad.png",
+  sorry: "sorry.png",
+  star: "star.png",
+};
+
+const SpeechBubble = styled.img`
+  width: 23px;
+  height: 15px;
+  margin-top: 5px;
+  margin-right: 10px;
+  cursor: pointer;
 `;
 
 const UserBox = ({ users }) => {
 
   const [selectedUser, setSelectedUser] = useState(null);
 
-  const getImagePath = (name) => {
-    // 예를 들어 이미지 파일은 "lion1.jpg", "taeil.jpg"와 같이 저장되어 있다고 가정합니다.
-    return `/path/to/images/${name.toLowerCase()}1.jpg`;
+  const getImagePath = (animal, gender) => {
+    return `/image/profile/${animal.toLowerCase()}${gender === 'Male' ? 'Male' : 'Female'}.png`;
   };
 
   const handleUserClick = (user) => {
-    if (user.name === "me") {
-      setSelectedUser(user);
+    if (user.kakaotalk_id === "0727") {
+      //setSelectedUser(user); 나중엔 이걸로
+      setSelectedUser({
+        ...user,
+        chat: ["hello", "heart", "oh", "love", "sad"],
+      });
     }
   };
 
@@ -61,26 +76,66 @@ const UserBox = ({ users }) => {
     setSelectedUser(null);
   };
 
+  const handleSpeechBubbleClick = async (text) => {
+    try {
+      const response = 
+      await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/', {
+        method: "POST",
+        mode: 'cors',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          Kakaotalk_id: '0727',
+          rno: 1,
+          chat: text,
+        }),
+      });
+
+      if (response.ok) {
+        console.log("말풍선 선택 정보 전송 성공");
+      } else {
+        console.error("말풍선 선택 정보 전송 실패");
+      }
+    } catch (error) {
+      console.error("API 호출 오류:", error);
+    } finally {
+      closeModal();
+    }
+  };
+
   return (
     <UserBoxContainer>
       {users.map((user, index) => (
         <UserItem
           key={index}
-          isMe={user.name === "me"}
+          isMe={user.kakaotalk_id === "0727"}
           onClick={() => handleUserClick(user)}
         >
-          <div>{user.name}</div>
-          {/*<img src={getImagePath(user.name)} alt={`${user.name} 이미지`} /> */}
+          <img 
+            src={getImagePath(user.animal, user.gender)} 
+            alt={`${user.animal} 이미지`}
+            style={{ width: "65px", height: "65px" }}
+        />
         </UserItem>
       ))}
+
       {selectedUser && (
         <Modal
-        isOpen={true} // 모달 상태를 열린 상태로 설정
+        isOpen={true}
         onRequestClose={closeModal}
         style={customModalStyles}
-      >
-        <ModalText>"말풍선 종류"</ModalText>
-      </Modal>
+        >
+          <ModalText>
+            {selectedUser.chat.map((text, index) => (
+                <SpeechBubble
+                  key={index}
+                  src={`/image/chat/${speechBubbleImages[text]}`}
+                  onClick={() => handleSpeechBubbleClick(text)}
+                />
+              ))}
+          </ModalText>
+        </Modal>
       )}
     </UserBoxContainer>
   );

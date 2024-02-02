@@ -10,16 +10,10 @@ const customStyles = {
       top: "50%",
       left: "50%",
       transform: "translate(-50%, -50%)",
-      border: "none", // 테두리 없애기
-      padding: 0, // 내부 패딩 없애기
-      width: "100%", // 화면 너비만큼
-      height: "80%", // 화면 높이만큼
-      opacity: "0.95",
+      width: "100%", 
+      height: "80%", 
       display: "grid",
-      gridTemplateRows: "repeat(6, 1fr)", // 5개의 열로 구성
-      gap: "5px",
-      padding: "20px",
-      margin: "5px",
+      gridTemplateRows: "1fr 1fr 1.5fr 1.5fr 1.5fr 1.5fr 1.5fr 0.5fr", 
     },
   };
 
@@ -37,12 +31,8 @@ const customStyles = {
 
   const TimeText = styled.div`
     color: #FFF;
-    text-align: center;
-    font-family: Inter;
-    font-size: 21px;
-    font-style: normal;
+    font-size: 17px;
     font-weight: 600;
-    line-height: normal;
     background: #515151;
     border: 2px solid #515151;
     border-radius: 30px;
@@ -54,17 +44,33 @@ const customStyles = {
     margin: auto;
 `;
 
+const Text = styled.div`
+    text-align: center;
+    width: 90%;
+    height: 80%;
+    margin: auto;
+    font-size: 13px;
+    font-weight: 600;
+    color: #515151;
+    span {
+    color: #CE6591;
+    font-size: 21px;
+    font-weight: 600;
+    }
+`;
+
   const GridItem = styled.div`
     display: grid;
-    justify-content: center;
     margin: auto;
-    grid-template-columns: 1fr 3fr 1fr;
-    width: 84%;
-    height: 30%;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-areas:
+    "subgrid1 subgrid2 subgrid3 subgrid3"
+    "subgrid4 subgrid4 subgrid4 subgrid5";
+    width: 95%;
+    height: 80%;
     background: #FFF;
     box-shadow: 0px 0px 22px 0px rgba(0, 0, 0, 0.10);
-    padding: 20px;
-    text-align: center;
     border-radius: 8px;
     border: 2px solid transparent;
     ${(props) =>
@@ -74,23 +80,42 @@ const customStyles = {
       `}    `;
 
 const SubGridItem1 = styled.div`
-
-`;
+    grid-area: subgrid1;
+ `;
 
 const SubGridItem2 = styled.div`
-    display: grid;
-    grid-template-rows: repeat(2, 1fr);
+    grid-area: subgrid2;
     color: #515151;
     text-align: center;
-    font-family: Inter;
-    font-size: 17px;
-    font-style: normal;
+    font-size: 13px;
     font-weight: 700;
-    line-height: normal;
+    margin: auto;
+`;
+
+const SubGridItem3 = styled.div`
+    grid-area: subgrid3;
+    margin: auto;
+`;
+
+const SubGridItem4 = styled.div`
+    grid-area: subgrid4;
+    span {
+        color: #CE6591;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    margin: auto;
+`;
+
+const SubGridItem5 = styled.div`
+    grid-area: subgrid5;
+    margin: auto;
 `;
 
 const StyledButton = styled.button`
-  height: 85%;
+  width: 100%;
+  height: 70%;
+  font-size: 15px;
   border-radius: 9px;
   background: ${(props) => (props.selected ? "#E296B6" : "#515151")};  
   color: white;
@@ -98,10 +123,25 @@ const StyledButton = styled.button`
   cursor: pointer;
 `;
 
+const StyledButton2 = styled.button`
+  width: 20%;
+  height: 30px;
+  margin: auto;
+  font-size: 13px;
+  border-radius: 9px; 
+  color: black;
+  border: none;
+  cursor: pointer;
+`;
+
 const MaleChooseModal = ({ isOpen, onClose, maleusers }) => {
 
   const [selectedUser, setSelectedUser] = useState(null);
-  const [timer, setTimer] = useState(60); // 60 seconds
+  const [timer, setTimer] = useState(1800);
+
+  const getImagePath = (user) => {
+    return `/image/profile/${user.animal.toLowerCase()}Male.png`;
+  };
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -117,37 +157,95 @@ const MaleChooseModal = ({ isOpen, onClose, maleusers }) => {
     }
   }, [timer, onClose]);
 
-  const handleButtonClick = (user) => {
+  const handleButtonClick = async (user) => {
     if (selectedUser === user) {
-      // 취소하기
       setSelectedUser(null);
     } else {
-      // 선택하기
       setSelectedUser(user);
+    }
+  };
+
+  const handleChooseClick = async () => {
+    if (selectedUser) {
+      await sendSelectedUserToServer(selectedUser);
+    }
+    onClose();
+  };
+
+  const handleCancelClick = async () => {
+    await sendSelectedUserToServer(null);
+    onClose();
+  };
+
+  const sendSelectedUserToServer = async (selectedUser) => {
+    try {
+      const response = 
+      await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/', {
+        method: "POST",
+        mode: 'cors',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          selectedUser,
+        }),
+      });
+
+      if (response.ok) {
+        console.log("선택한 사용자 정보 전송 성공");
+      } else {
+        console.error("선택한 사용자 정보 전송 실패");
+      }
+    } catch (error) {
+      console.error("API 호출 오류:", error);
     }
   };
 
   return (
     <Modal isOpen={isOpen} onRequestClose={onClose} style={customStyles}>
         <TimeText>{`00:${timer < 10 ? `0${timer}` : timer}`}</TimeText>
+        <Text>
+            <span> 나를 선택한 사람들이에요 ! </span>
+            <br /><br />
+            여기서 선택하면 바로 매칭이 돼요 !
+            <br /><br />
+        </Text>
       {maleusers.map((user, index) => (
         <GridItem key={index} isSelected={selectedUser === user}>
           <SubGridItem1>
-            {user.name}
+          <img 
+            src={getImagePath(user)} 
+            alt={`${user.animal} 이미지`}
+            style={{ width: "50px", height: "50px" }}
+            />
           </SubGridItem1>
           <SubGridItem2>
-            {user.univ} {user.major}
+            {user.school} {user.major} {user.age}
           </SubGridItem2>
-          <SubGridItem1>
+          <SubGridItem3>
+            {user.height} {user.body} {user.mbti}
+          </SubGridItem3>
+          <SubGridItem4>
+            회원님의 <span>이상형</span>과 <span>78%</span> 부합해요!
+          </SubGridItem4>
+          <SubGridItem5>
             <StyledButton
-              selected={selectedUser === user}
-              onClick={() => handleButtonClick(user)}
-            >
-              {selectedUser === user ? "취소하기 ↗" : "선택하기 ↗"}
+                selected={selectedUser === user}
+                onClick={() => handleButtonClick(user)}
+                >
+                {selectedUser === user ? "취소하기 ↗" : "선택하기 ↗"}
             </StyledButton>
-          </SubGridItem1>
+          </SubGridItem5>
         </GridItem>
       ))}
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <StyledButton2 onClick={handleChooseClick}>
+          선택 완료
+        </StyledButton2>
+        <StyledButton2 onClick={handleCancelClick}>
+          선택 안 함
+        </StyledButton2>
+      </div>
     </Modal>
   );
 };

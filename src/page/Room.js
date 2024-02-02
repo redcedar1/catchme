@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { BrowserRouter as Router} from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import RoomHeader from "../component/RoomHeader";
 import RoomBody from "../component/RoomBody";
 
@@ -25,11 +25,13 @@ const BackgroundImage = styled.div`
 
 function Room() {
   return (
+    <BrowserRouter>
         <div>
           <BackgroundImage />
           <RoomHeader />
           <RoomBody />
         </div>
+    </BrowserRouter>
   );
 }
 
