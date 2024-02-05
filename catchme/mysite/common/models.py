@@ -1,14 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils.timezone import localtime
-
 
 class userInfo(models.Model):
     #사용자 카톡 고유 번호(기본키)
     id = models.BigIntegerField(primary_key=True, db_index=True)
     #사용자 위치 정보
     location = models.CharField(max_length=50)
-    gender = models.BooleanField()
+    #사용자가 남성이면 mno를 통해 정보 조회(userInfo의 외래키, 남성의 기본키)
+    mkid = models.ForeignKey('menInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='mkid')
+    #사용자가 여성이면 wno를 통해 정보 조회(userInfo의 외래키, 여성의 기본키)
+    wkid = models.ForeignKey('womenInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='wkid')
 
 # Create your models here.
 class menInfo(models.Model):
@@ -75,6 +76,7 @@ class Notice(models.Model):
     notice = models.TextField(null=True, blank=True)
     #알림 생성 시간
     created_at = models.DateTimeField(auto_now_add=True)
+
 class womenInfo(models.Model):
     #여성 고유 번호(기본키)
     wkid = models.BigIntegerField(primary_key=True, db_index=True)
@@ -138,7 +140,6 @@ class room(models.Model):
     rname = models.TextField()
     #방 생성 시간
     created_at = models.DateTimeField(auto_now_add=True)
-
     #방 안에서 미팅 성사 개수
     meetingnum = models.IntegerField(default=0)
     #레디한 인원 수
@@ -148,7 +149,6 @@ class room(models.Model):
     #매칭 진행 중 여부
     matching = models.BooleanField(default=False)
 
-    
     def __str__(self):
         return str(self.pk)
 
