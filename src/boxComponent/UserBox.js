@@ -62,6 +62,10 @@ const UserBox = ({ users }) => {
     return `/image/profile/${animal.toLowerCase()}${gender === 'Male' ? 'Male' : 'Female'}.png`;
   };
 
+  const getIdealImagePath = (animal, gender) => {
+    return `/image/profile/${animal.toLowerCase()}${gender === 'Male' ? 'Male' : 'Female'}Good.png`;
+  };
+
   const handleUserClick = (user) => {
     if (user.kakaotalk_id === "0727") {
       //setSelectedUser(user); 나중엔 이걸로
@@ -113,9 +117,14 @@ const UserBox = ({ users }) => {
           onClick={() => handleUserClick(user)}
         >
           <img 
-            src={getImagePath(user.animal, user.gender)} 
+            src={/*user.idealScore > 50*/ true ? 
+              getIdealImagePath(user.animal, user.gender) : 
+              getImagePath(user.animal, user.gender)}             
             alt={`${user.animal} 이미지`}
-            style={{ width: "65px", height: "65px" }}
+            style={{ 
+              width: /*user.idealScore > 50 */ true ? "78px" : "65px",
+              height: /*user.idealScore > 50 */ true ? "78px" : "65px",
+            }}
         />
         </UserItem>
       ))}

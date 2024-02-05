@@ -137,9 +137,9 @@ const UserCardBox = ({ users, gender }) => {
             <>
             <div></div>
             <img
-                src="/image/human.png"
+                src="/image/profileCard/luaCard.png"
                 alt="기본 프로필 이미지"
-                style={{ width: "70px", height: "130px" }}
+                style={{ width: "70px", height: "110px" }}
               />
             </>
             )}

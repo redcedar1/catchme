@@ -1,6 +1,7 @@
-import React from "react";
+import {React, useState} from "react";
 import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
+import YesLoginModal from "./YesLoginModal";
 
 const RoomHeader = () => {
   const navigate = useNavigate();
@@ -9,10 +10,20 @@ const RoomHeader = () => {
     navigate(-1);
   };
 
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const openModal = () => {
+    setModalIsOpen(true);
+  };
+
   return (
     <HeaderContainer>
         <Arrow src="/image/backButton.png" alt="Back Arrow" onClick={handlePageBack} />
         <Logo src="/image/logo.png" alt="Catchme Logo" />
+        <Alarm src="/image/alarmIcon.png" alt="alarm Dots" onClick={() => navigate("/login/alarm")} />
+        <Setting src="/image/Group17.png" alt="Setting Dots" onClick={openModal} />
+        {modalIsOpen && (
+          <YesLoginModal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)} />
+        )}
     </HeaderContainer>
   );
 };
@@ -26,7 +37,7 @@ const HeaderContainer = styled.header`
   align-items: center;
   justify-content: center;
   position: relative;
-  margin: 0 auto; // 중앙 정렬
+  margin: 0 auto;
 `;
 
 const Arrow = styled.img`
@@ -45,5 +56,25 @@ const Logo = styled.img`
   height: auto;
   position: absolute;
   left: 50%;
+  transform: translateX(-50%);
+`;
+
+const Alarm = styled.img`
+  width: 34px;
+  height: 43px;
+  cursor: pointer;
+  top: 27%;
+  position: absolute;
+  right: 2.6rem;
+  transform: translateX(-50%);
+`;
+
+const Setting = styled.img`
+  width: 1.3125rem;
+  height: auto;
+  cursor: pointer;
+  top: 50%;
+  position: absolute;
+  right: 0.69rem;
   transform: translateX(-50%);
 `;

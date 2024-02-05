@@ -8,8 +8,8 @@ const ReadyStateBoxContainer = styled.div`
 
 const ReadyStateItem = styled.div`
   text-align: center;
-  background-color: ${({ index }) => (index % 2 === 0 ? "#FFFAF8" : "#FFF8F0")};
-  padding: 10px;
+  background-color: ${({ index, ready }) =>
+  ready ? (index % 2 === 0 ? "#FFFAF8" : "#FFF8F0") : "#D7D7D7"};  padding: 10px;
   color: #414141;
   font-size: 12px;
   font-weight: 700;
@@ -17,12 +17,15 @@ const ReadyStateItem = styled.div`
 `;
 
 const ReadyStateBox = ({ users }) => {
+  const totalUsers = 5;
+
+  const filledUsers = [...users, ...Array(totalUsers - users.length).fill({ ready: false })];
 
   return (
     <ReadyStateBoxContainer>
-      {users.map((user, index) => (
+      {filledUsers.map((user, index) => (
         <ReadyStateItem key={index} ready={user.ready}>
-          {user.ready ? "Ready" : ""}
+          {user.ready ? "Ready" : "Empty"}
         </ReadyStateItem>
       ))}
     </ReadyStateBoxContainer>

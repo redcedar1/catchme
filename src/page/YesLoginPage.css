@@ -1,0 +1,52 @@
+.yeslogin-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.yeslogin-logout-text {
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+  color: rgb(0, 0, 0);
+  text-align: center;
+  margin-top: 1%;
+}
+
+.yeslogin-wellcome-text {
+  font-size: 25px;
+  font-weight: bold;
+  text-decoration: none;
+  color: 444444;
+  text-align: center;
+}
+.yeslogin-container {
+  display: grid;
+  grid-template-rows: 2.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  height: 93vh;
+  gap: 5px;
+}
+
+.modal-text {
+  display: flex;
+  font-size: 25px;
+  font-weight: bold;
+  text-decoration: none;
+  color: rgba(238, 101, 183, 0.859);
+  text-align: left;
+  align-items: center;
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.modal-slide-in {
+  animation: 0.5s ease-out 0s 1 slideInFromLeft forwards;
+  background: white;
+}

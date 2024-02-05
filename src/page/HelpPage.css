@@ -1,0 +1,75 @@
+.help-header {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px 10px 15px;
+  /* border-bottom: 1px solid #f0f0f0; */
+}
+.help-text {
+  font-size: 25px;
+  font-weight: bold;
+  text-decoration: none;
+  color: rgb(60, 57, 57);
+  text-align: center;
+}
+
+.back-icon {
+  display: block;
+  margin: auto;
+}
+
+.help-container {
+  display: grid;
+  grid-template-rows: 1.5fr 1fr 1fr 1fr 1fr;
+  gap: 20px;
+  padding: 20px;
+  min-height: 80vh;
+  max-height: 80vh;
+}
+
+.explain-box {
+  background: #f9f9f9;
+  border-radius: 15px;
+  display: grid;
+  margin: 30px 0px 30px 0px;
+  grid-template-rows: 1fr 1fr;
+}
+
+.path-box {
+  background: #f9f9f9;
+  border-radius: 15px;
+  margin: 5px 0px 5px 0px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+}
+
+.need-help-text {
+  font-size: 26px;
+  font-weight: bold;
+  text-decoration: none;
+  color: rgb(60, 57, 57);
+  text-align: center;
+}
+
+.need-help-text2 {
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  color: rgb(60, 57, 57);
+  text-align: center;
+}
+
+.path-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  color: rgb(60, 57, 57);
+}
+
+.path-icon {
+  display: block;
+  margin: auto;
+}

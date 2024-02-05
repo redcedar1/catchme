@@ -1,0 +1,8 @@
+  
+.home {
+  display: grid; 
+  grid-template-rows: 0.5fr 1fr 1.25fr 1fr 1.25fr 0.75fr;
+  
+  height: 100vh; /* 전체 뷰포트 높이 */
+}
+

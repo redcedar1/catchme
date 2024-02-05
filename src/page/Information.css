@@ -1,0 +1,53 @@
+.app-background {
+  display: flex;
+  flex-direction: column; /* 자식 요소를 가로로 배열 */
+  background-image: url(../../public/image/Welcome.png);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* 추가로 확실한 중앙 정렬을 위해 */
+  margin: auto; /* 모든 방향에 자동 마진을 적용 */
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column; /* 자식 요소를 가로로 배열 */
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  width: 100%; /* 컨테이너의 너비를 100%로 설정 */
+  height: auto; /* 컨테이너의 높이를 자식 요소에 맞춤 */
+  position: absolute;
+  top: 65%; /* 상단에서 75%의 위치 */
+  transform: translateY(-50%); /* 요소의 높이의 절반만큼 올라오도록 설정 */
+}
+
+  
+  /* 회원 정보 등록하기 버튼 스타일 */
+  .register-button {
+    display:flex;
+    background-color: #FFF0F5; /* 버튼의 배경색 */
+    border: none;
+    border-radius: 25px; /* 버튼의 둥근 모서리 */
+    padding: 15px 40px; /* 버튼의 크기 */
+    font-size: 16px; /* 글자 크기 */
+    color: #DB7093; /* 글자 색상 */
+    margin-bottom: 15px; /* 로그아웃 버튼과의 간격 */
+    cursor: pointer; /* 마우스 오버 시 포인터 변경 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    font-weight: bold; /* 글자 두께 */
+  }
+  
+  /* 로그아웃 버튼 스타일 */
+  .logout-button {
+    display:flex;
+    background-color: transparent; /* 투명 배경 */
+    border: none;
+    color: #DB7093; /* 글자 색상과 일치 */
+    cursor: pointer;
+    font-size: 16px;
+  }

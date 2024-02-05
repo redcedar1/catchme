@@ -1,9 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { BrowserRouter } from "react-router-dom";
-import RoomHeader from "../component/RoomHeader";
 import RoomBody from "../component/RoomBody";
-
+import { useParams } from 'react-router-dom';
 
 const BackgroundImage = styled.div`
 
@@ -24,14 +22,13 @@ const BackgroundImage = styled.div`
 `;
 
 function Room() {
+  const { roomId } = useParams(); // URL로부터 roomId를 가져옴
+
   return (
-    <BrowserRouter>
         <div>
           <BackgroundImage />
-          <RoomHeader />
-          <RoomBody />
+          <RoomBody roomId={roomId} />
         </div>
-    </BrowserRouter>
   );
 }
 

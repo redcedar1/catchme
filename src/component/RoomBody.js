@@ -33,7 +33,7 @@ const RectangleTable = styled.div`
   z-index: -1;
 `;
 
-const RoomBody = () => {
+const RoomBody = ( roomId ) => {
 
   const [roomName, setRoomName] = useState("");
   const [location, setLocation] = useState("");
@@ -75,17 +75,17 @@ const RoomBody = () => {
     const fetchData = async () => {
       try {
         const roomResponse = 
-        await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/', {
+        await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/', { //뒤에 ${roomId} 붙이기 
           method: "GET",
           mode: 'cors'
         });
         const MaleusersResponse = 
-        await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/', {
+        await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/', { //뒤에 ${roomId} 붙이기 
           method: "GET",
           mode: 'cors'
         });
         const FemaleusersResponse = 
-        await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/', {
+        await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/', { //뒤에 ${roomId} 붙이기 
           method: "GET",
           mode: 'cors'
         });
@@ -105,7 +105,7 @@ const RoomBody = () => {
     };
 
     fetchData(); // 웹소켓 연동 후 여기 없애기
-  }, []);
+  }, [roomId]);
 
   const [showReadyConfirmModal, setShowReadyConfirmModal] = useState(false); 
   const [showModal, setShowModal] = useState(false);

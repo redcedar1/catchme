@@ -1,0 +1,138 @@
+.mypage-header {
+  display: flex;
+  padding: 16px;
+  align-items: center;
+}
+
+.mypage-text {
+  font-size: 25px;
+  font-weight: bold;
+  text-decoration: none;
+  color: rgb(60, 57, 57);
+  text-align: center;
+}
+
+.mypage-container {
+  display: grid;
+  grid-template-rows: 4fr 2.5fr 1.5fr;
+  gap: 10px;
+  margin: 10px;
+  padding: 10px;
+  min-height: 80vh;
+}
+
+.mypage-myinfo {
+  display: grid;
+  grid-template-rows: 1fr 1.5fr;
+  gap: 10px;
+  border-radius: 15px;
+  padding: 10px;
+  margin: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.mypage-myinfo-first {
+  display: grid;
+  grid-template-columns: 1.5fr 2fr 0.5fr;
+  gap: 3px;
+}
+.mypage-myinfo-img {
+  width: 70%;
+  height: 70%;
+  object-fit: cover;
+}
+.mypage-myinfo-nickname {
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 21%;
+  margin-left: -25%;
+}
+.mypage-myinfo-modify-button {
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 60%;
+}
+.mypage-myinfo-second {
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 30px;
+  text-align: center;
+}
+.mypage-myinfo-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  font-size: 20px;
+}
+.mypage-myinfo-univ {
+  font-size: 20px;
+  font-weight: bold;
+}
+.mypage-certify {
+  font-size: 10px;
+}
+.mypage-myinfo-home {
+  font-size: 20px;
+  font-weight: bold;
+}
+.mypage-container-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.coin-container {
+  display: grid;
+  grid-template-columns: 1.3fr 1.7fr 1fr;
+  padding: 15px;
+  height: 50px;
+  margin: 0px 10px 0px 10px;
+  border-radius: 10px;
+  background-color: #fff279;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+.emoji-container {
+  width: 150px;
+  height: 150px;
+  margin: 15px 10px 0px 15px;
+  background-color: blanchedalmond;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+.emoji-grid-container {
+  display: grid;
+  grid-template-rows: 1fr 2fr 1fr;
+  gap: 10px;
+}
+.emojies {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 5px;
+}
+.mypage-charge-button {
+  font-size: 11px;
+  background-color: rgb(42, 40, 40);
+  color: white;
+  border-radius: 13px;
+  width: 70px;
+  height: 25px;
+}
+.mypage-friends-manage {
+  width: 110%;
+  height: 110%;
+  object-fit: cover;
+}
+.mypage-image-container {
+  width: 100%; /* 혹은 필요한 특정 크기 */
+  height: auto; /* 높이를 자동으로 설정하여 비율을 유지 */
+  display: flex; /* 이미지를 중앙에 배치하기 위해 flex를 사용 */
+  justify-content: center; /* 가로 중앙 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+  overflow: hidden; /* 컨테이너 바깥으로 넘어가는 이미지 숨기기 */
+}
+
+.mypage-coin-text-align {
+  display: flex;
+}
