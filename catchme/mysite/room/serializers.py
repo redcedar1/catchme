@@ -29,11 +29,9 @@ class WomenInfoSerializer(serializers.ModelSerializer):
 class RoomSerializer(serializers.ModelSerializer):
     menInfos = MenInfoSerializer(many = True, read_only = True, source = 'men_infos')# source에 등록한 것은 model에서 related_name항목
     womenInfos = WomenInfoSerializer(many = True, read_only = True,source = 'women_infos')
-    
 
     mnum = serializers.SerializerMethodField()
     wnum = serializers.SerializerMethodField()
-
 
 
     def get_mnum(self, obj):
@@ -43,7 +41,6 @@ class RoomSerializer(serializers.ModelSerializer):
     def get_wnum(self, obj):
         # men_infos 관련 객체의 개수를 반환합니다.
         return obj.women_infos.count()
-
 
     class Meta :
         model = room

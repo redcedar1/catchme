@@ -1,50 +1,39 @@
-import requests
 from django.shortcuts import render,redirect
 from django.http import HttpResponse, JsonResponse
 from ..models import *
 from django.middleware.csrf import get_token
+import requests
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def index(request):
     
     return render(request, "common/index.html")
 
+@login_required(login_url='common:kakaoLoginLogic')
 def introduction(request):
     access_token = request.session.get("access_token",None)
-
-    if  access_token == None:
-        return redirect('common:kakaoLoginLogic')
-
-    else:
-        account_info = requests.get("https://kapi.kakao.com/v2/user/me",
+    if access_token == None: #로그인이 안되어있으면 로그인 시킨다.
+        return redirect("common:kakaoLoginLogic")
+    else:#로그인이 되어 있을 때
+        if request.method == "POST": #페이지에 자기소개 정보를 post로 전송시
+            account_info = requests.get("https://kapi.kakao.com/v2/user/me",
                                     headers={"Authorization": f"Bearer {access_token}"}).json() #사용자 정보를 json 형태로 받아옴
-        kid = account_info.get("id")#3991591359138 이런거
-
-        if request.method == "POST":
+            kid = account_info.get("id")#유저 고유 식별 번호
+            request.session['kid'] = kid # 유저의 kid를 세션에 저장하여 세션접근하여 유저 확인
             gender = request.POST.get('gender')
-            
-            if gender == "male":
-                boolean_gender = True #남자면 true
-            
-            else:
-                boolean_gender = False#여자면 false
-            
             location = request.POST.get('location')
-            
-            if boolean_gender:
-                man = menInfo(nickname = "james", mkid = kid)
+            nickname = request.POST.get('nickname')
+            user = userInfo(location = location, kid = kid)
+            user.save()
+            if gender =="male":
+                man = menInfo(nickname = nickname, user = user)
                 man.save()
-            
             else:
-                woman = womenInfo(nickname = "julia",wkid = kid)
+                woman = womenInfo(nickname = nickname, user = user)
                 woman.save()
-            
-        
-
-
             return redirect('common:index')
-
-        else:
+        else:#페이지 요청이면 자기소개 페이지로
             return render(request, "common/introduction.html")
 
 
@@ -71,6 +60,7 @@ def kakaoLoginLogicRedirect(request):
     
     return redirect("common:introduction") #로그인 완료 후엔 home페이지로
 
+@login_required(login_url='common:kakaoLoginLogic')
 def kakaoLogout(request):
     access_token = request.session.get("access_token",None)
     if access_token == None: #로그인 안돼있으면
