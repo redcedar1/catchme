@@ -7,6 +7,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
 from common.models import room, menInfo, womenInfo
 from ..serializers import RoomSerializer
+
 import requests
 
 
@@ -14,6 +15,8 @@ def index(request):
     return render(request,"room/room.html")
 
 def selectedRoom(request,r_no):
+    if request.method == "POST":
+        return HttpResponse("FUCK YOU")
     context = {"r_no":r_no}
     return render(request,"room/selected_room.html",context)
 
