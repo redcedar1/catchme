@@ -12,5 +12,6 @@ urlpatterns = [
     path('kakaoLoginLogic/',common_base_views.kakaoLoginLogic,name="kakaoLoginLogic"),
     path('kakaoLoginLogicRedirect/', common_base_views.kakaoLoginLogicRedirect,name="kakaoLoginLogicRedirect"),
     path('kakaoLogout/', common_base_views.kakaoLogout,name="kakaoLogout"),
+    path('csrf/',common_base_views.csrf)
 
 ]

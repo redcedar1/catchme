@@ -1,7 +1,8 @@
 import requests
 from django.shortcuts import render,redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from ..models import *
+from django.middleware.csrf import get_token
 # Create your views here.
 
 def index(request):
@@ -78,3 +79,7 @@ def kakaoLogout(request):
     else:
         del request.session['access_token']
         return HttpResponse("로그아웃 성공")
+
+def csrf(request):
+    csrf_token = get_token(request)
+    return JsonResponse({"csrfToken": csrf_token})
