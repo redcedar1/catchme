@@ -7,7 +7,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
 from common.models import room, menInfo, womenInfo
 from ..serializers import RoomSerializer
-
+from django.middleware.csrf import get_token
 import requests
 
 
@@ -15,11 +15,17 @@ def index(request):
     return render(request,"room/room.html")
 
 def selectedRoom(request,r_no):
+    csrf_token = get_token(request)
+
     if request.method == "POST":
         return HttpResponse("FUCK YOU")
     context = {"r_no":r_no}
-    return render(request,"room/selected_room.html",context)
+    response = render(request, "room/selected_room.html", {"r_no": r_no})
 
+    # 응답 쿠키에 CSRF 토큰 설정
+    response.set_cookie('csrftoken', csrf_token)
+
+    return response
 
 #API views
 class RoomListView(generics.ListAPIView):
