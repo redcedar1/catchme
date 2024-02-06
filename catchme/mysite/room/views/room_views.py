@@ -15,17 +15,14 @@ def index(request):
     return render(request,"room/room.html")
 
 def selectedRoom(request,r_no):
-    csrf_token = get_token(request)
 
     if request.method == "POST":
         return HttpResponse("FUCK YOU")
+    
     context = {"r_no":r_no}
-    response = render(request, "room/selected_room.html", {"r_no": r_no})
+    
 
-    # 응답 쿠키에 CSRF 토큰 설정
-    response.set_cookie('csrftoken', csrf_token)
-
-    return response
+    return render(request, "room/selected_room.html", context)
 
 #API views
 class RoomListView(generics.ListAPIView):
