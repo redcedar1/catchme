@@ -133,3 +133,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_HEADERS = (
+    'access-control-allow-credentials',
+    'access-control-allow-origin',
+    'access-control-request-method',
+    'access-control-request-headers',
+    'accept',
+    'accept-encoding',
+    'accept-language',
+    'authorization',
+    'connection',
+    'content-type',
+    'dnt',
+    'credentials',
+    'host',
+    'origin',
+    'user-agent',
+    'X-CSRFToken',
+    'csrftoken',
+    'x-requested-with',
+)
