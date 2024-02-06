@@ -9,21 +9,28 @@ def index(request):
     return render(request, "common/index.html")
 
 def introduction(request):
-    if request.method == "POST":
-        gender = request.POST.get('gender')
-        location = request.POST.get('location')
-        
-        user = userInfo(location = location, kid = "1250812")
-        user.save()
-        if gender =="male":
-            man = menInfo(nickname = "james",user_info = user)
-            man.save()
-        else:
-            woman = womenInfo(nickname = "julia",user_info = user)
-            woman.save()        
-        return redirect('common:index')
-    else:
-        return render(request, "common/introduction.html")
+    access_token = request.session.get("access_token",None)
+    if access_token == None: #로그인이 안되어있으면 로그인 시킨다.
+        return redirect("common:kakaoLoginLogic")
+    else:#로그인이 되어 있을 때
+        if request.method == "POST": #페이지에 자기소개 정보를 post로 전송시
+            account_info = requests.get("https://kapi.kakao.com/v2/user/me",
+                                    headers={"Authorization": f"Bearer {access_token}"}).json() #사용자 정보를 json 형태로 받아옴
+            kid = account_info.get("id")#유저 고유 식별 번호
+            gender = request.POST.get('gender')
+            location = request.POST.get('location')
+            nickname = request.POST.get('nickname')
+            user = userInfo(location = location, kid = kid)
+            user.save()
+            if gender =="male":
+                man = menInfo(nickname = nickname, user = user)
+                man.save()
+            else:
+                woman = womenInfo(nickname = nickname, user = user)
+                woman.save()
+            return redirect('common:index')
+        else:#페이지 요청이면 자기소개 페이지로
+            return render(request, "common/introduction.html")
 
 
 
