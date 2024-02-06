@@ -2,12 +2,14 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 import requests
 from ..models import *
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def index(request):
     
     return render(request, "common/index.html")
 
+@login_required(login_url='common:kakaoLoginLogic')
 def introduction(request):
     access_token = request.session.get("access_token",None)
     if access_token == None: #로그인이 안되어있으면 로그인 시킨다.
@@ -17,6 +19,7 @@ def introduction(request):
             account_info = requests.get("https://kapi.kakao.com/v2/user/me",
                                     headers={"Authorization": f"Bearer {access_token}"}).json() #사용자 정보를 json 형태로 받아옴
             kid = account_info.get("id")#유저 고유 식별 번호
+            request.session['kid'] = kid # 유저의 kid를 세션에 저장하여 세션접근하여 유저 확인
             gender = request.POST.get('gender')
             location = request.POST.get('location')
             nickname = request.POST.get('nickname')
@@ -56,6 +59,7 @@ def kakaoLoginLogicRedirect(request):
     
     return redirect("common:introduction") #로그인 완료 후엔 home페이지로
 
+@login_required(login_url='common:kakaoLoginLogic')
 def kakaoLogout(request):
     access_token = request.session.get("access_token",None)
     if access_token == None: #로그인 안돼있으면

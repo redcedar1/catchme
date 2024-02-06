@@ -8,11 +8,12 @@ from django.http import HttpResponse
 from common.models import room, menInfo, womenInfo
 from ..serializers import RoomSerializer
 import requests
-
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     return render(request,"room/room.html")
 
+@login_required(login_url='common:kakaoLoginLogic')
 def selectedRoom(request,r_no):
     context = {"r_no":r_no}
     return render(request,"room/selected_room.html",context)

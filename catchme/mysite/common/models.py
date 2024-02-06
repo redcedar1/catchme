@@ -6,6 +6,7 @@ class userInfo(models.Model):
     kid = models.BigIntegerField(primary_key=True, db_index=True)
     #사용자 위치 정보
     location = models.CharField(max_length=50)
+    gender = models.BooleanField()
 
 
 class menInfo(models.Model):
