@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Welcome02 from './Welcome02';
+
 import { GenderProvider } from './GenderContext';
 
 import './Information.css';
