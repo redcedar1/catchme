@@ -164,6 +164,7 @@ const UserCardBox = ({ users, gender }) => {
               <Text1> {selectedUser.nickname} 님
               <br /> <br />
               {selectedUser.school} {selectedUser.major} {selectedUser.age}살
+              위치: {selectedUser.location}
               <br />
               </Text1>
               {/* 대학교 인증 정보 가져오기 */}

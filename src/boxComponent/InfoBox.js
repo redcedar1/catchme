@@ -77,7 +77,7 @@ const ModalText = styled.div`
   }
 `;
 
-const InfoBox = ({ roomName, location, time, count }) => {
+const InfoBox = ({ roomName, location, time, meetingnum }) => {
 
   const [isModalOpen, setModalOpen] = useState(false);
   const openModal = () => {
@@ -106,7 +106,7 @@ const InfoBox = ({ roomName, location, time, count }) => {
         <ModalTitle>"{roomName}"의 정보</ModalTitle>
         <ModalText><img className="globe" src={globeImage} alt="globe" /> {location} </ModalText>
         <ModalText><img className="clock" src={clockImage} alt="clock" /> 방 파기 날짜: {formattedDateTime}</ModalText>
-        <ModalText><img className="human" src={humanImage} alt="human" /> 인원수 : {count}</ModalText>
+        <ModalText><img className="human" src={humanImage} alt="human" /> 인원수 : {meetingnum}대{meetingnum}</ModalText>
       </Modal>
     </InfoBoxContainer>
   );

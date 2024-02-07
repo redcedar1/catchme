@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import YesLoginModal from "../modalComponet/MenubarModal";
 
 const RoomHeader = ({ isUserLoggedIn }) => {
-
   const navigate = useNavigate();
 
   const handlePageBack = () => {
@@ -23,18 +22,18 @@ const RoomHeader = ({ isUserLoggedIn }) => {
   return (
     <HeaderContainer>
       <Arrow
-        src="/image/backButton.png"
+        src="/image/navigationbar/backButton.png"
         alt="Back Arrow"
         onClick={handlePageBack}
       />
       <Logo src="/image/logo.png" alt="Catchme Logo" />
       <Alarm
-        src="/image/alarmIcon.png"
+        src="/image/navigationbar/alarmIcon.png"
         alt="alarm Dots"
         onClick={() => navigate("/login/alarm")}
       />
       <Setting
-        src="/image/Group17.png"
+        src="/image/navigationbar/Group17.png"
         alt="Setting Dots"
         onClick={openModal}
       />

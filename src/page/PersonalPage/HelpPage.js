@@ -24,7 +24,7 @@ function Help() {
           <div className="path-icon">
             <Link to="https://www.instagram.com/">
               <img
-                src={`${process.env.PUBLIC_URL}/image/GoPink.png`}
+                src={`${process.env.PUBLIC_URL}/image/gobutton/GoPink.png`}
                 className="back-icon"
               />
             </Link>
@@ -37,7 +37,7 @@ function Help() {
           <div className="path-icon">
             <Link to="https://www.instagram.com/">
               <img
-                src={`${process.env.PUBLIC_URL}/image/GoYellow.png`}
+                src={`${process.env.PUBLIC_URL}/image/gobutton/GoYellow.png`}
                 className="back-icon"
               />
             </Link>
@@ -50,7 +50,7 @@ function Help() {
           <div className="path-icon">
             <Link to="https://www.instagram.com/">
               <img
-                src={`${process.env.PUBLIC_URL}/image/GoGreen.png`}
+                src={`${process.env.PUBLIC_URL}/image/gobutton/GoGreen.png`}
                 className="back-icon"
               />
             </Link>
