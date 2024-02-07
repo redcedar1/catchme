@@ -41,6 +41,12 @@ useEffect(() => {
     setSliderValue(e.target.value);
   };
 
+  useEffect(() => {
+    const percentage = ((sliderValue - 20) / (30 - 20)) * 100; // 슬라이더의 min과 max 값을 고려하여 계산
+    document.documentElement.style.setProperty('--slider-percentage', `${percentage}%`);
+  }, [sliderValue]);
+
+
   const handlePreviousClick = () => {
     // "이전" 버튼 로직
     navigate(-1); // 이전 페이지로 돌아갑니다.
@@ -64,14 +70,14 @@ useEffect(() => {
       <div className="slider-value">{sliderValue}</div>
       </div>
     <div className="slider-container">
-      <input 
-        type="range" 
-        min="20" 
-        max="30" 
-        value={sliderValue} 
-        onChange={handleSliderChange} 
-        className="slider" // 슬라이더에 클래스를 적용합니다
-      />
+    <input
+      type="range"
+      min="20" // 슬라이더의 최소값
+      max="30" // 슬라이더의 최대값
+      value={sliderValue}
+      onChange={handleSliderChange}
+      className="slider"
+    />
       </div>
       <div className="buttons-container">
         <button onClick={handlePreviousClick} className="previous-button">이전</button>

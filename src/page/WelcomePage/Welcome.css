@@ -1,11 +1,7 @@
   
 .home {
   display: grid; 
-<<<<<<< HEAD
-  grid-template-rows: 0.4fr 0.8fr 0.7fr 0.7fr 0.8fr 1fr;
-=======
-  grid-template-rows: 0.5fr 1fr 1.25fr 1fr 0.5fr 1.5fr;
->>>>>>> 8bccbc02e86e20c0b93369f986e0bb685a5a7ee7
+  grid-template-rows: 0.5fr 1fr 1.25fr 1fr 1.5fr 1fr;
   
   height: 100vh; /* 전체 뷰포트 높이 */
 }
