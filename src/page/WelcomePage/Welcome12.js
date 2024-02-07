@@ -79,7 +79,6 @@ const Welcome12 = () => {
   return (
     <div className="home2">
         <BackgroundImage />
-        <div className="head"></div>
       <div className="headtext">
         <p>10. 관심사를 선택해주세요!</p>
       </div>
@@ -96,6 +95,7 @@ const Welcome12 = () => {
         <button onClick={handlePreviousClick} className="previous-button">이전</button>
         <button onClick={handleNextClick} className="next-button">다음</button>
       </div>
+      <div className="bottom"></div>
 
     </div>
     
