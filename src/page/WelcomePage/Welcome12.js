@@ -12,7 +12,7 @@ const interests = [
 ];
 
 const BackgroundImage = styled.div `
-   background-image: url(${process.env.PUBLIC_URL}/image/background4.png); /* public 폴더에 있는 이미지 경로 */
+   background-image: url(${process.env.PUBLIC_URL}/image/welcome/background4.png); /* public 폴더에 있는 이미지 경로 */
     background-size: contain;
     background-repeat: no-repeat;
     background-color: #EDADC8;
