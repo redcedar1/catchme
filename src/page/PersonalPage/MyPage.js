@@ -68,7 +68,7 @@ function MyPage() {
 
           <div className="mypage-friends-manage">
             <img
-              src={`${process.env.PUBLIC_URL}/image/managefriends.png`}
+              src={`${process.env.PUBLIC_URL}/image/personalpage/managefriends.png`}
               className="mypage-image-container"
             />
           </div>
