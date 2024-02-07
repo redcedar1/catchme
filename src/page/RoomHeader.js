@@ -3,7 +3,8 @@ import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
 import YesLoginModal from "./YesLoginModal";
 
-const RoomHeader = () => {
+const RoomHeader = ({ isUserLoggedIn }) => {
+
   const navigate = useNavigate();
 
   const handlePageBack = () => {
@@ -14,6 +15,10 @@ const RoomHeader = () => {
   const openModal = () => {
     setModalIsOpen(true);
   };
+
+  if (!isUserLoggedIn) {
+    return null; // 로그인되지 않은 경우 헤더를 렌더링하지 않음
+  }
 
   return (
     <HeaderContainer>

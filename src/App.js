@@ -1,4 +1,4 @@
-import React from 'react';
+import {React, useState} from 'react';
 import { BrowserRouter,Routes, Route } from 'react-router-dom';
 import RoomHeader from "./page/RoomHeader";
 import MeetingRoomMain from './page/MeetingRoomMain';
@@ -31,14 +31,20 @@ import Welcome14 from './page/Welcome14';
 import Welcome15 from './page/Welcome15';
 
 function App() {
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(true);
+
+  const handleLogin = (loggedIn) => {
+    setIsUserLoggedIn(loggedIn);
+  };
+
   return (
     <BrowserRouter>
       <div className="App">
-        <RoomHeader/>
+        <RoomHeader isUserLoggedIn={isUserLoggedIn}/>
         <GenderProvider>
       <Routes> 
           <Route path="/" element={<Loading />} />
-          <Route path="/notlogin" element={<NotLogin />} />
+          <Route path="/notlogin" element={<NotLogin onLogin={handleLogin} />} />
           <Route path="/login" element={<YesLogin />} />
           <Route path="/login/information" element={<Information />} />
           <Route path="/login/information/Welcome02" element={<Welcome02 />} />

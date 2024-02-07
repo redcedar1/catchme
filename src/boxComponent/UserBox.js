@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Modal from "react-modal";
 
@@ -57,7 +57,7 @@ const SpeechBubble = styled.img`
 const UserBox = ({ users }) => {
 
   const [selectedUser, setSelectedUser] = useState(null);
-
+  
   const getImagePath = (animal, gender) => {
     return `/image/profile/${animal.toLowerCase()}${gender === 'Male' ? 'Male' : 'Female'}.png`;
   };
@@ -80,17 +80,43 @@ const UserBox = ({ users }) => {
     setSelectedUser(null);
   };
 
+  const [csrfToken, setCsrfToken] = useState(null); 
+
+  useEffect(() => {
+    // 페이지 로드 시 CSRF 토큰을 가져오는 비동기 함수 호출
+    const fetchCsrfToken = async () => {
+      try {
+        const response = await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/', {
+          method: 'GET',
+          mode: 'cors',
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setCsrfToken(data.csrfToken);
+        } else {
+          console.error('CSRF 토큰 가져오기 실패');
+        }
+      } catch (error) {
+        console.error('CSRF 토큰 가져오기 오류:', error);
+      }
+    };
+
+    fetchCsrfToken();
+  }, []);
+
   const handleSpeechBubbleClick = async (text) => {
     try {
       const response = 
-      await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/', {
+      await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/1', {
         method: "POST",
         mode: 'cors',
         headers: {
           "Content-Type": "application/json",
+          'X-CSRFToken': csrfToken,
         },
         body: JSON.stringify({
-          Kakaotalk_id: '0727',
+          Mkid: 1002,
           rno: 1,
           chat: text,
         }),
@@ -113,7 +139,7 @@ const UserBox = ({ users }) => {
       {users.map((user, index) => (
         <UserItem
           key={index}
-          isMe={user.kakaotalk_id === "0727"}
+          isMe={user.Mkid === "1002"}
           onClick={() => handleUserClick(user)}
         >
           <img 

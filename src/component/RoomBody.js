@@ -11,6 +11,7 @@ import MaleChooseModal from "../modalComponet/MaleChooseModal";
 import FemaleChooseModal from "../modalComponet/FemaleChooseModal";
 import SecondModal from "../modalComponet/SecondModal";
 import FinalModal from "../modalComponet/FinalModal";
+import io from 'socket.io-client';
 
 const RootBodyContainer = styled.div`
 display: grid;
@@ -46,29 +47,25 @@ const RoomBody = ( roomId ) => {
   useEffect(() => {
 
     /* 
-    // WebSocket 연결, 실시간 소통하려면 서버에서 소켓을 열고 메시지를 보내야함
-    const socket = new WebSocket('ws://your-socket-server');
+     useEffect(() => {
+    // 서버의 웹 소켓 엔드포인트에 연결
+    const socket = io('http://your-server-endpoint');
 
-    // 소켓이 열리면 데이터 요청
-    socket.addEventListener('open', () => {
-      console.log('WebSocket opened');
-      fetchData();
+    // 연결이 수립되면 콘솔에 로그 출력
+    socket.on('connect', () => {
+      console.log('웹 소켓 연결 성공!');
     });
 
-    // 메시지를 수신하면 데이터 업데이트
-    socket.addEventListener('message', (event) => {
-      const data = JSON.parse(event.data);
-      setRoomName(data.rname);
-      setLocation(data.location);
-      setMaleusers(data.menInfos);
-      setFemaleusers(data.womenInfos);
+    // 메시지를 수신하면 콘솔에 로그 출력
+    socket.on('message', (data) => {
+      console.log('서버로부터 메시지 수신:', data);
     });
 
-    // 컴포넌트가 언마운트되면 소켓을 닫음
+    // 컴포넌트가 언마운트되면 연결 해제
     return () => {
-      socket.close();
+      socket.disconnect();
     };
-  }, []);
+  }, []); // 빈 배열은 컴포넌트가 마운트될 때 한 번만 실행
   */
 
   // 나중에 제대로 할 땐 URI/room/(number) 이런식으로 만들기

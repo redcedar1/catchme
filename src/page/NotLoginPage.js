@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import React, { useState } from 'react';
+import { Link, useNavigate} from "react-router-dom";
 import "./NotLoginPage.css";
 import styled from "styled-components";
 
@@ -19,9 +20,13 @@ const BackgroundImage = styled.div`
   }
 `;
 
-function NotLogin() {
+function NotLogin({ onLogin }) {
+  const navigate = useNavigate();
+
   const loginClick = function () {
     console.log("login");
+    onLogin(true);
+    navigate('/login');
   };
 
   return (

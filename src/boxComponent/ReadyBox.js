@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import axios from 'axios';
 
 const ReadyBoxContainer = styled.div`
   display: grid;
@@ -60,18 +61,58 @@ const ReadyBox = ( { onGenderChange, isMale } ) => {
     onGenderChange(!isMaleUser);
   };
 
+  const [csrfToken, setCsrfToken] = useState(null); 
+
+  const fetchCsrfToken = async () => {
+    try {
+      const response = await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/main/csrf/', {
+        method: 'GET',
+        mode: 'cors',
+        credentials: 'include',
+      });
+  
+      if (!response.ok) {
+        throw new Error('서버 응답이 OK 상태가 아닙니다.');
+      }
+  
+      const contentType = response.headers.get('content-type');
+    
+      if (contentType && contentType.includes('application/json')) {
+        const data = await response.json();
+        console.log(data);
+        console.log(data.csrfToken);
+        setCsrfToken(data.csrfToken);
+      } else {
+        console.error('서버 응답이 JSON 형식이 아닙니다.');
+      }
+    } catch (error) {
+      console.error('CSRF 토큰 가져오기 오류:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCsrfToken();
+  }, []);
+  
+
   const sendReadyStatusToServer = async () => {
     try {
+      if (!csrfToken) {
+        console.error('CSRF 토큰이 유효하지 않습니다.');
+        return;
+      }
       const response = 
-      await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info', {
+      await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/1/', {
         // 현재 클라이언트 유저로 접근
         method: "POST",
         mode: 'cors',
+        credentials: 'include',
         headers: {
           "Content-Type": "application/json",
+          'X-CSRFToken': csrfToken,
         },
         body: JSON.stringify({
-          Mkid: 1002,
+          Mkid: 1001,
           rno: 1,
           ready: !isReady,
         }),
