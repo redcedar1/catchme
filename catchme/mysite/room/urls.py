@@ -6,5 +6,7 @@ urlpatterns = [
     path('api/room_info/',room_views.RoomListView.as_view(), name="roomListView"),
     path('',room_views.index,name ="index"),
     path('<int:r_no>/',room_views.selectedRoom,name="selectedRoom"),
+    path('<int:r_no>/matchingRoom',room_views.selectedRoom,name="matchingRoom"),
+    
     path('api/<int:r_no>/',room_views.SelectedRoomView.as_view(), name= "selectedRoomView"),
 ]

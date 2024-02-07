@@ -25,7 +25,8 @@ def selectedRoom(request,r_no):
 
     return render(request, "room/selected_room.html", context)
 
-def matchingRoom(request,r_no):
+def matchingRoom(request):
+    
     return True
 
 #API views
