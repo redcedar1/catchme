@@ -1,7 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import Modal from 'react-modal';
+import React from "react";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import Modal from "react-modal";
+import "./MenubarModal.css";
 
 const ModalContainer = styled.div`
   display: grid;
@@ -65,43 +66,43 @@ const YesLoginModal = ({ isOpen, onClose }) => {
       contentLabel="Example Modal"
       className="modal-slide-in container-modal"
     >
-      <ModalContainer>
-        <XIcon
-          src={`${process.env.PUBLIC_URL}/image/xIcon.png`}
-          alt="Close Modal"
+      <div className="x-icon">
+        <img
+          src={`${process.env.PUBLIC_URL}/image/navigationbar/xIcon.png`}
+          className="x-icon"
           onClick={onClose}
         />
-        <ModalText>
-          <Link to="/login/mypage" className="modal-text">
-            my page.
-          </Link>
-        </ModalText>
-        <ModalText>
-          <Link to="/login/withfriends" className="modal-text">
-            with friends.
-          </Link>
-        </ModalText>
-        <ModalText>
-          <Link to="/login/matchhistory" className="modal-text">
-            match history.
-          </Link>
-        </ModalText>
-        <ModalText>
-          <Link to="/login/help" className="modal-text">
-            help.
-          </Link>
-        </ModalText>
-        <ModalText>
-          <Link to="https://www.instagram.com/" className="modal-text">
-            about us.
-          </Link>
-        </ModalText>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <ModalTextTeam>JIPDANJISUNG</ModalTextTeam>
-      </ModalContainer>
+      </div>
+      <div className="modal-text">
+        <Link to="/login/mypage" className="modal-text">
+          my page.
+        </Link>
+      </div>
+      <div className="modal-text">
+        <Link to="/login/withfriends" className="modal-text">
+          whth friends.
+        </Link>
+      </div>
+      <div className="modal-text">
+        <Link to="/login/matchhistory" className="modal-text">
+          match history.
+        </Link>
+      </div>
+      <div className="modal-text">
+        <Link to="/login/help" className="modal-text">
+          help.
+        </Link>
+      </div>
+      <div className="modal-text">
+        <Link to="https://www.instagram.com/" className="modal-text">
+          about us.
+        </Link>
+      </div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div className="modal-text-team">JIPDANJISUNG</div>
     </Modal>
   );
 };
