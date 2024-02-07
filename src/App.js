@@ -1,12 +1,12 @@
-import React from 'react';
-import { BrowserRouter,Routes, Route } from 'react-router-dom';
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RoomHeader from "./page/RoomHeader";
-import MeetingRoomMain from './page/MeetingRoomMain';
-import Room from './page/Room';
-import PayComplete from './page/PayCompletePage';
+import MeetingRoomMain from "./page/MeetingRoomMain";
+import Room from "./page/Room";
+import PayComplete from "./page/PayCompletePage";
 import Loading from "./page/LoadingPage";
 import NotLogin from "./page/NotLoginPage";
-import YesLogin from './page/YesLoginPage';
+import YesLogin from "./page/YesLoginPage";
 import MyPage from "./page/MyPage";
 import Help from "./page/HelpPage";
 import WithFriends from "./page/WithFriendsPage";
@@ -34,38 +34,83 @@ function App() {
   return (
     <BrowserRouter>
       <div className="App">
-        <RoomHeader/>
+        <RoomHeader />
         <GenderProvider>
-      <Routes> 
-          <Route path="/" element={<Loading />} />
-          <Route path="/notlogin" element={<NotLogin />} />
-          <Route path="/login" element={<YesLogin />} />
-          <Route path="/login/information" element={<Information />} />
-          <Route path="/login/information/Welcome02" element={<Welcome02 />} />
-          <Route path="/login/information/Welcome03" element={<Welcome03 />} />
-          <Route path="/login/information/Welcome04" element={<Welcome04 />} /> 
-          <Route path="/login/information/Welcome05" element={<Welcome05 />} /> 
-          <Route path="/login/information/Welcome06" element={<Welcome06 />} /> 
-          <Route path="/login/information/Welcome07" element={<Welcome07 />} /> 
-          <Route path="/login/information/Welcome08" element={<Welcome08 />} /> 
-          <Route path="/login/information/Welcome09" element={<Welcome09 />} /> 
-          <Route path="/login/information/Welcome10" element={<Welcome10 />} /> 
-          <Route path="/login/information/Welcome11" element={<Welcome11 />} /> 
-          <Route path="/login/information/Welcome12" element={<Welcome12 />} />
-          <Route path="/login/information/Welcome13M" element={<Welcome13M />} /> 
-          <Route path="/login/information/Welcome13W" element={<Welcome13W />} /> 
-          <Route path="/login/information/Welcome14" element={<Welcome14 />} /> 
-          <Route path="/login/information/Welcome15" element={<Welcome15 />} /> 
-          <Route path="/login/mypage" element={<MyPage />} />
-          <Route path="/login/help" element={<Help />} />
-          <Route path="/login/alarm" element={<Alarm />} />
-          <Route path="/login/withfriends" element={<WithFriends />} />
-          <Route path="/login/matchhistory" element={<MatchHistory />} />
-          <Route path="/MeetingRoomMain" element={<MeetingRoomMain />} />
-          <Route path="/room/:roomId" element={<Room />} /> 
-          <Route path="/PayComplete" element={<PayComplete />} />
-      </Routes>
-      </GenderProvider>
+          <Routes>
+            <Route path="/" element={<Loading />} />
+            <Route path="/notlogin" element={<NotLogin />} />
+            <Route path="/login" element={<YesLogin />} />
+            <Route path="/login/information" element={<Information />} />
+            <Route
+              path="/login/information/Welcome02"
+              element={<Welcome02 />}
+            />
+            <Route
+              path="/login/information/Welcome03"
+              element={<Welcome03 />}
+            />
+            <Route
+              path="/login/information/Welcome04"
+              element={<Welcome04 />}
+            />
+            <Route
+              path="/login/information/Welcome05"
+              element={<Welcome05 />}
+            />
+            <Route
+              path="/login/information/Welcome06"
+              element={<Welcome06 />}
+            />
+            <Route
+              path="/login/information/Welcome07"
+              element={<Welcome07 />}
+            />
+            <Route
+              path="/login/information/Welcome08"
+              element={<Welcome08 />}
+            />
+            <Route
+              path="/login/information/Welcome09"
+              element={<Welcome09 />}
+            />
+            <Route
+              path="/login/information/Welcome10"
+              element={<Welcome10 />}
+            />
+            <Route
+              path="/login/information/Welcome11"
+              element={<Welcome11 />}
+            />
+            <Route
+              path="/login/information/Welcome12"
+              element={<Welcome12 />}
+            />
+            <Route
+              path="/login/information/Welcome13M"
+              element={<Welcome13M />}
+            />
+            <Route
+              path="/login/information/Welcome13W"
+              element={<Welcome13W />}
+            />
+            <Route
+              path="/login/information/Welcome14"
+              element={<Welcome14 />}
+            />
+            <Route
+              path="/login/information/Welcome15"
+              element={<Welcome15 />}
+            />
+            <Route path="/login/mypage" element={<MyPage />} />
+            <Route path="/login/help" element={<Help />} />
+            <Route path="/login/alarm" element={<Alarm />} />
+            <Route path="/login/withfriends" element={<WithFriends />} />
+            <Route path="/login/matchhistory" element={<MatchHistory />} />
+            <Route path="/MeetingRoomMain" element={<MeetingRoomMain />} />
+            <Route path="/room/:roomId" element={<Room />} />
+            <Route path="/PayComplete" element={<PayComplete />} />
+          </Routes>
+        </GenderProvider>
       </div>
     </BrowserRouter>
   );
