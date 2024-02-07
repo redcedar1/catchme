@@ -122,7 +122,7 @@ function AlarmItem({ notification, onDelete }) {
       <div style={styles.alarmCheck}>
         {notification.read ? null : (
           <img
-            src={`${process.env.PUBLIC_URL}/image/alarmCheck.png`}
+            src={`${process.env.PUBLIC_URL}/image/alarm/alarmCheck.png`}
             style={styles.alarmCheck}
             alt="check"
           />
