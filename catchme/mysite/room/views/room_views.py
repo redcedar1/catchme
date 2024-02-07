@@ -10,11 +10,12 @@ from ..serializers import RoomSerializer
 from django.middleware.csrf import get_token
 import requests
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
 def index(request):
     return render(request,"room/room.html")
 
-
+@csrf_exempt
 def selectedRoom(request,r_no):
 
     if request.method == "POST":

@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     
 
 ]
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000/room/1','http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000/','http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
