@@ -158,7 +158,7 @@
     justify-content: space-between; /* 양쪽 버튼이 화면의 좌우측에 위치하도록 설정 */
     align-items: center; /* 버튼들을 세로 중앙에 위치시킵니다 */
     padding: 0% 0%; /* 좌우 패딩을 추가하여 버튼이 화면 끝에 닿지 않도록 합니다 */
-    margin-top: 10%; /* 버튼들과 상단 컨텐츠 사이에 여백을 추가합니다 */
+    margin-top: -10%; /* 버튼들과 상단 컨텐츠 사이에 여백을 추가합니다 */
     width: 100%; /* 너비를 100%로 설정하여 전체 화면을 사용합니다 */
   }
   
@@ -256,7 +256,7 @@
     top: 100%; /* job-selection 바로 아래에 위치 */
     left: 0;
     right: 0;
-    max-height: 6vh; /* 드롭다운의 최대 높이를 제한합니다 */
+    max-height: 10vh; /* 드롭다운의 최대 높이를 제한합니다 */
     overflow-y: auto; /* 필요할 경우에만 세로 스크롤바 표시 */
     background: white;
     border-radius: 4px;

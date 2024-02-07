@@ -55,7 +55,16 @@ useEffect(() => {
     }
   }, [typingText, selectedJob, isTyping]);
 
-  const jobs = ['강아지상', '고양이상', '토끼상', '여우상', '늑대상','공룡상', '말상' ]; // 선택 가능한 옵션들
+  const jobs = [
+    { label: '강아지상', emoji: '🐶' },
+    { label: '고양이상', emoji: '🐱' },
+    { label: '토끼상', emoji: '🐰' },
+    { label: '여우상', emoji: '🦊' },
+    { label: '늑대상', emoji: '🐺' },
+    { label: '공룡상', emoji: '🦖' },
+    { label: '말상', emoji: '🐴' },
+    // ... 나머지 옵션들
+  ];
 
   const handleJobSelect = (job) => {
     setSelectedJob(job); // 선택한 직업을 상태에 저장합니다.
@@ -94,10 +103,10 @@ useEffect(() => {
         {selectedJob || "얼굴상을 선택해주세요."}
       </div>
       {showOptions && (
-        <div className="options">
-          {jobs.map((job) => (
-            <div key={job} onClick={() => handleJobSelect(job)} className="option">
-              {job}
+  <div className="options">
+    {jobs.map((job) => (
+      <div key={job.label} onClick={() => handleJobSelect(job.label)} className="option">
+        {job.emoji} {job.label} {/* 이모티콘과 라벨을 함께 렌더링합니다 */}
             </div>
           ))}
         </div>
