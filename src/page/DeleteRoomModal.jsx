@@ -91,7 +91,8 @@ const DeleteRoomModal = ({ isOpen, onClose, rooms, onDeleteRoom }) => {
               </Room>
             ))}
           </RoomList>
-        ) : ( // rooms 배열에 방이 없는 경우
+        ) : (
+          // rooms 배열에 방이 없는 경우
           <NoRoomsMessage>생성하신 방이 없어요!</NoRoomsMessage>
         )}
       </ModalContent>

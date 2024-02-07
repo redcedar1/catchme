@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import EnterRoomModal from "./EnterRoomModal";
+import EnterRoomModal from "../EnterRoomModal";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import "./YesLoginPage.css";
@@ -28,7 +28,7 @@ const ModalButton = styled.button`
   height: 50px;
   background-color: transparent;
   color: #ffffff;
-  border: 1.7px solid #3B3B3B;
+  border: 1.7px solid #3b3b3b;
   border-radius: 44px;
   box-shadow: 0px 0px 11px 0px rgba(0, 0, 0, 0.15);
   cursor: pointer;
@@ -38,9 +38,9 @@ const ModalButton = styled.button`
 `;
 
 const StartText = styled.span`
-color: #515151;
-font-size: 23px;
-font-weight: bold;
+  color: #515151;
+  font-size: 23px;
+  font-weight: bold;
 `;
 
 function YesLogin() {
@@ -51,7 +51,7 @@ function YesLogin() {
   const toggleModal = () => {
     setShowModal(!showModal);
   };
-  
+
   return (
     <>
       <BackgroundNoneImage />
@@ -61,10 +61,14 @@ function YesLogin() {
         <div></div>
         <div></div>
         <div className="yeslogin-btn">
-          <ModalButton onClick={() => { toggleModal(); }}>
+          <ModalButton
+            onClick={() => {
+              toggleModal();
+            }}
+          >
             <StartText> 지금 시작하기 </StartText>
-          </ModalButton>  
-          <EnterRoomModal isOpen={showModal} onClose={toggleModal}/>
+          </ModalButton>
+          <EnterRoomModal isOpen={showModal} onClose={toggleModal} />
         </div>
         <div className="yeslogin-logout-text">
           <Link to="/notlogin" className="yeslogin-logout-text">

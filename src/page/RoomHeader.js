@@ -1,7 +1,7 @@
-import {React, useState} from "react";
+import { React, useState } from "react";
 import styled from "styled-components";
-import { useNavigate } from 'react-router-dom';
-import YesLoginModal from "./YesLoginModal";
+import { useNavigate } from "react-router-dom";
+import YesLoginModal from "../modalComponet/MenubarModal";
 
 const RoomHeader = () => {
   const navigate = useNavigate();
@@ -17,13 +17,28 @@ const RoomHeader = () => {
 
   return (
     <HeaderContainer>
-        <Arrow src="/image/backButton.png" alt="Back Arrow" onClick={handlePageBack} />
-        <Logo src="/image/logo.png" alt="Catchme Logo" />
-        <Alarm src="/image/alarmIcon.png" alt="alarm Dots" onClick={() => navigate("/login/alarm")} />
-        <Setting src="/image/Group17.png" alt="Setting Dots" onClick={openModal} />
-        {modalIsOpen && (
-          <YesLoginModal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)} />
-        )}
+      <Arrow
+        src="/image/backButton.png"
+        alt="Back Arrow"
+        onClick={handlePageBack}
+      />
+      <Logo src="/image/logo.png" alt="Catchme Logo" />
+      <Alarm
+        src="/image/alarmIcon.png"
+        alt="alarm Dots"
+        onClick={() => navigate("/login/alarm")}
+      />
+      <Setting
+        src="/image/Group17.png"
+        alt="Setting Dots"
+        onClick={openModal}
+      />
+      {modalIsOpen && (
+        <YesLoginModal
+          isOpen={modalIsOpen}
+          onClose={() => setModalIsOpen(false)}
+        />
+      )}
     </HeaderContainer>
   );
 };
@@ -31,7 +46,7 @@ const RoomHeader = () => {
 export default RoomHeader;
 
 const HeaderContainer = styled.header`
-  width: 100%; 
+  width: 100%;
   height: 4.5rem;
   display: flex;
   align-items: center;
