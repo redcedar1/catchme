@@ -72,7 +72,7 @@ useEffect(() => {
 
   const handleNextClick = () => {
     // "다음" 버튼 클릭 시에 실행될 로직
-    navigate('/welcome16'); // '/welcome05' 경로로 이동
+    navigate('/welcome16'); // 
   };
 
 

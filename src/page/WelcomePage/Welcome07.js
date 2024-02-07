@@ -11,7 +11,7 @@ background-image: url(${process.env.PUBLIC_URL}/image/welcome/background3.png); 
 background-size: contain;
 background-repeat: no-repeat;
 background-color: #EDADC8;
-background-position: center top; /* 수평 중앙, 수직 상단에 위치 */
+background-position: center top; 
 width: 100vw;
 height: 100vh;
 position: fixed;

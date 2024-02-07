@@ -34,14 +34,14 @@ useEffect(() => {
   const navigate = useNavigate();
 
       
-  const [sliderValue, setSliderValue] = useState(25); // 초기값을 50으로 설정
+  const [sliderValue, setSliderValue] = useState(170); 
 
   const handleSliderChange = (e) => {
     setSliderValue(e.target.value);
   };
 
   useEffect(() => {
-    const percentage = ((sliderValue - 140) / (200 - 140)) * 100; // 슬라이더의 min과 max 값을 고려하여 계산
+    const percentage = ((sliderValue - 140) / (200 - 140)) * 100; 
     document.documentElement.style.setProperty('--slider-percentage', `${percentage}%`);
   }, [sliderValue]);
 
@@ -52,7 +52,7 @@ useEffect(() => {
 
   const handleNextClick = () => {
     // "다음" 버튼 클릭 시에 실행될 로직
-    navigate('/login/information/Welcome10'); // '/welcome05' 경로로 이동
+    navigate('/login/information/Welcome10'); 
   };
 
 
