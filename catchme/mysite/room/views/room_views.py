@@ -25,6 +25,9 @@ def selectedRoom(request,r_no):
 
     return render(request, "room/selected_room.html", context)
 
+def matchingRoom(request,r_no):
+    return True
+
 #API views
 class RoomListView(generics.ListAPIView):
     queryset = room.objects.all().prefetch_related('men_infos', 'women_infos') #prefetch는 관련된 모델 효율적으로 로드하는 메서드

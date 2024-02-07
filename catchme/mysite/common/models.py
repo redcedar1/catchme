@@ -58,10 +58,12 @@ class menInfo(models.Model):
     link = models.CharField(max_length=20, null=True, blank=True)
     #보유 코인
     coin = models.IntegerField(default=0) #default 값을 0으로 수정
-    #현재 참가한 방
+    #현재 참가한 방 #related_name은 room객체에서 menInfo에 접근하기 위해 사용된다.
     participate_room = models.ForeignKey('room', on_delete=models.SET_NULL, null=True, blank=True, db_column='participate_room',related_name = 'men_infos')
+    #방에서 선택한 여성 #마찬가지로 related_name은 womenInfo에서 meninfo에 접근하기 위해 사용
+    w_crush = models.ForeignKey('womenInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='w_crush',related_name ="m_crush")
     #매칭된 여성
-    w_match = models.ForeignKey('womenInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='w_match')
+    w_match = models.ForeignKey('womenInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='w_match',related_name="m_matched")
     
     def __str__(self):
         return str(self.pk)
@@ -125,9 +127,10 @@ class womenInfo(models.Model):
     coin = models.IntegerField(default=0) #default 값을 0으로 수정
    #현재 참가한 방
     participate_room = models.ForeignKey('room', on_delete=models.SET_NULL, null=True, blank=True, db_column='participate_room',related_name = 'women_infos')
-    #매칭된 여성
+    
+    #매칭된 남성
     m_match = models.ForeignKey('menInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='m_match')
-
+     
     def __str__(self):
         return str(self.pk)
 
@@ -147,6 +150,7 @@ class room(models.Model):
     location = models.CharField(max_length=50, null=True, blank=True)
     #매칭 진행 중 여부
     matching = models.BooleanField(default=False)
+
 
     def __str__(self):
         return str(self.pk)
@@ -209,3 +213,4 @@ class payment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     #결제한 사용자
     pay_user = models.ForeignKey('userInfo', on_delete=models.SET_NULL, null=True, blank=True, related_name='payment')
+
