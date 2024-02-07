@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate} from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./NotLoginPage.css";
 import styled from "styled-components";
 
@@ -26,7 +26,7 @@ function NotLogin({ onLogin }) {
   const loginClick = function () {
     console.log("login");
     onLogin(true);
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
@@ -46,7 +46,7 @@ function NotLogin({ onLogin }) {
         <div>
           <div className="notlogin-kakao-image">
             <img
-              src={`${process.env.PUBLIC_URL}/image/kakaoLogin.png`}
+              src={`${process.env.PUBLIC_URL}/image/kakao/kakaoLogin.png`}
               onClick={loginClick}
             />
           </div>

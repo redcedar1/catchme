@@ -7,7 +7,7 @@ import SplitMessage from './SplitMessage';
 
 
 const BackgroundImage = styled.div `
-    background-image: url(${process.env.PUBLIC_URL}/image/Welcome/background3.png); /* public 폴더에 있는 이미지 경로 */
+    background-image: url(${process.env.PUBLIC_URL}/image/background3.png); /* public 폴더에 있는 이미지 경로 */
     background-size: contain;
     background-repeat: no-repeat;
     background-color: #EDADC8;
