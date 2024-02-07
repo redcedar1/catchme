@@ -11,7 +11,8 @@ import MaleChooseModal from "../modalComponet/MaleChooseModal";
 import FemaleChooseModal from "../modalComponet/FemaleChooseModal";
 import SecondModal from "../modalComponet/SecondModal";
 import FinalModal from "../modalComponet/FinalModal";
-import io from "socket.io-client";
+
+//import io from 'socket.io-client';
 
 const RootBodyContainer = styled.div`
   display: grid;
