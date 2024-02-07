@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const styles = {
   notificationsContainer: {
@@ -43,6 +43,12 @@ const styles = {
     alignItems: "center",
     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // 그림자 효과 추가
   },
+  notificationEmpty: {
+    textAlign: "center",
+    marginTop: "8%",
+    fontSize: "16px",
+    color: "#cccbcb",
+  },
   alarmHeader: {
     display: "flex",
     alignItems: "center",
@@ -60,68 +66,155 @@ const styles = {
     textAlign: "center",
   },
 };
+function AlarmItem({ notification, onDelete }) {
+  const [style, setStyle] = useState(styles.notificationItem);
 
+  let touchStartX = 0;
+  let touchCurrentX = 0;
+
+  function handleTouchStart(e) {
+    touchStartX = e.targetTouches[0].clientX;
+    // Set the style to be able to move horizontally
+    setStyle({
+      ...styles.notificationItem,
+      transition: "none", // Disable transitions to follow finger immediately
+    });
+  }
+
+  function handleTouchMove(e) {
+    touchCurrentX = e.targetTouches[0].clientX;
+    const moveX = touchCurrentX - touchStartX;
+
+    // Update the style to move with the touch
+    setStyle({
+      ...styles.notificationItem,
+      transform: `translateX(${moveX}px)`,
+      transition: "", // Disable transitions to follow finger immediately
+    });
+  }
+
+  function handleTouchEnd() {
+    const moveX = touchCurrentX - touchStartX;
+
+    if (moveX > 0) {
+      swipeFunction();
+    }
+
+    // Reset the style regardless of the swipe distance
+    setStyle(styles.notificationItem);
+    touchStartX = 0;
+    touchCurrentX = 0;
+  }
+
+  function swipeFunction() {
+    onDelete(notification.id);
+  }
+
+  return (
+    <div
+      style={style}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Notification content */}
+
+      <div style={styles.alarmCheck}>
+        {notification.read ? null : (
+          <img
+            src={`${process.env.PUBLIC_URL}/image/alarmCheck.png`}
+            style={styles.alarmCheck}
+            alt="check"
+          />
+        )}
+      </div>
+      <p>{notification.message}</p>
+      <span style={styles.time}>{notification.time}</span>
+    </div>
+  );
+}
 function Alarm() {
-  const notifications = [
+  // const notifications = [
+  //   {
+  //     id: 1,
+  //     message: "___eve 님의 이상형과 76% 일치하는 사람이 활동중이에요.",
+  //     time: "지금",
+  //     read: 0,
+  //   },
+  //   { id: 2, message: "3,000 코인 충전이 완료되었습니다.", time: "1분 전" },
+  //   {
+  //     id: 3,
+  //     message: "___eve 님의 이상형과 43% 일치하는 사람이 활동중이에요.",
+  //     time: "20분 전",
+  //     read: 0,
+  //   },
+  //   {
+  //     id: 4,
+  //     message: "___eve 님의 이상형과 98% 일치하는 사람이 활동중이에요.",
+  //     time: "25분 전",
+  //     read: 1,
+  //   },
+  //   {
+  //     id: 5,
+  //     message: "___eve 님의 이상형과 98% 일치하는 사람이 활동중이에요.",
+  //     time: "25분 전",
+  //     read: 1,
+  //   },
+  //   {
+  //     id: 6,
+  //     message: "___eve 님의 이상형과 98% 일치하는 사람이 활동중이에요.",
+  //     time: "25분 전",
+  //     read: 1,
+  //   },
+  // ];
+
+  const [notifications, setNotifications] = useState([
     {
       id: 1,
       message: "___eve 님의 이상형과 76% 일치하는 사람이 활동중이에요.",
       time: "지금",
+      read: 0,
     },
     { id: 2, message: "3,000 코인 충전이 완료되었습니다.", time: "1분 전" },
     {
       id: 3,
       message: "___eve 님의 이상형과 43% 일치하는 사람이 활동중이에요.",
       time: "20분 전",
+      read: 0,
     },
     {
       id: 4,
       message: "___eve 님의 이상형과 98% 일치하는 사람이 활동중이에요.",
       time: "25분 전",
+      read: 1,
     },
     {
       id: 5,
       message: "___eve 님의 이상형과 98% 일치하는 사람이 활동중이에요.",
       time: "25분 전",
+      read: 1,
     },
     {
       id: 6,
       message: "___eve 님의 이상형과 98% 일치하는 사람이 활동중이에요.",
       time: "25분 전",
+      read: 1,
     },
-    {
-      id: 7,
-      message: "___eve 님의 이상형과 98% 일치하는 사람이 활동중이에요.",
-      time: "25분 전",
-    },
-    {
-      id: 8,
-      message: "___eve 님의 이상형과 98% 일치하는 사람이 활동중이에요.",
-      time: "25분 전",
-    },
-    {
-      id: 9,
-      message: "___eve 님의 이상형과 98% 일치하는 사람이 활동중이에요.",
-      time: "25분 전",
-    },
-    {
-      id: 10,
-      message: "___eve 님의 이상형과 98% 일치하는 사람이 활동중이에요.",
-      time: "25분 전",
-    },
-    {
-      id: 11,
-      message: "___eve 님의 이상형과 98% 일치하는 사람이 활동중이에요.",
-      time: "25분 전",
-    },
-    {
-      id: 12,
-      message: "das 이상형과 98% 일치하는 사람이 활동중이에요.",
-      time: "25분 전",
-    },
-  ];
+  ]);
   const isZero = notifications.length === 0;
-  const notRead = 2;
+  // 읽지 않은 알림의 개수를 계산합니다.
+  const notRead = notifications.reduce(
+    (count, notification) => count + (notification.read ? 0 : 1),
+    0
+  );
+
+  // 알림을 삭제하는 함수
+  const deleteNotification = (id) => {
+    // ID가 일치하지 않는 알림만 남깁니다.
+    setNotifications(
+      notifications.filter((notification) => notification.id !== id)
+    );
+  };
 
   return (
     <div>
@@ -136,21 +229,17 @@ function Alarm() {
           <span style={styles.notificationTextDelete}>전체 삭제</span>
         </div>
         <div style={styles.notificationList}>
-          {!isZero
-            ? notifications.map((notification) => (
-                <div key={notification.id} style={styles.notificationItem}>
-                  <div style={styles.alarmCheck}>
-                    <img
-                      src={`${process.env.PUBLIC_URL}/image/alarmCheck.png`}
-                      style={styles.alarmCheck}
-                      alt="check"
-                    />
-                  </div>
-                  <p>{notification.message}</p>
-                  <span style={styles.time}>{notification.time}</span>
-                </div>
-              ))
-            : "현재 알림이 없습니다."}
+          {!isZero ? (
+            notifications.map((notification) => (
+              <AlarmItem
+                key={notification.id}
+                notification={notification}
+                onDelete={deleteNotification}
+              />
+            ))
+          ) : (
+            <div style={styles.notificationEmpty}>현재 알림이 없습니다.</div>
+          )}
         </div>
       </div>
     </div>

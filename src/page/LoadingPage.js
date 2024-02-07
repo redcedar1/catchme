@@ -12,7 +12,7 @@ const BackgroundImage = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  z-index: -1;
+  z-index: 1;
 
   @media screen and (min-width: 320px) and (max-width: 1439px) {
     background-size: contain;
