@@ -108,7 +108,7 @@ const UserBox = ({ users }) => {
   const handleSpeechBubbleClick = async (text) => {
     try {
       const response = 
-      await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/1', {
+      await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/', {
         method: "POST",
         mode: 'cors',
         headers: {
@@ -116,7 +116,7 @@ const UserBox = ({ users }) => {
           'X-CSRFToken': csrfToken,
         },
         body: JSON.stringify({
-          Mkid: 1002,
+          kid: 1001,
           rno: 1,
           chat: text,
         }),
@@ -139,7 +139,7 @@ const UserBox = ({ users }) => {
       {users.map((user, index) => (
         <UserItem
           key={index}
-          isMe={user.Mkid === "1002"}
+          isMe={user.kid === "1001"}
           onClick={() => handleUserClick(user)}
         >
           <img 

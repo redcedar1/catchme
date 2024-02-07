@@ -75,6 +75,10 @@ const FinalModal = ({ isOpen, onClose, onConfirm, me, you}) => {
       return `/image/profile/${animal.toLowerCase()}${"Female"}.png`;
     };
 
+    const handleKakaoPayClick = () => {
+      window.location.href = 'http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/kakaopay/kakaoPaylogic/';
+    };
+
   return (
     <Modal isOpen={isOpen} onRequestClose={onClose} style={customStyles}>
       <div style={customStyles.dayText}>Congratulations !</div>
@@ -99,7 +103,7 @@ const FinalModal = ({ isOpen, onClose, onConfirm, me, you}) => {
       <KakaoPaymentImage
         src="/image/kakaopay.png"
         alt="Kakao Payment"
-        onClick={onConfirm}
+        onClick={handleKakaoPayClick}
       />
     </Modal>
   );

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import axios from 'axios';
 
 const ReadyBoxContainer = styled.div`
   display: grid;
@@ -112,7 +111,7 @@ const ReadyBox = ( { onGenderChange, isMale } ) => {
           'X-CSRFToken': csrfToken,
         },
         body: JSON.stringify({
-          Mkid: 1001,
+          Kid: 1001,
           rno: 1,
           ready: !isReady,
         }),

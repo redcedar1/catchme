@@ -39,7 +39,7 @@ const RoomBody = ( roomId ) => {
   const [roomName, setRoomName] = useState("");
   const [location, setLocation] = useState("");
   const [time, setTime] = useState("");
-  const [count, setCount] = useState("");
+  const [meetingnum, setMeetingnum] = useState("");
   const [maleusers, setMaleusers] = useState([]);
   const [femaleusers, setFemaleusers] = useState([]);
 
@@ -93,7 +93,7 @@ const RoomBody = ( roomId ) => {
         setRoomName(roomdata[0].rname);
         setLocation(roomdata[0].location);
         setTime(roomdata[0].created_at);
-        setCount(roomdata[0].count);
+        setMeetingnum(roomdata[0].meetingnum);
         setMaleusers(maledata[0].menInfos);
         setFemaleusers(femaledata[0].womenInfos);
       } catch (error) {
@@ -122,9 +122,9 @@ const RoomBody = ( roomId ) => {
     
     const checkAllUsersReady = async () => {
       if (!anyNotReady && isMaleFemaleEqual && isMaleFemaleOver2) {
-        if(/*day1*/ true)
+        if(/*day1*/ false)
           setShowReadyConfirmModal(true);
-        if(/*day2*/ false) {
+        if(/*day2*/ true) {
             const isMutualSelected = true;
 
             if (!isMutualSelected) {
@@ -181,7 +181,7 @@ const RoomBody = ( roomId ) => {
   return (
     // 기본 방 구조
     <RootBodyContainer>
-      <InfoBox roomName={roomName} location={location} time={time} count={count} />
+      <InfoBox roomName={roomName} location={location} time={time} meetingnum={meetingnum} />
       <ChatBox users={isMale ? filteredMaleUsers : filteredFemaleUsers} />
       <UserBox users={isMale ? 
         filteredMaleUsers.map(user => ({ ...user, gender: 'Male' })) 
