@@ -20,22 +20,15 @@ def index(request):
 def selectedRoom(request):
 
     if request.method == "POST":
-        data = json.loads(request.body)
+        data = json.loads(request.body)  # JSON 데이터 파싱
         kid = data.get('kid')
-        print('hello')
-        print(kid)
-        selected_user = get_object_or_404(userInfo, kid = kid)
-        men_info_instance = selected_user.meninfo_set.first()
+        ready = data.get('ready')  # ready 값 가져오기
+
+        selected_user = get_object_or_404(userInfo, kid=kid)
+        men_info_instance = selected_user.meninfo_set.first()  # meninfo_set 사용
         if men_info_instance:
-            # menInfo의 ready 속성을 반대 값으로 설정
-            if men_info_instance.ready == "false":
-                men_info_instance.ready = True
-            else:
-                men_info_instance.ready = False
+            men_info_instance.ready = not ready  # ready 값을 반전시키지 않고 직접 설정
             men_info_instance.save()
-        else:
-            # 해당하는 menInfo 인스턴스가 없을 경우 처리
-            pass
         return HttpResponse("post Ssip Ganeung?")
     
 
