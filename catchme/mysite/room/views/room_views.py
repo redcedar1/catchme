@@ -21,7 +21,7 @@ def selectedRoom(request):
     if request.method == "POST":
         kid = request.POST.get('kid')
         print('hello')
-        print('kid')
+        print(kid)
         selected_user = get_object_or_404(userInfo, kid = kid)
         men_info_instance = selected_user.meninfo_set.first()
         if men_info_instance:
