@@ -25,7 +25,7 @@ def selectedRoom(request):
         print('hello')
         print(kid)
         selected_user = get_object_or_404(userInfo, kid = kid)
-        men_info_instance = selected_user.menInfo_set.first()
+        men_info_instance = selected_user.meninfo_set.first()
         if men_info_instance:
             # menInfo의 ready 속성을 반대 값으로 설정
             if men_info_instance.ready == "false":
