@@ -20,23 +20,24 @@ def selectedRoom(request,r_no):
 
     if request.method == "POST":
         kid = request.POST.get('kid')
+        print('hello')
+        print('kid')
         selected_user = get_object_or_404(userInfo, kid = kid)
         men_info_instance = selected_user.meninfo_set.first()
         if men_info_instance:
             # menInfo의 ready 속성을 반대 값으로 설정
             if men_info_instance.ready == "false":
-                men_info_instance.ready = True 
+                men_info_instance.ready = True
             else:
                 men_info_instance.ready = False
             men_info_instance.save()
         else:
             # 해당하는 menInfo 인스턴스가 없을 경우 처리
             pass
-    
-    context = {"r_no":r_no}
+        return HttpResponse("post Ssip Ganeung?")
     
 
-    return render(request, "room/selected_room.html", context)
+    return HttpResponse("Get SSap Ganeung")
 
 #API views
 class RoomListView(generics.ListAPIView):
