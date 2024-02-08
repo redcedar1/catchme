@@ -62,34 +62,34 @@ const ReadyBox = ( { onGenderChange, isMale } ) => {
 
   const [csrfToken, setCsrfToken] = useState(null); 
 
-  const fetchCsrfToken = async () => {
-    try {
-      const response = await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/main/csrf/', {
-        method: 'GET',
-        mode: 'cors',
-        credentials: 'include',
-      });
-  
-      if (!response.ok) {
-        throw new Error('서버 응답이 OK 상태가 아닙니다.');
-      }
-  
-      const contentType = response.headers.get('content-type');
-    
-      if (contentType && contentType.includes('application/json')) {
-        const data = await response.json();
-        console.log(data);
-        console.log(data.csrfToken);
-        setCsrfToken(data.csrfToken);
-      } else {
-        console.error('서버 응답이 JSON 형식이 아닙니다.');
-      }
-    } catch (error) {
-      console.error('CSRF 토큰 가져오기 오류:', error);
-    }
-  };
-
   useEffect(() => {
+    const fetchCsrfToken = async () => {
+      try {
+        const response = await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/main/csrf/', {
+          method: 'GET',
+          mode: 'cors',
+          credentials: 'include',
+        });
+    
+        if (!response.ok) {
+          throw new Error('서버 응답이 OK 상태가 아닙니다.');
+        }
+    
+        const contentType = response.headers.get('content-type');
+      
+        if (contentType && contentType.includes('application/json')) {
+          const data = await response.json();
+          console.log(data);
+          console.log(data.csrfToken);
+          setCsrfToken(data.csrfToken);
+        } else {
+          console.error('서버 응답이 JSON 형식이 아닙니다.');
+        }
+      } catch (error) {
+        console.error('CSRF 토큰 가져오기 오류:', error);
+      }
+    };
+
     fetchCsrfToken();
   }, []);
   
