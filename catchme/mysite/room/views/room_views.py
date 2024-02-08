@@ -24,7 +24,10 @@ def selectedRoom(request,r_no):
         men_info_instance = selected_user.meninfo_set.first()
         if men_info_instance:
             # menInfo의 ready 속성을 반대 값으로 설정
-            men_info_instance.ready = not men_info_instance.ready
+            if men_info_instance.ready == "false":
+                men_info_instance.ready = True 
+            else:
+                men_info_instance.ready = False
             men_info_instance.save()
         else:
             # 해당하는 menInfo 인스턴스가 없을 경우 처리
