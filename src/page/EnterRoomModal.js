@@ -95,7 +95,7 @@ const EnterRoomModal = ({ isOpen, onClose }) => {
     setSelectedPeople(people);
     onClose();
 
-    navigate(`/MeetingRoomMain`); // 이건 임시
+    navigate(`/MeetingRoomMain`, { state: { selectedPeople: people } }); // 이건 임시
   };
 
   useEffect(() => {

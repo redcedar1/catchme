@@ -1,7 +1,7 @@
 import {React, useState} from 'react';
 import { BrowserRouter,Routes, Route } from 'react-router-dom';
 import RoomHeader from "./page/RoomHeader";
-import MeetingRoomMain from "./page/MeetingRoomMain";
+import MeetingRoomMain from "./page/MeetingRoomListPage/MeetingRoomMain";
 import Room from "./page/Room";
 import PayComplete from "./page/PayCompletePage";
 import Loading from "./page/LoginPage/LoadingPage";
@@ -68,7 +68,7 @@ function App() {
           <Route path="/login/withfriends" element={<WithFriends />} />
           <Route path="/login/matchhistory" element={<MatchHistory />} />
           <Route path="/MeetingRoomMain" element={<MeetingRoomMain />} />
-          <Route path="/room/1" element={<Room />} /> 
+          <Route path="/room/:roomId" element={<Room />} /> 
           {/*<Route path="/room/:roomId" element={<Room />} /> */}
           <Route path="/PayComplete" element={<PayComplete />} />
       </Routes>

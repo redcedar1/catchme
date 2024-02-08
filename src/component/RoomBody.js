@@ -130,9 +130,9 @@ const RoomBody = (roomId) => {
 
     const checkAllUsersReady = async () => {
       if (!anyNotReady && isMaleFemaleEqual && isMaleFemaleOver2) {
-        if(/*day1*/ false)
+        if(/*day1*/ true)
           setShowReadyConfirmModal(true);
-        if(/*day2*/ true) {
+        if(/*day2*/ false) {
             const isMutualSelected = true;
 
           if (!isMutualSelected) {
