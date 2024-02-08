@@ -55,6 +55,10 @@ const YesLoginModal = ({ isOpen, onClose }) => {
       transform: "translate(-50%, 0)",
       width: "50%",
       height: "95%",
+      background: "rgb(255, 255, 255, 0.9)",
+    },
+    overlay: {
+      backgroundColor: "transparent",
     },
   };
 
