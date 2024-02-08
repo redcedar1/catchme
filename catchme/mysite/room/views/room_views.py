@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
-from common.models import room, menInfo, womenInfo
+from common.models import room, menInfo, womenInfo,userInfo
 from ..serializers import RoomSerializer
 from django.middleware.csrf import get_token
 import requests
@@ -19,7 +19,16 @@ def index(request):
 def selectedRoom(request,r_no):
 
     if request.method == "POST":
-        return HttpResponse("FUCK YOU")
+        kid = request.POST.get('kid')
+        selected_user = get_object_or_404(userInfo, kid = kid)
+        men_info_instance = selected_user.meninfo_set.first()
+        if men_info_instance:
+            # menInfo의 ready 속성을 반대 값으로 설정
+            men_info_instance.ready = not men_info_instance.ready
+            men_info_instance.save()
+        else:
+            # 해당하는 menInfo 인스턴스가 없을 경우 처리
+            pass
     
     context = {"r_no":r_no}
     
