@@ -21,7 +21,7 @@ def selectedRoom(request):
 
     if request.method == "POST":
         data = json.loads(request.body)
-        kid = request.POST.get('kid')
+        kid = data('kid')
         print('hello')
         print(kid)
         selected_user = get_object_or_404(userInfo, kid = kid)
