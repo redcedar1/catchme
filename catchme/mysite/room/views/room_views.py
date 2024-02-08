@@ -1,5 +1,6 @@
 
 
+import json
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -19,9 +20,10 @@ def index(request):
 def selectedRoom(request):
 
     if request.method == "POST":
+        data = json.loads(request.body)
         kid = request.POST.get('kid')
         print('hello')
-        print(kid)
+        print('kid')
         selected_user = get_object_or_404(userInfo, kid = kid)
         men_info_instance = selected_user.meninfo_set.first()
         if men_info_instance:
