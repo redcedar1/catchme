@@ -33,37 +33,35 @@ useEffect(() => {
 
   const navigate = useNavigate();
 
-  const [selectedJob, setSelectedJob] = useState(''); // 사용자가 선택한 직업
-  const [showOptions, setShowOptions] = useState(false); // 옵션 목록을 표시할지 결정하는 상태
-  const [typingText, setTypingText] = useState('...'); // 말풍선에 표시될 타이핑 텍스트
-  const [isTyping, setIsTyping] = useState(false); // 타이핑 상태
+  const [mbti, setMbti] = useState({ EorI: '', NorS: '', ForT: '', PorJ: '' });
+  const [currentText, setCurrentText] = useState('...');
+  const [typingText, setTypingText] = useState('');
+
+
+  const handleMbtiButtonClick = (category, letter) => {
+    setMbti((prevMbti) => ({ ...prevMbti, [category]: letter }));
+
+    // 현재 타이핑된 텍스트 리셋
+    setCurrentText('');
+  };
 
   useEffect(() => {
-    if (isTyping) {
-      if (typingText !== selectedJob && selectedJob) {
-        const nextCharIndex = typingText.length;
-        const nextChar = selectedJob[nextCharIndex];
+    const fullMbti = `${mbti.EorI}${mbti.NorS}${mbti.ForT}${mbti.PorJ}`;
+    setTypingText(fullMbti);
+  }, [mbti]);
 
-        const timeoutId = setTimeout(() => {
-          setTypingText((text) => text + nextChar);
-        }, 75); // 한 글자씩 타이핑 속도 조절
-
-        return () => clearTimeout(timeoutId);
-      } else {
-        setIsTyping(false); // 타이핑이 완료되면 상태를 업데이트
-      }
+  // 타이핑 효과
+  useEffect(() => {
+    if (currentText.length < typingText.length) {
+      const timer = setTimeout(() => {
+        setCurrentText(typingText.slice(0, currentText.length + 1));
+      }, 75);
+      return () => clearTimeout(timer);
     }
-  }, [typingText, selectedJob, isTyping]);
+  }, [currentText, typingText]);
 
-  const jobs = ['ESTJ', 'ESFJ', 'ESTP', 'ESFP','ENTJ', 'ENFJ', 'ENTP', 'ENFP', 'ISTJ', 'ISFJ',  'ISTP', 'ISFP', 'INTJ', 'INFJ', 'INTP', 'INFP']; // 선택 가능한 옵션들
-
-  const handleJobSelect = (job) => {
-    setSelectedJob(job); // 선택한 직업을 상태에 저장합니다.
-    setTypingText(''); // 타이핑 텍스트를 초기화합니다.
-    setIsTyping(true); // 타이핑 시작 상태로 변경합니다.
-    setShowOptions(false); // 옵션 목록을 숨깁니다.
-  };
   
+
 
   const handlePreviousClick = () => {
     // "이전" 버튼 로직
@@ -71,9 +69,13 @@ useEffect(() => {
   };
 
   const handleNextClick = () => {
-    // "다음" 버튼 클릭 시에 실행될 로직
-    navigate('/login/information/Welcome09'); // '/welcome05' 경로로 이동
+    if (typingText.length === 4) {
+      navigate('/login/information/Welcome09');
+    } else {
+      alert('MBTI 유형을 완성해주세요.');
+    }
   };
+
 
 
   return (
@@ -85,24 +87,26 @@ useEffect(() => {
       </div>
       <SplitMessage message={message} splitIndex={fullMessage1.length} />
       <div className="typing-container">
-      <div className="typing message">
-        {typingText}
-      </div>
+        <div className="typing message">
+          {currentText}
+        </div>
       </div>
       <div className="JobSelectionButton">
-      <div className="job-selection" onClick={() => setShowOptions(!showOptions)}>
-        {selectedJob || "MBTI를 선택해주세요."}
+      {/* 첫 번째 행: E N F P */}
+      <div className="mbti-row">
+        <button className={`mbti-button ${mbti.EorI === 'E' ? 'selected' : ''}`} onClick={() => handleMbtiButtonClick('EorI', 'E')}>E</button>
+        <button className={`mbti-button ${mbti.NorS === 'N' ? 'selected' : ''}`} onClick={() => handleMbtiButtonClick('NorS', 'N')}>N</button>
+        <button className={`mbti-button ${mbti.ForT === 'F' ? 'selected' : ''}`} onClick={() => handleMbtiButtonClick('ForT', 'F')}>F</button>
+        <button className={`mbti-button ${mbti.PorJ === 'P' ? 'selected' : ''}`} onClick={() => handleMbtiButtonClick('PorJ', 'P')}>P</button>
       </div>
-      {showOptions && (
-        <div className="options">
-          {jobs.map((job) => (
-            <div key={job} onClick={() => handleJobSelect(job)} className="option">
-              {job}
-            </div>
-          ))}
-        </div>
-      )}
+      {/* 두 번째 행: I S T J */}
+      <div className="mbti-row">
+        <button className={`mbti-button ${mbti.EorI === 'I' ? 'selected' : ''}`} onClick={() => handleMbtiButtonClick('EorI', 'I')}>I</button>
+        <button className={`mbti-button ${mbti.NorS === 'S' ? 'selected' : ''}`} onClick={() => handleMbtiButtonClick('NorS', 'S')}>S</button>
+        <button className={`mbti-button ${mbti.ForT === 'T' ? 'selected' : ''}`} onClick={() => handleMbtiButtonClick('ForT', 'T')}>T</button>
+        <button className={`mbti-button ${mbti.PorJ === 'J' ? 'selected' : ''}`} onClick={() => handleMbtiButtonClick('PorJ', 'J')}>J</button>
       </div>
+    </div>
       
       <div className="buttons-container">
         <button onClick={handlePreviousClick} className="previous-button">이전</button>

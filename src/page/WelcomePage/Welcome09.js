@@ -34,11 +34,16 @@ useEffect(() => {
   const navigate = useNavigate();
 
       
-  const [sliderValue, setSliderValue] = useState(170); // 초기값을 50으로 설정
+  const [sliderValue, setSliderValue] = useState(170); 
 
   const handleSliderChange = (e) => {
     setSliderValue(e.target.value);
   };
+
+  useEffect(() => {
+    const percentage = ((sliderValue - 140) / (200 - 140)) * 100; 
+    document.documentElement.style.setProperty('--slider-percentage', `${percentage}%`);
+  }, [sliderValue]);
 
   const handlePreviousClick = () => {
     // "이전" 버튼 로직
@@ -47,7 +52,7 @@ useEffect(() => {
 
   const handleNextClick = () => {
     // "다음" 버튼 클릭 시에 실행될 로직
-    navigate('/login/information/Welcome10'); // '/welcome05' 경로로 이동
+    navigate('/login/information/Welcome10'); 
   };
 
 
@@ -63,14 +68,14 @@ useEffect(() => {
       <div className="slider-value">{sliderValue}</div>
       </div>
     <div className="slider-container">
-      <input 
-        type="range"
-        min="140"
-        max="200" 
-        value={sliderValue} 
-        onChange={handleSliderChange}
-        className="slider" // 슬라이더에 클래스를 적용합니다
-      />
+    <input
+      type="range"
+      min="140" // 슬라이더의 최소값
+      max="200" // 슬라이더의 최대값
+      value={sliderValue}
+      onChange={handleSliderChange}
+      className="slider"
+    />
       </div>
       <div className="buttons-container">
         <button onClick={handlePreviousClick} className="previous-button">이전</button>
