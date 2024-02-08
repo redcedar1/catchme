@@ -16,7 +16,7 @@ def index(request):
     return render(request,"room/room.html")
 
 @csrf_exempt
-def selectedRoom(request,r_no):
+def selectedRoom(request):
 
     if request.method == "POST":
         kid = request.POST.get('kid')
