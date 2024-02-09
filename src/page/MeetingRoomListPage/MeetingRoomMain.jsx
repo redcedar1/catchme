@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styled  from "styled-components";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , useLocation} from 'react-router-dom';
 import CreateRoomModal from "./CreateRoomModal"; 
 import DeleteRoomModal from "./DeleteRoomModal";
+import axios from "axios"; // npm install axios
 
 const allColors = 
   ["#BEE7E8", 
@@ -36,54 +37,14 @@ const getRandomColor = () => {
   return color;
 };
 
-const getRandomNumber = max => Math.floor(Math.random() * (max + 1));
-
-const getRandomDate = () => {
-  const start = new Date(2024, 0, 1);
-  const end = new Date();
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-}
-
-const topRooms = Array.from({ length: 5 }, (_, id) => {
-  const femaleCount = getRandomNumber(4);
-  const maleCount = getRandomNumber(4);
-  return {
-      id: id + 1,
-      name: ["달려라 뿅뿅뿅!!", "다함께 차차차!!", "좋은 사람 좋은 시간", "동네 친구 구함~", "강아지 산책하실분? 흐흐"][id],
-      location: ["홍대", "건대", "신촌", "잠실", "여의도"][id],
-      bgColor: getRandomColor(), // Ensure unique color
-      female: femaleCount,
-      male: maleCount,
-      participantCount: femaleCount + maleCount,
-      createdAt: getRandomDate().toISOString()
-  };
-});
-
-const totalRooms = Array.from({ length: 17 }, (_, id) => {
-  
-  if (usedColors.size >= 9) { // 추천 방 5개 + 페이지 색깔 4개 = 총 9개 색깔 제한
-    usedColors.clear(); // 색깔 제한에 도달하면 usedColors를 초기화
-  }
-  const femaleCount = getRandomNumber(4);
-  const maleCount = getRandomNumber(4);
-  return {
-    id: id + 1,
-    name: ["달려라 뿅뿅뿅!!", "다함께 차차차!!", "좋은 사람 좋은 시간", "동네 친구 구함~", "강아지 산책하실분? 흐흐", "주말 등산 가실 분!", "밤샘 코딩 모임", "영화 마니아들 모여라", "토요일 자전거 라이딩", "맛집 탐방 러버들", "수다 떨기 좋은 카페", "책 읽기 좋은 날", "커피 마시며 휴식", "화요일 점심 브런치", "게임 좋아하는 사람들", "피트니스 도전", "일요일 아침 요가"][id % 17],
-    location: ["홍대", "건대", "신촌", "잠실", "홍대", "강남", "이태원", "홍대", "강남", "대학로", "홍대", "홍대", "여의도", "서초", "건대", "잠실", "신촌"][id % 17],
-    bgColor: getRandomColor(),
-    female: femaleCount,
-    male: maleCount,
-    participantCount: femaleCount + maleCount,
-    createdAt: getRandomDate().toISOString()
-  };
-});
-
-
 
 const MeetingRoomMain = () => {
   const navigate = useNavigate();
-  const [top5Rooms, setRooms] = useState(topRooms);
-  const [allRooms, setAllRooms] = useState(totalRooms); // 전체 방 목록 초기화
+  const location = useLocation();
+  const selectedPeople = location.state?.selectedPeople;
+
+  const [top5Rooms, setTopRooms] = useState([]);
+  const [allRooms, setAllRooms] = useState([]); // 전체 방 목록 초기화
   const [currentTop5RoomIndex, setCurrentTop5RoomIndex] = useState(0);
   const [currentAllPageIndex, setCurrentAllPageIndex] = useState(1); // 전체 방 현재 페이지
   const [displayedRooms, setDisplayedRooms] = useState([]); // 화면에 표시할 방 목록 상태와 업데이트 함수 추가
@@ -92,72 +53,168 @@ const MeetingRoomMain = () => {
   const [allTotalPage, setAllTotalPage] = useState(0);
   const [isCreateRoomModalOpen, setCreateRoomModalOpen] = useState(false); // 방 생성 모달 상태
   const [isDeleteRoomModalOpen, setDeleteRoomModalOpen] = useState(false); // 삭제 모달 상태 추가
-  const [roomToDelete, setRoomToDelete] = useState(null); // 삭제할 방 정보 상태 추가
   const [userId, setUserId] = useState("hardcodedUserId");
-
-  // 상태 관리
-const [sortOption, setSortOption] = useState('whole'); // 'whole', 'downtown', 'participants'
-const [filteredRooms, setFilteredRooms] = useState([...totalRooms]); // 필터링된 방 목록 초기화
-// 정렬 및 필터링 함수
-useEffect(() => {
-  // 전체 방 목록 정렬
-  let sortedRooms = [...totalRooms];
-
-  if (sortOption === "participants") {
-    sortedRooms.sort((a, b) => b.participantCount - a.participantCount); // 인원수로 정렬
-  } else {
-    sortedRooms.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // 최신순으로 정렬
-  }
-
-  // 필터링 (우리동네 버튼을 눌렀을 때만 필터링)
-  if (sortOption === "downtown") {
-    sortedRooms = sortedRooms.filter(room => room.location === "홍대"); // '홍대'로 필터링
-  }
-
-  // 페이지네이션
-  const startIndex = (currentAllPageIndex - 1) * 4;
-  const endIndex = startIndex + 4;
-  const paginatedRooms = sortedRooms.slice(startIndex, endIndex);
-  setAllRooms(paginatedRooms); 
+  const [isLoading, setIsLoading] = useState(true); //로딩상태
+  const [sortOption, setSortOption] = useState('whole'); // 'whole', 'downtown', 'participants'
+  const [filteredRooms, setFilteredRooms] = useState([...allRooms]); // 필터링된 방 목록 초기화
+  const [error, setError] = useState('');
+  // useState를 사용하여 selectedRno 상태를 정의합니다.
+  useEffect(() => {
+    const fetchRooms = async () => {
+      setIsLoading(true);
+      try {
+        const [top5Response, allRoomsResponse] = await Promise.all([
+          axios.get('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/'),
+          axios.get('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/')
+        ]);
   
-  if (currentAllPageIndex >= allTotalPage) {
-    setHasMoreRooms(false);
-  } else {
-    setHasMoreRooms(true);
-  }
+        // selectedPeople과 meetingNum이 일치하는 방만 필터링
+        const filteredRooms = allRoomsResponse.data.filter(room => room.meetingnum === selectedPeople);
+  
+        // 방에 랜덤 색상 입히기
+        const top5RoomsWithColors = top5Response.data.map(room => ({
+          ...room,
+          bgColor: getRandomColor()
+        }));
+        const allFilteredRoomsWithColors = filteredRooms.map(room => ({
+          ...room,
+          bgColor: getRandomColor()
+        }));
+        const sortedAllRooms = sortRooms(allFilteredRoomsWithColors, 'whole');
+  
+        setTopRooms(top5RoomsWithColors);
+        setAllRooms(sortedAllRooms); // 정렬된 전체 방 목록을 상태에 저장
+        setFilteredRooms(sortedAllRooms); // 화면에 표시될 방 목록도 업데이트
+      } catch (error) {
+        console.error('Failed to fetch rooms:', error);
+        setError('Failed to fetch rooms');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    fetchRooms();
+  }, [selectedPeople]);
+  
 
-  // Check if there are matching rooms in "우리동네"
-  const matchingRooms = sortedRooms.filter(room => room.location === "홍대");
-  if (matchingRooms.length === 0) {
-    setNoMatchingRooms(true);
-  } else {
-    setNoMatchingRooms(false);
-  }
-  const totalPage = Math.ceil(sortedRooms.length / 4);
-  setAllTotalPage(totalPage); // allTotalPage 업데이트
-}, [sortOption, currentAllPageIndex]);
 
-// 정렬 옵션 변경 핸들러
-const handleSortOptionChange = (option) => {
-  setSortOption(option);
-  setCurrentAllPageIndex(1); // 정렬 옵션이 변경될 때 첫 페이지로 리셋
+//방만들기
+
+const handleCreateRoom = async (roomTitle, meetingPlace, userId, meetingNum) => {
+  setIsLoading(true);
+  try {
+    const response = await axios.post('/api/rooms', {
+      rname: roomTitle,
+      location: meetingPlace,
+      userId: userId,
+      meetingnum: meetingNum,  
+    });
+    if (response.data.approved) {
+      setAllRooms(prevRooms => [...prevRooms, response.data.room]);
+      alert('방이 성공적으로 생성되었습니다.');
+    } else {
+      alert('방 생성이 승인되지 않았습니다.');
+    }
+  } catch (error) {
+    console.error('Failed to create room:', error);
+    setError('방 생성이 승인되지 않았습니다.'); // 에러 설정
+  } finally {
+    setIsLoading(false);
+  }
 };
 
 
+//방 삭제하기
+const handleDeleteRoom = async(roomId) => {
+  setIsLoading(true);
+  const room = allRooms.find((room) => room.id === roomId);
+  if (room.participantCount > 0) {
+    alert('참가자가 있는 방은 삭제할 수 없습니다.');
+    return;
+  }
+  if (room.createdBy !== userId) {
+    alert('자신이 생성한 방만 삭제할 수 있습니다.');
+    return;
+  }
+  try {
+    await axios.delete(`/api/rooms/${roomId}`);
+    setAllRooms(prev => prev.filter(room => room.id !== roomId));
+    alert('방이 성공적으로 삭제되었습니다.');
+  } catch (error) {
+    console.error('Failed to delete room:', error);
+    setError('Failed to delete room');
+  } finally {
+    setIsLoading(false);
+  }
+};
+// 전체 방 목록 정렬하는 로직
+// 정렬 옵션 변경 핸들러
+const handleSortOptionChange = (option) => {
+  setSortOption(option);
+  setCurrentAllPageIndex(1); 
+   setFilteredRooms(sortRooms(allRooms, option));
+};
+useEffect(() => {
+  handleSortOptionChange('whole');
+}, []); // 의존성 배열을 비워 컴포넌트가 처음 마운트될 때만 실행되도록 함
 
-  const handleTop5Next = () => {
-      setRooms(prev => [...prev.slice(1), prev[0]]);
+
+// 정렬 로직 함수
+const sortRooms = (rooms, option) => {
+  let sortedRooms = [...rooms];
+  switch (option) {
+    case 'whole':
+      sortedRooms.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      break;
+    case 'downtown':
+      sortedRooms = sortedRooms.filter(room => room.location === '홍대');
+      break;
+    case 'participants':
+      sortedRooms.sort((a, b) => b.participantCount - a.participantCount);
+      break;
+    default:
+      break;
+  }
+  return sortedRooms;
+};
+
+
+useEffect(() => {
+  // 페이지네이션
+  const startIndex = (currentAllPageIndex - 1) * 4;
+  const endIndex = startIndex + 4;
+  const paginatedRooms = filteredRooms.slice(startIndex, endIndex);
+  
+  setDisplayedRooms(paginatedRooms);
+  
+  const totalPage = Math.ceil(filteredRooms.length / 4);
+  setAllTotalPage(totalPage); // totalPage 업데이트
+  
+  // 현재 페이지가 전체 페이지 수보다 큰 경우 처리
+  if (currentAllPageIndex > totalPage) {
+    setCurrentAllPageIndex(totalPage);
+  }
+  // '더 보기' 버튼의 가시성 관리
+  setHasMoreRooms(currentAllPageIndex < totalPage);
+  
+}, [currentAllPageIndex, filteredRooms]);
+
+
+
+const handleTop5Next = () => {
+    setTopRooms(prev => [...prev.slice(1), prev[0]]);
       setCurrentTop5RoomIndex(prevIndex => (prevIndex + 1) % top5Rooms.length);
 
   };
 
-  const handleTop5Prev = () => {
-    setRooms(prev => {
+const handleTop5Prev = () => {
+    setTopRooms(prev => {
       const lastRoom = prev[prev.length - 1];
       return [lastRoom, ...prev.slice(0, prev.length - 1)];
   });
   setCurrentTop5RoomIndex(prev => (prev - 1 + 5) % 5);
 };
+
 
 const handleAllRoomsNextPage = () => {
   if (currentAllPageIndex < allTotalPage) {
@@ -179,7 +236,6 @@ const handleAllRoomsNextPage = () => {
   }
 };
 
-
 const handleAllRoomsPrevPage = () => {
   if (currentAllPageIndex > 1) {
     const newPageIndex = currentAllPageIndex - 1;
@@ -193,79 +249,68 @@ const enterRoom = roomId => {
 };
 
 
-//방만들기
-const handleCreateRoom = (newRoomData) => {
-  const newRoom = {
-    id: newRoomData.id,
-    name: newRoomData.title,
-    location: newRoomData.location,
-    bgColor: getRandomColor(),
-    female: 0,
-    male: 0,
-    participantCount: 0,
-    createdAt: new Date().toISOString(),
-    createdBy: userId, // 사용자 아이디 추가
-  };
-
-  setAllRooms((prevRooms) => [...prevRooms, newRoom]);
-};
 
 
-const handleDeleteRoom = (roomId) => {
-  // 서버로 방 삭제 요청을 보내는 로직을 추가해야 합니다.
-  // 이 예제에서는 클라이언트에서만 삭제하도록 구현합니다.
-  const room = allRooms.find((room) => room.id === roomId);
+if (isLoading) return <p>Loading...</p>;
+if (error) return <p>{error}</p>;
 
-  // 방을 삭제하려면 해당 방의 작성자 아이디와 현재 로그인한 사용자 아이디를 비교하여 검증해야 합니다.
-  if (room.createdBy === userId) {
-    // 작성자 아이디와 현재 사용자 아이디가 일치하면 삭제 가능
-    setRoomToDelete(room);
-    setDeleteRoomModalOpen(true);
-  } else {
-    alert("삭제 권한이 없습니다.");
-  }
-};
+// Top 5 방 목록에 대한 이전/다음 버튼의 가시성 처리
+const showTop5PrevButton = currentTop5RoomIndex > 0 && top5Rooms.length > 0;
+const showTop5NextButton = currentTop5RoomIndex < (top5Rooms.length - 1) && top5Rooms.length > 0;
+
+// 전체 방 목록에 대한 이전/다음 버튼의 가시성 처리
+const showAllPrevButton = currentAllPageIndex > 1 && allRooms.length > 0;
+const showAllNextButton = currentAllPageIndex < allTotalPage && allRooms.length > 0;
 
   return (
     <MainContainer>
         <HeaderText>맞춤 Top5</HeaderText>
         <RecommendRoomContainer>
+            {showTop5PrevButton && (
             <Arrow
-            src="./image/Group15.png" alt="Back Button"
-            onClick={handleTop5Prev }
-            style={{ visibility: currentTop5RoomIndex  > 0 ? 'visible' : 'hidden' }}>
-            </Arrow>
+               src="./image/MeetingRoomList/Group15.png"
+              alt="Back Button"
+              onClick={handleTop5Prev}
+             />
+            )}
+
+            {top5Rooms.length > 0 ? (
             <RoomsWrapper>
             {top5Rooms.map((room, index) => (
+              room ? ( // room이 undefined가 아닐 때만 렌더링
                     <RecommendRoom 
-                        key={room.id} 
+                        key={room.rno} 
                         bgColor={room.bgColor} 
                         isMultipleOf3={(index + 1) % 3 === 0}
-                        onClick={() => enterRoom(room.id)}
-                        female={room.female}
-                        male={room.male}
+                        onClick={() => enterRoom(room.rno)}
+                        female={room.wnum}
+                        male={room.mnum}
                     >
-                        <RoomName>{room.name}</RoomName>
+                        <RoomName>{room.rname}</RoomName>
                         <RoomLocation>{room.location}</RoomLocation>
                         <SexContainer>
                           <FemaleNumber>
-                            <IconImage src="./image/Ellipse58.png" alt="Female Icon" />
-                            {room.female}
+                            <IconImage src="./image/MeetingRoomList/Ellipse58.png" alt="Female Icon" />
+                            {room.wnum}
                           </FemaleNumber> 
                           
                           <MaleNumber>  
-                            <IconImage src="./image/Ellipse59.png" alt="Male Icon" />
-                            {room.male}
+                            <IconImage src="./image/MeetingRoomList/Ellipse59.png" alt="Male Icon" />
+                            {room.mnum}
                           </MaleNumber>   
                         </SexContainer>
-                    </RecommendRoom>
+                    </RecommendRoom>) : null
                 ))}
-            </RoomsWrapper>
-            <Arrow 
-            src="./image/Group14.png" alt="Next Button"
-            onClick={handleTop5Next } 
-            style={{ visibility: currentTop5RoomIndex  < 4 ? 'visible' : 'hidden'}}>
-           </Arrow>
+            </RoomsWrapper>) : (
+      <NoneMessage>당신의 이상형은 아직 안왔나봐요!</NoneMessage>
+        )}
+            {showTop5NextButton && (
+             <Arrow
+               src="./image/MeetingRoomList/Group14.png"
+              alt="Next Button"
+              onClick={handleTop5Next}
+             />
+      )}
         </RecommendRoomContainer>
 
 
@@ -312,47 +357,49 @@ const handleDeleteRoom = (roomId) => {
 
 
         <PopularMeetingBox>
+        {showAllPrevButton &&
+            <Arrow
+             src="./image/MeetingRoomList/Group15.png"
+             alt="Back Button"
+             onClick={handleAllRoomsPrevPage}
+           />
+        }  
         {noMatchingRooms ? (
           <NoMatchingRoomsMessage>우리동네에 일치하는 방이 없어요!</NoMatchingRoomsMessage>
-        ) : (
-          <>
-        <Arrow
-            src="./image/Group15.png" alt="Back Button"
-            onClick={handleAllRoomsPrevPage }
-            style={{ visibility: currentAllPageIndex > 1 ? 'visible' : 'hidden' }}>
-            </Arrow>         
+        ) : (     
           <MeetingRoomWrapper>
             
-          {allRooms.map(room => (
+          {displayedRooms.map(room => (
+            room ? ( // room이 undefined가 아닐 때만 렌더링
              <MeetingRoom 
-              key={room.id} 
+              key={room.rno} 
              bgColor={room.bgColor}
-             onClick={() => enterRoom(room.id)}
+             onClick={() => enterRoom(room.rno)}
              >
-                <RoomName>{room.name}</RoomName>
+                <RoomName>{room.rname}</RoomName>
                <RoomLocation>{room.location}</RoomLocation>
                <SexContainer>
                   <FemaleNumber>
-                      <IconImage src="./image/Ellipse58.png" alt="Female Icon" />
-                        {room.female}
+                      <IconImage src="./image/MeetingRoomList/Ellipse58.png" alt="Female Icon" />
+                        {room.wnum}
                       </FemaleNumber> 
                           
                           <MaleNumber>  
-                            <IconImage src="./image/Ellipse59.png" alt="Male Icon" />
-                            {room.male}
+                            <IconImage src="./image/MeetingRoomList/Ellipse59.png" alt="Male Icon" />
+                            {room.mnum}
                           </MaleNumber>   
                         </SexContainer>
-             </MeetingRoom>
+             </MeetingRoom>) : null
            ))}
           </MeetingRoomWrapper>
-          <Arrow 
-            src="./image/Group14.png" alt="Next Button"
-            onClick={handleAllRoomsNextPage } 
-            style={{ visibility: hasMoreRooms  ? 'visible' : 'hidden'}}>
-           </Arrow>
-           </>)}    
-
-        </PopularMeetingBox>
+            )}  
+            {showAllNextButton && 
+             <Arrow
+             src="./image/MeetingRoomList/Group14.png"
+             alt="Next Button"
+             onClick={handleAllRoomsNextPage}
+            />}
+          </PopularMeetingBox>
     </MainContainer>
   );
 }
@@ -617,4 +664,13 @@ align-items: flex-end;
   box-shadow: inset 0px 0px 8px rgba(0, 0, 0, 0.2);
   transform: translateY(2px);
 }
+`;
+
+const NoneMessage = styled.div`
+  color: #414141;
+  font-size: 1.125rem;
+  font-weight: 700;
+  position: relative;
+  top: -7rem;
+
 `;

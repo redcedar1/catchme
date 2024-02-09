@@ -1,0 +1,123 @@
+.sfp-detail {
+  display: block;
+  margin: auto;
+  margin-top: 45%;
+  /* border: 0.1px solid black; */
+  border-radius: 17px;
+  width: 75%;
+  height: 63%;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.sfp-container {
+  display: grid;
+  grid-template-rows: 0.5fr 5.7fr 2.3fr;
+  gap: 40px;
+  height: 100%;
+  padding: 20px 10px;
+}
+
+.sfp-sfp {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.sfp-info-container {
+  display: grid;
+  grid-template-rows: repeat(5, 1fr);
+  gap: 25px;
+}
+
+.sfp-info-age-locate-container {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.sfp-info-holder {
+  padding: 5px;
+  border-radius: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  color: #9d9d9d;
+  margin: auto;
+  width: 90%;
+  height: 70%;
+  font-size: 12px;
+}
+
+.sfp-name-input {
+  border: none;
+  width: 80%;
+  height: 100%;
+  color: #9d9d9d;
+  font-size: 12px;
+}
+.sfp-age-input {
+  border: none;
+  width: 55%;
+  height: 100%;
+  color: #9d9d9d;
+  font-size: 12px;
+}
+.sfp-locate-input {
+  border: none;
+  width: 55%;
+  height: 100%;
+  color: #9d9d9d;
+  font-size: 12px;
+}
+.sfp-animal-input {
+  border: none;
+  width: 67%;
+  height: 100%;
+  color: #9d9d9d;
+  font-size: 12px;
+}
+.sfp-univ-input {
+  border: none;
+  width: 73%;
+  height: 100%;
+  color: #9d9d9d;
+  font-size: 12px;
+}
+.sfp-body-input {
+  border: none;
+  width: 80%;
+  height: 100%;
+  color: #9d9d9d;
+  font-size: 12px;
+}
+input:focus {
+  outline: none;
+}
+
+.sfp-regist-button {
+  width: 40%;
+  height: 35%;
+  border-radius: 20px;
+  border: 2px solid #666666;
+  font-size: 13px;
+  color: #666666;
+  font-weight: bold;
+  text-align: center;
+  background-color: #ffffff;
+  margin-top: 15%;
+  margin-left: 14%;
+  margin-right: 5%;
+}
+
+.sfp-cancel-button {
+  width: 25%;
+  height: 35%;
+  border-radius: 20px;
+  border: 2px solid #666666;
+  font-size: 13px;
+  color: #666666;
+  font-weight: bold;
+  text-align: center;
+  background-color: #ffffff;
+}
