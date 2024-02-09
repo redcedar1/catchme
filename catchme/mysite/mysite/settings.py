@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'room',
     'kakaopay',
     'corsheaders',
-    
+    'rest_framework',
 
 ]
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
@@ -154,3 +154,9 @@ CORS_ALLOW_HEADERS = (
     'csrftoken',
     'x-requested-with',
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES':[
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+}
