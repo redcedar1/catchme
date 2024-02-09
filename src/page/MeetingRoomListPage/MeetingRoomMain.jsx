@@ -80,8 +80,8 @@ const MeetingRoomMain = () => {
           ...room,
           bgColor: getRandomColor()
         }));
-        const sortedAllRooms = sortRooms(allFilteredRoomsWithColors, 'whole');
-  
+
+        const sortedAllRooms = sortRooms(allFilteredRoomsWithColors, 'whole');  
         setTopRooms(top5RoomsWithColors);
         setAllRooms(sortedAllRooms); // 정렬된 전체 방 목록을 상태에 저장
         setFilteredRooms(sortedAllRooms); // 화면에 표시될 방 목록도 업데이트
@@ -94,7 +94,7 @@ const MeetingRoomMain = () => {
     };
   
     fetchRooms();
-  }, [selectedPeople]);
+  }, []);
   
 
 
@@ -154,9 +154,6 @@ const handleSortOptionChange = (option) => {
   setCurrentAllPageIndex(1); 
    setFilteredRooms(sortRooms(allRooms, option));
 };
-useEffect(() => {
-  handleSortOptionChange('whole');
-}, []); // 의존성 배열을 비워 컴포넌트가 처음 마운트될 때만 실행되도록 함
 
 
 // 정렬 로직 함수
@@ -180,24 +177,17 @@ const sortRooms = (rooms, option) => {
 
 
 useEffect(() => {
-  // 페이지네이션
-  const startIndex = (currentAllPageIndex - 1) * 4;
-  const endIndex = startIndex + 4;
-  const paginatedRooms = filteredRooms.slice(startIndex, endIndex);
-  
-  setDisplayedRooms(paginatedRooms);
-  
-  const totalPage = Math.ceil(filteredRooms.length / 4);
-  setAllTotalPage(totalPage); // totalPage 업데이트
-  
-  // 현재 페이지가 전체 페이지 수보다 큰 경우 처리
-  if (currentAllPageIndex > totalPage) {
-    setCurrentAllPageIndex(totalPage);
-  }
-  // '더 보기' 버튼의 가시성 관리
-  setHasMoreRooms(currentAllPageIndex < totalPage);
-  
-}, [currentAllPageIndex, filteredRooms]);
+  // filteredRooms 상태가 변경될 때마다 displayedRooms를 업데이트
+  const updateDisplayedRooms = () => {
+    // 페이지네이션 로직에 따라 displayedRooms를 계산
+    const startIndex = (currentAllPageIndex - 1) * 4;
+    const endIndex = startIndex + 4;
+    const newDisplayedRooms = filteredRooms.slice(startIndex, endIndex);
+    setDisplayedRooms(newDisplayedRooms);
+  };
+
+  updateDisplayedRooms();
+}, [filteredRooms, currentAllPageIndex]);
 
 
 
@@ -243,10 +233,32 @@ const handleAllRoomsPrevPage = () => {
   }
 };
 
+//입장제한 사용자의 개인정보 api 필요합니다
+const enterRoom = (roomId, gender) => {
+  const selectedRoom = allRooms.find(room => room.rno === roomId);
 
-const enterRoom = roomId => {
+  if (!selectedRoom) {
+    alert('방을 찾을 수 없습니다.');
+    return;
+  }
+
+
+  // 여자 5명이면 입장 막기
+  if (gender === 'female' && selectedRoom.wnum >= 5) {
+    alert('이 방에는 더 이상 여성이 입장할 수 없습니다.');
+    return;
+  }
+
+  // 남자 5명이면 입장 막기
+  if (gender === 'male' && selectedRoom.mnum >= 5) {
+    alert('이 방에는 더 이상 남성이 입장할 수 없습니다.');
+    return;
+  }
+  
+  // 조건을 모두 통과하면 방 입장
   navigate(`/room/${roomId}`);
 };
+
 
 
 
@@ -283,9 +295,8 @@ const showAllNextButton = currentAllPageIndex < allTotalPage && allRooms.length 
                         bgColor={room.bgColor} 
                         isMultipleOf3={(index + 1) % 3 === 0}
                         onClick={() => enterRoom(room.rno)}
-                        female={room.wnum}
-                        male={room.mnum}
-                    >
+                      //onClick={() => enterRoom(room.rno, userGender)} api에서 성별 정보 알려주면 변수명 바꾸기
+             >
                         <RoomName>{room.rname}</RoomName>
                         <RoomLocation>{room.location}</RoomLocation>
                         <SexContainer>
@@ -374,7 +385,8 @@ const showAllNextButton = currentAllPageIndex < allTotalPage && allRooms.length 
              <MeetingRoom 
               key={room.rno} 
              bgColor={room.bgColor}
-             onClick={() => enterRoom(room.rno)}
+             onClick={() => enterRoom(room.rno)} 
+           //onClick={() => enterRoom(room.rno, userGender)} api에서 성별 정보 알려주면 변수명 바꾸기
              >
                 <RoomName>{room.rname}</RoomName>
                <RoomLocation>{room.location}</RoomLocation>
@@ -421,10 +433,10 @@ const showAllNextButton = currentAllPageIndex < allTotalPage && allRooms.length 
   display: grid;
   grid-template-columns: repeat(2, 1fr); 
   grid-template-rows: repeat(2, 1fr); 
-  gap: 1.75rem;
+  gap: 0.5rem;
   justify-content: center; 
   align-content: center; 
-  width: 70%;
+  width: 100%;
   margin: auto;
 
 @media (max-width: 1200px) {
@@ -438,11 +450,11 @@ justify-content: space-around;
   flex-direction: column;
   background-color: ${props => props.bgColor};
   border-radius: 0.75rem;
-  width: 10.0625rem;
+  width: 9.5625rem;
   height: 9.1875rem;
   box-shadow: 4px 4px 22px 0px rgba(0, 0, 0, 0.09);
   cursor: pointer;
-  padding: 0.5rem;
+  padding: 0.3rem;
   &:active {
     box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.15);
     transform: scale(0.95);  
