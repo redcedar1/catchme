@@ -12,7 +12,7 @@ class userInfo(models.Model):
 class menInfo(models.Model):
     id = models.AutoField(primary_key=True)
     #userInfo 인스턴스 연결
-    user = models.ForeignKey(userInfo, on_delete = models.CASCADE)
+    user = models.ForeignKey(userInfo, on_delete = models.CASCADE,related_name = 'man_userInfo')
     
     #앱 내에서 사용할 닉네임
     nickname = models.CharField(max_length=50)
@@ -66,7 +66,7 @@ class menInfo(models.Model):
     w_match = models.ForeignKey('womenInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='w_match',related_name="m_matched")
     
     def __str__(self):
-        return str(self.nickname)
+        return str(self.user)
 
 class Notice(models.Model):
     id = models.AutoField(primary_key=True)
@@ -80,7 +80,7 @@ class Notice(models.Model):
 class womenInfo(models.Model):
     id = models.AutoField(primary_key=True)
      #userInfo 인스턴스 연결
-    user = models.ForeignKey(userInfo, on_delete = models.CASCADE)
+    user = models.ForeignKey(userInfo, on_delete = models.CASCADE,related_name = 'woman_userInfo')
     #앱 내에서 사용할 닉네임
     nickname = models.CharField(max_length=50)
     #사용자가 선택한 말풍선 종류
@@ -132,7 +132,7 @@ class womenInfo(models.Model):
     m_match = models.ForeignKey('menInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='m_match')
      
     def __str__(self):
-        return str(self.nickname)
+        return str(self.user)
 
 
 class room(models.Model):
@@ -186,7 +186,7 @@ class menParty(models.Model):
     selected = models.BooleanField(default = False)
 
     def __str__(self):
-        return
+        return str(self.id)
 
 
 #친구 이름 속성 삭제
@@ -204,7 +204,7 @@ class womenParty(models.Model):
     body = models.CharField(max_length=10, null=True, blank=True)
 
     def __str__(self):
-        return 
+        return str(self.id)
 
 class payment(models.Model):
     #결제 내역 기본키(고유 번호)
