@@ -1,9 +1,10 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import get_object_or_404, render,redirect
 from django.http import HttpResponse, JsonResponse
 from ..models import *
 from django.middleware.csrf import get_token
 import requests
 from django.contrib.auth.decorators import login_required
+from rest_framework import generics, status
 # Create your views here.
 
 def index(request):
@@ -73,3 +74,4 @@ def kakaoLogout(request):
 def csrf(request):
     csrf_token = get_token(request)
     return JsonResponse({"csrfToken": csrf_token})
+

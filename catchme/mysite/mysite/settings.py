@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'kakaopay',
     'corsheaders',
     'rest_framework',
-    
 
 ]
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000/','http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080']
