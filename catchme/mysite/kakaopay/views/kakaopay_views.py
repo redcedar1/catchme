@@ -8,11 +8,7 @@ def index(request):
     return render(request, "kakaopay/index.html")
 
 def kakaoPaylogic(request):
-<<<<<<< HEAD
-    kakao_id = 0
-=======
     kakao_id = 0 #테스트용, 실제로는 access_token을 이용해 카톡 고유 번호 10자리를 받아야함
->>>>>>> origin/back
     user_info = userInfo.objects.get(kid=kakao_id)
 
     URL = 'https://kapi.kakao.com/v1/payment/ready'
@@ -28,15 +24,9 @@ def kakaoPaylogic(request):
         "quantity": "1",# 상품 개수
         "total_amount": "5000",# 가격
         "tax_free_amount": "0",# 상품 비과세
-<<<<<<< HEAD
-        "approval_url": "ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/kakaopay/approval",
-        "cancel_url": "ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080",
-        "fail_url": "ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080",
-=======
         "approval_url": "http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/kakaopay/approval",
         "cancel_url": "http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080",
         "fail_url": "http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080",
->>>>>>> origin/back
     }
 
     res = requests.post(URL, headers=headers, params=params)
