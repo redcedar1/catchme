@@ -9,7 +9,7 @@ def index(request):
 
 def kakaoPaylogic(request):
     kakao_id = 0 #테스트용, 실제로는 access_token을 이용해 카톡 고유 번호 10자리를 받아야함
-    user_info = userInfo.objects.get(id=kakao_id)
+    user_info = userInfo.objects.get(kid=kakao_id)
 
     URL = 'https://kapi.kakao.com/v1/payment/ready'
     headers = {
@@ -19,14 +19,14 @@ def kakaoPaylogic(request):
     params = {
         "cid": "TC0ONETIME",# 가맹점 코드
         "partner_order_id": "0",# 주문 번호
-        "partner_user_id": str(user_info.id),# 사용자 아이디
+        "partner_user_id": str(user_info.kid),# 사용자 아이디
         "item_name": "catchme",# 상품 이름
         "quantity": "1",# 상품 개수
         "total_amount": "5000",# 가격
         "tax_free_amount": "0",# 상품 비과세
-        "approval_url": "http://127.0.0.1:8000/kakaopay/approval",
-        "cancel_url": "http://127.0.0.1:8000",
-        "fail_url": "http://127.0.0.1:8000",
+        "approval_url": "http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/kakaopay/approval",
+        "cancel_url": "http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080",
+        "fail_url": "http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080",
     }
 
     res = requests.post(URL, headers=headers, params=params)
@@ -38,7 +38,7 @@ def kakaoPaylogic(request):
 
 def approval(request):
     kakao_id = 0
-    user_info = userInfo.objects.get(id=kakao_id)
+    user_info = userInfo.objects.get(kid=kakao_id)
 
     URL = 'https://kapi.kakao.com/v1/payment/approve'
     headers = {
@@ -49,13 +49,13 @@ def approval(request):
         "cid": "TC0ONETIME",
         "tid": request.session['tid'],
         "partner_order_id": "0",
-        "partner_user_id": str(user_info.id),
+        "partner_user_id": str(user_info.kid),
         "pg_token": request.GET.get("pg_token"),
     }
 
     payment_record = payment.objects.create(
         tid=request.session['tid'],
-        id=user_info
+        pay_user=user_info
     )
 
     res = requests.post(URL, headers=headers, params=params)
