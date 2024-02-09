@@ -71,11 +71,14 @@ class menInfo(models.Model):
 class Notice(models.Model):
     id = models.AutoField(primary_key=True)
     #userInfo 인스턴스 연결
-    user = models.ForeignKey('userInfo', on_delete=models.CASCADE)
+    user = models.ForeignKey('userInfo', on_delete=models.CASCADE,related_name = "notices")
     #알림 내용
     notice = models.TextField(null=True, blank=True)
     #알림 생성 시간
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
 
 class womenInfo(models.Model):
     id = models.AutoField(primary_key=True)

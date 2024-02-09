@@ -8,6 +8,6 @@ urlpatterns = [
     
     path('',room_views.index,name ="index"),
     path('<int:r_no>/',room_views.selectedRoom,name="selectedRoom"),
-    path('<int:r_no>/matchingRoom',room_views.selectedRoom,name="matchingRoom"),
+    path('<int:r_no>/matching_room',room_views.selectedRoom,name="matchingRoom"),
     
 ]
