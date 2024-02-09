@@ -68,8 +68,7 @@ function App() {
           <Route path="/login/withfriends" element={<WithFriends />} />
           <Route path="/login/matchhistory" element={<MatchHistory />} />
           <Route path="/MeetingRoomMain" element={<MeetingRoomMain />} />
-          <Route path="/room/1" element={<Room />} /> 
-          {/*<Route path="/room/:roomId" element={<Room />} /> */}
+          <Route path="/room/:roomId" element={<Room />} />
           <Route path="/PayComplete" element={<PayComplete />} />
       </Routes>
       </GenderProvider>
