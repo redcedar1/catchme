@@ -154,9 +154,12 @@ CORS_ALLOW_HEADERS = (
     'csrftoken',
     'x-requested-with',
 )
-
 REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES':[
-        'rest_framework.renderers.BrowsableAPIRenderer',
+
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',        # JSON 응답을 위한 렌더러
+        'rest_framework.renderers.BrowsableAPIRenderer' # Browsable API를 위한 렌더러
     ],
+
+
 }
