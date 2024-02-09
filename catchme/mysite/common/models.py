@@ -66,7 +66,7 @@ class menInfo(models.Model):
     w_match = models.ForeignKey('womenInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='w_match',related_name="m_matched")
     
     def __str__(self):
-        return str(self.pk)
+        return str(self.nickname)
 
 class Notice(models.Model):
     id = models.AutoField(primary_key=True)
@@ -132,7 +132,7 @@ class womenInfo(models.Model):
     m_match = models.ForeignKey('menInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='m_match')
      
     def __str__(self):
-        return str(self.pk)
+        return str(self.nickname)
 
 
 class room(models.Model):
@@ -186,7 +186,7 @@ class menParty(models.Model):
     selected = models.BooleanField(default = False)
 
     def __str__(self):
-        return f"{self.mkid} - {self.pnum}"
+        return
 
 
 #친구 이름 속성 삭제
@@ -204,7 +204,7 @@ class womenParty(models.Model):
     body = models.CharField(max_length=10, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.wkid} - {self.pnum}"
+        return 
 
 class payment(models.Model):
     #결제 내역 기본키(고유 번호)
