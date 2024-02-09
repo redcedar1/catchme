@@ -1,29 +1,38 @@
 
 
+import json
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
-from common.models import room, menInfo, womenInfo
+from common.models import room, menInfo, womenInfo,userInfo
 from ..serializers import RoomSerializer
 from django.middleware.csrf import get_token
 import requests
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
 def index(request):
     return render(request,"room/room.html")
 
-@login_required(login_url='common:kakaoLoginLogic')
-def selectedRoom(request,r_no):
+@csrf_exempt
+def selectedRoom(request):
 
     if request.method == "POST":
-        return HttpResponse("FUCK YOU")
-    
-    context = {"r_no":r_no}
+        data = json.loads(request.body)  # JSON 데이터 파싱
+        kid = data.get('kid')
+        ready = data.get('ready')  # ready 값 가져오기
+
+        selected_user = get_object_or_404(userInfo, kid=kid)
+        men_info_instance = selected_user.meninfo_set.first()  # meninfo_set 사용
+        if men_info_instance:
+            men_info_instance.ready = not ready  # ready 값을 반전시키지 않고 직접 설정
+            men_info_instance.save()
+        return HttpResponse("post Ssip Ganeung?")
     
 
-    return render(request, "room/selected_room.html", context)
+    return HttpResponse("Get SSap Ganeung")
 
 def matchingRoom(request):
     
