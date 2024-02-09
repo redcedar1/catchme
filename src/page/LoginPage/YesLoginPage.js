@@ -68,7 +68,7 @@ function YesLogin() {
           >
             <StartText> 지금 시작하기 </StartText>
           </ModalButton>
-          <EnterRoomModal isOpen={showModal} onClose={toggleModal} />
+          <EnterRoomModal isOpen={showModal} onClose={toggleModal}/>
         </div>
         <div className="yeslogin-logout-text">
           <Link to="/notlogin" className="yeslogin-logout-text">

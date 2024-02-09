@@ -70,7 +70,7 @@ const UserBox = ({ users }) => {
   };
 
   const handleUserClick = (user) => {
-    if (user.kakaotalk_id === "0727") {
+    if (user.age === 26) {
       //setSelectedUser(user); 나중엔 이걸로
       setSelectedUser({
         ...user,

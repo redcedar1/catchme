@@ -45,14 +45,15 @@ font-weight: 900;
 letter-spacing: 0.92px;
 `;
 
-const ReadyBox = ( { onGenderChange, isMale } ) => {
+const ReadyBox = ( { onGenderChange, isMale, onReadyButtonClick  } ) => {
 
   const [isReady, setReady] = useState(false);
   const [isMaleUser, setMale] = useState(isMale);
 
   const handleReadyClick = () => {
-    sendReadyStatusToServer();
     setReady(!isReady);
+    sendReadyStatusToServer();
+    onReadyButtonClick();
   };
 
   const handleGenderChange = () => {
@@ -111,7 +112,7 @@ const ReadyBox = ( { onGenderChange, isMale } ) => {
           'X-CSRFToken': csrfToken,
         },
         body: JSON.stringify({
-          Kid: 1001,
+          kid: 1001,
           rno: 1,
           ready: !isReady,
         }),

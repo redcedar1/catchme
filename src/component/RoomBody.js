@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import InfoBox from "../boxComponent/InfoBox";
 import ChatBox from "../boxComponent/ChatBox";
@@ -11,7 +11,7 @@ import MaleChooseModal from "../modalComponet/MaleChooseModal";
 import FemaleChooseModal from "../modalComponet/FemaleChooseModal";
 import SecondModal from "../modalComponet/SecondModal";
 import FinalModal from "../modalComponet/FinalModal";
-//import io from 'socket.io-client';
+import io from 'socket.io-client';
 
 const RootBodyContainer = styled.div`
   display: grid;
@@ -41,30 +41,34 @@ const RoomBody = (roomId) => {
   const [meetingnum, setMeetingnum] = useState("");
   const [maleusers, setMaleusers] = useState([]);
   const [femaleusers, setFemaleusers] = useState([]);
+  const dataSocket = useRef(null);
 
-  // API 알고리즘
-  useEffect(() => {
-    /* 
-     useEffect(() => {
-    // 서버의 웹 소켓 엔드포인트에 연결
-    const socket = io('http://your-server-endpoint');
-
-    // 연결이 수립되면 콘솔에 로그 출력
-    socket.on('connect', () => {
+  const setupWebSocket = () => {
+    dataSocket.current = io(`ws://${window.location.host}/ws/${roomId}/`);
+  
+    dataSocket.current.on('connect', () => {
       console.log('웹 소켓 연결 성공!');
     });
-
-    // 메시지를 수신하면 콘솔에 로그 출력
-    socket.on('message', (data) => {
+  
+    dataSocket.current.on('maleuser change', (data) => {
       console.log('서버로부터 메시지 수신:', data);
+      fetchData();
     });
-
-    // 컴포넌트가 언마운트되면 연결 해제
+  
     return () => {
-      socket.disconnect();
+      dataSocket.current.disconnect();
     };
-  }, []); // 빈 배열은 컴포넌트가 마운트될 때 한 번만 실행
-  */
+  };
+
+  const handleReadyButtonClick = () => {
+    // 유저가 레디를 누를 때 웹 소켓 연결을 설정
+    //setupWebSocket();
+    // 그 외의 레디 상태 업데이트 등의 로직 추가
+  };
+
+  useEffect(() => {
+    fetchData(); // 초기 로딩 시에도 데이터를 불러오도록 함
+  }, []);
 
     // 나중에 제대로 할 땐 URI/room/(number) 이런식으로 만들기
     const fetchData = async () => {
@@ -106,10 +110,7 @@ const RoomBody = (roomId) => {
       } catch (error) {
         console.error("Error fetching room info:", error);
       }
-    };
-
-    fetchData(); // 웹소켓 연동 후 여기 없애기
-  }, [roomId]);
+  };
 
   const [showReadyConfirmModal, setShowReadyConfirmModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -211,7 +212,11 @@ const RoomBody = (roomId) => {
             : filteredMaleUsers.map((user) => ({ ...user, gender: "Male" }))
         }
       />
-      <ReadyBox onGenderChange={handleGenderChange} isMale={isMale} />
+      <ReadyBox 
+        onGenderChange={handleGenderChange} 
+        isMale={isMale} 
+        onReadyButtonClick={handleReadyButtonClick} 
+      />
       <UserCardBox
         users={
           isMale
@@ -255,8 +260,8 @@ const RoomBody = (roomId) => {
         <FinalModal
           isOpen={showFinalModal}
           onClose={() => setShowFinalModal(false)}
-          me={final[0]}
-          you={final[1]}
+          me={final[0]} // 여기 클라이언트랑
+          you={final[1]} // 클라이언트가 선택한 유저로 출력해야함
         />
       )}
     </RootBodyContainer>
