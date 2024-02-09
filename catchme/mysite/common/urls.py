@@ -16,8 +16,8 @@ urlpatterns = [
     path('csrf/',common_base_views.csrf),
     
     #common_user_views.py
-    path('api/user_info/<int:kid>',common_user_views.UserView.as_view()),# str을 int로 바꾸는 과정 필요
-    path('api/user_info/<int:kid>/notice',common_user_views.UserNoticeView.as_view()),
+    path('api/user_info/<str:kid>',common_user_views.UserView.as_view()),# str을 int로 바꾸는 과정 필요
+    path('api/user_info/<str:kid>/notice',common_user_views.UserNoticeView.as_view()),
     
 
 ]
