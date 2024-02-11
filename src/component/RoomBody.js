@@ -68,7 +68,7 @@ const RoomBody = (roomId) => {
 
   useEffect(() => {
     fetchData(); // 초기 로딩 시에도 데이터를 불러오도록 함
-  }, []);
+  }, [roomId]);
 
     // 나중에 제대로 할 땐 URI/room/(number) 이런식으로 만들기
     const fetchData = async () => {
