@@ -12,7 +12,7 @@ class userInfo(models.Model):
 class menInfo(models.Model):
     id = models.AutoField(primary_key=True)
     #userInfo 인스턴스 연결
-    user = models.ForeignKey(userInfo, on_delete = models.CASCADE,related_name = 'man_userInfo')
+    user = models.ForeignKey(userInfo, on_delete = models.CASCADE, related_name = 'man_userInfo')
     
     #앱 내에서 사용할 닉네임
     nickname = models.CharField(max_length=50)

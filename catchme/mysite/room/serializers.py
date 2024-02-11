@@ -1,30 +1,8 @@
 
 from rest_framework import serializers
 from common.models import *
+from common.serializers import *
 
-class MenPartySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = menParty
-        fields = '__all__'
-
-class WomenPartySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = womenParty
-        fields = '__all__'
-
-class MenInfoSerializer(serializers.ModelSerializer):
-    menPartys = MenPartySerializer(many = True, read_only = True, source = 'men_party')
-    class Meta:
-        model = menInfo
-        fields = '__all__'
-        
-
-class WomenInfoSerializer(serializers.ModelSerializer):
-    womenPartys = WomenPartySerializer(many = True, read_only = True, source = 'women_party')
-    class Meta:
-        model = menInfo
-        fields = '__all__'
-        
 
 class RoomSerializer(serializers.ModelSerializer):
     #menInfos = MenInfoSerializer(many = True, read_only = True, source = 'men_infos')# source에 등록한 것은 model에서 related_name항목
