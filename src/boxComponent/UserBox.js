@@ -90,7 +90,7 @@ const UserBox = ({ users }) => {
     const fetchCsrfToken = async () => {
       try {
         const response = await fetch(
-          "http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/",
+          "http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/1",
           {
             method: "GET",
             mode: "cors",
@@ -114,7 +114,7 @@ const UserBox = ({ users }) => {
   const handleSpeechBubbleClick = async (text) => {
     try {
       const response = 
-      await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/', {
+      await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/1', {
         method: "POST",
         mode: 'cors',
         headers: {

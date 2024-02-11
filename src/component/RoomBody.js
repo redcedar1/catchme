@@ -34,7 +34,8 @@ const RectangleTable = styled.div`
   z-index: -1;
 `;
 
-const RoomBody = (roomId) => {
+const RoomBody = ({roomId}) => {
+
   const [roomName, setRoomName] = useState("");
   const [location, setLocation] = useState("");
   const [time, setTime] = useState("");
@@ -66,51 +67,62 @@ const RoomBody = (roomId) => {
     // 그 외의 레디 상태 업데이트 등의 로직 추가
   };
 
-  useEffect(() => {
-    fetchData(); // 초기 로딩 시에도 데이터를 불러오도록 함
-  }, [roomId]);
-
-    // 나중에 제대로 할 땐 URI/room/(number) 이런식으로 만들기
     const fetchData = async () => {
       try {
         const roomResponse = await fetch(
-          "http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/",
+          `http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/${roomId}/`,
           {
-            //뒤에 ${roomId} 붙이기
             method: "GET",
             mode: "cors",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            }
           }
         );
         const MaleusersResponse = await fetch(
-          "http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/",
+          `http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/${roomId}/`,
           {
-            //뒤에 ${roomId} 붙이기
             method: "GET",
             mode: "cors",
+            headers: {
+              'Accept': 'application/json'
+            }
           }
         );
         const FemaleusersResponse = await fetch(
-          "http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/",
+          `http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/${roomId}/`,
           {
-            //뒤에 ${roomId} 붙이기
             method: "GET",
             mode: "cors",
+            headers: {
+              'Accept': 'application/json'
+            }
           }
         );
 
         const roomdata = await roomResponse.json();
         const maledata = await MaleusersResponse.json();
         const femaledata = await FemaleusersResponse.json();
-        setRoomName(roomdata[0].rname);
-        setLocation(roomdata[0].location);
-        setTime(roomdata[0].created_at);
-        setMeetingnum(roomdata[0].meetingnum);
-        setMaleusers(maledata[0].menInfos);
-        setFemaleusers(femaledata[0].womenInfos);
+        setRoomName(roomdata.rname);
+        setLocation(roomdata.location);
+        setTime(roomdata.created_at);
+        setMeetingnum(roomdata.meetingnum);
+        setMaleusers(roomdata.menInfos);
+        setFemaleusers(roomdata.womenInfos);
+
+        console.log(roomdata)
+        console.log(maledata)
+        console.log(femaledata)
+
       } catch (error) {
         console.error("Error fetching room info:", error);
       }
   };
+
+  useEffect(() => {
+    fetchData(); // 초기 로딩 시에도 데이터를 불러오도록 함
+  }, [roomId]);
 
   const [showReadyConfirmModal, setShowReadyConfirmModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
