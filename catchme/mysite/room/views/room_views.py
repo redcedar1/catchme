@@ -17,7 +17,7 @@ def index(request):
     return render(request,"room/room.html")
 
 @csrf_exempt
-def selectedRoom(request):
+def selectedRoom(request,rno):
 
     if request.method == "POST":
         data = json.loads(request.body)  # JSON 데이터 파싱
