@@ -1,5 +1,6 @@
 
 
+import json
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -10,19 +11,14 @@ from ..serializers import RoomSerializer, WomenPercentageSerializer, MenPercenta
 from django.middleware.csrf import get_token
 import requests
 from django.contrib.auth.decorators import login_required
-
+from django.views.decorators.csrf import csrf_exempt
 
 def index(request):
     return render(request,"room/room.html")
 
 
 @csrf_exempt
-<<<<<<< HEAD
-def selectedRoom(request,rno):
-
-=======
 def selectedRoom(request):
->>>>>>> 7701a46c30e1d0f3f3bdb67df98ea8133b2383f3
     if request.method == "POST":
         data = json.loads(request.body)  # JSON 데이터 파싱
         kid = data.get('kid')
