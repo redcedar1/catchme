@@ -42,9 +42,20 @@ INSTALLED_APPS = [
     'kakaopay',
     'corsheaders',
     'rest_framework',
+    'websocket',
 
 ]
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000/','http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080']
+
+ASGI_APPLICATION = 'mysite.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
