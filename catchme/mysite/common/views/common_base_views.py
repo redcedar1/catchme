@@ -43,7 +43,7 @@ def kakaoLoginLogic(request):
         _restApiKey = '5e0af453ab97a10d3d73f26da031db2a'
         _redirectUrl = 'http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/main/kakaoLoginLogicRedirect'
         _url = f'https://kauth.kakao.com/oauth/authorize?client_id={_restApiKey}&redirect_uri={_redirectUrl}&response_type=code'
-        return redirect(_url)#이 url로 접속하면 kakaoLoginLogicRedirect 로 카카오서버가 정보를 쏴주므로, 클라이언트에서 이링크로 redirect시켜주면됨 
+        return JsonResponse({'_url':_url})#이 url로 접속하면 kakaoLoginLogicRedirect 로 카카오서버가 정보를 쏴주므로, 클라이언트에서 이링크로 redirect시켜주면됨 
     else:
         #이미 로그인 되어있으므로 로그인 되어있다는 것을 프론트에 알려줌
         #else부분 아직 코드 미완성
@@ -66,8 +66,8 @@ def kakaoLoginLogicRedirect(request):
     account_info = requests.get("https://kapi.kakao.com/v2/user/me",
                                 headers={"Authorization": f"Bearer {_result['access_token']}"}).json()
     
-    if not userInfo.objects.filter(kid = account_info['id']).exists():
-        user = userInfo.objects.create(
+    if not userInfo.objects.filter(kid = account_info['id']).exists():#db상에 kid가 없는 유저라면 introduction하라는 답변을 response, 있는 유저면 db조회 후 로그인 처리할지말지
+        user = userInfo.objects.create(#db에 유저 생성 -> 이부분을 introduction과 연계해야함,
             kid = account_info['id'],
             location = "경기도 고양시",
             ismale = True
