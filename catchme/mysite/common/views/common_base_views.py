@@ -43,7 +43,7 @@ def kakaoLoginLogic(request):
         _restApiKey = '5e0af453ab97a10d3d73f26da031db2a'
         _redirectUrl = 'http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/main/kakaoLoginLogicRedirect'
         _url = f'https://kauth.kakao.com/oauth/authorize?client_id={_restApiKey}&redirect_uri={_redirectUrl}&response_type=code'
-        return JsonResponse({'redirect_url': _url})#이 url로 접속하면 kakaoLoginLogicRedirect 로 카카오서버가 정보를 쏴주므로, 클라이언트에서 이 
+        return redirect(_url)#이 url로 접속하면 kakaoLoginLogicRedirect 로 카카오서버가 정보를 쏴주므로, 클라이언트에서 이링크로 redirect시켜주면됨 
     else:
         #이미 로그인 되어있으므로 로그인 되어있다는 것을 프론트에 알려줌
         #else부분 아직 코드 미완성
@@ -59,7 +59,7 @@ def kakaoLoginLogicRedirect(request):
     #로그인 성공 후 access 토큰 저장 =>   _result['access_token']
 
     
-    return redirect("common:introduction") #로그인 완료 후엔 home페이지로
+    return JsonResponse(_result) #로그인 완료 후엔 home페이지로
 
 @login_required(login_url='common:kakaoLoginLogic')
 def kakaoLogout(request):
