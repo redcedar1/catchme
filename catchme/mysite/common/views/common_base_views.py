@@ -56,10 +56,32 @@ def kakaoLoginLogicRedirect(request):
     _url = f'https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={_restApiKey}&redirect_uri={_redirect_uri}&code={_qs}'
     _res = requests.post(_url) # post형식으로 온 정보를
     _result = _res.json() #json화 한 후
+    
+    #_result에는
+    #{"access_token": "4kTs7hAc4-mOdEVRogHgyYQhKXLy4EQ-F6sKPXLqAAABjZuZgbLMISgqRbFCUQ", "token_type": "bearer",
+    #"refresh_token": "NGs7hKNqR6Ll7u1HNhVdShh0BxCimnhJfCgKPXLqAAABjZuZga_MISgqRbFCUQ", "expires_in": 21599, "refresh_token_expires_in": 5183999}
+    #이런 정보들이 들어가있음
+
     #로그인 성공 후 access 토큰 저장 =>   _result['access_token']
+    account_info = requests.get("https://kapi.kakao.com/v2/user/me",
+                                headers={"Authorization": f"Bearer {_result['access_token']}"}).json()
+    
+    if not userInfo.objects.filter(kid = account_info['id']).exists():
+        user = userInfo.objects.create(
+            kid = account_info['id'],
+            location = "경기도 고양시",
+            ismale = True
+        )
+        user.save()
+    return JsonResponse({'kid' : user.kid})
+
+        
+        
 
     
-    return JsonResponse(_result) #로그인 완료 후엔 home페이지로
+    
+def kakaoSignup(request):
+    
 
 @login_required(login_url='common:kakaoLoginLogic')
 def kakaoLogout(request):
