@@ -74,7 +74,7 @@ def kakaoLoginLogicRedirect(request):
         )
         user.save()
     else:
-        user = userInfo.objects.filter(kid = account_info['id'])
+        user = userInfo.objects.get(kid = account_info['id'])
 
     return JsonResponse({'kid' : user.kid})
 #kid 를 통해서 사용자의 정보를 조회한후있는지 없는지 반환
