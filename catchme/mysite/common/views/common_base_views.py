@@ -76,7 +76,7 @@ def kakaoLoginLogicRedirect(request):
     else:
         user = userInfo.objects.get(kid = account_info['id'])
 
-    return JsonResponse({'kid' : user.kid})
+    return JsonResponse({'kid' : user.kid,'url':"http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/login"})
 #kid 를 통해서 사용자의 정보를 조회한후있는지 없는지 반환
 
         
