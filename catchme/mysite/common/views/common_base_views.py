@@ -76,7 +76,7 @@ def kakaoLoginLogicRedirect(request):
     else:
         user = userInfo.objects.get(kid = account_info['id'])
 
-    return redirect("https://catchme-smoky.vercel.app/")
+    return redirect("https://catchme-smoky.vercel.app/login")
 #kid 를 통해서 사용자의 정보를 조회한후있는지 없는지 반환
 
         
