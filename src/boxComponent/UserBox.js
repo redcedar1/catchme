@@ -54,7 +54,7 @@ const SpeechBubble = styled.img`
   cursor: pointer;
 `;
 
-const UserBox = ({ users }) => {
+const UserBox = ({ users, roomId }) => {
   const [selectedUser, setSelectedUser] = useState(null);
 
   const getImagePath = (animal, gender) => {
@@ -90,7 +90,7 @@ const UserBox = ({ users }) => {
     const fetchCsrfToken = async () => {
       try {
         const response = await fetch(
-          "http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/1",
+          `http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/${roomId}/`,
           {
             method: "GET",
             mode: "cors",
@@ -114,7 +114,7 @@ const UserBox = ({ users }) => {
   const handleSpeechBubbleClick = async (text) => {
     try {
       const response = 
-      await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/1', {
+      await fetch(`http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/${roomId}/`, {
         method: "POST",
         mode: 'cors',
         headers: {

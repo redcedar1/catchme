@@ -29,6 +29,7 @@ import Welcome13M from "./page/WelcomePage/Welcome13M";
 import Welcome13W from "./page/WelcomePage/Welcome13W";
 import Welcome14 from "./page/WelcomePage/Welcome14";
 import Welcome15 from "./page/WelcomePage/Welcome15";
+import { UserProvider } from './component/UserContext';
 
 function App() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(true);
@@ -40,6 +41,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="App">
+        <UserProvider>
         <RoomHeader isUserLoggedIn={isUserLoggedIn}/>
         <GenderProvider>
       <Routes> 
@@ -72,6 +74,7 @@ function App() {
           <Route path="/PayComplete" element={<PayComplete />} />
       </Routes>
       </GenderProvider>
+      </UserProvider>
       </div>
     </BrowserRouter>
   );
