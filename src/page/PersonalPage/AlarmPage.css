@@ -1,0 +1,22 @@
+.alarmpage-modal-detail {
+  width: 60%;
+  height: 25%;
+  border-radius: 15px;
+  background-color: white;
+  border: 0px solid black;
+  padding: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4); /* 그림자 효과 추가 */
+  display: block;
+  margin: auto;
+  margin-top: 80%;
+}
+
+.alarmpage-modal-container {
+  display: grid;
+  grid-template-rows: 2fr 1fr;
+  height: 100%;
+  gap: 10px;
+}
+
+.alarmpage-modal-buttons {
+}

@@ -11,7 +11,7 @@ import MaleChooseModal from "../modalComponet/MaleChooseModal";
 import FemaleChooseModal from "../modalComponet/FemaleChooseModal";
 import SecondModal from "../modalComponet/SecondModal";
 import FinalModal from "../modalComponet/FinalModal";
-import io from 'socket.io-client';
+import io from "socket.io-client";
 
 const RootBodyContainer = styled.div`
   display: grid;
@@ -34,8 +34,7 @@ const RectangleTable = styled.div`
   z-index: -1;
 `;
 
-const RoomBody = ({roomId}) => {
-
+const RoomBody = ({ roomId }) => {
   const [roomName, setRoomName] = useState("");
   const [location, setLocation] = useState("");
   const [time, setTime] = useState("");
@@ -46,16 +45,16 @@ const RoomBody = ({roomId}) => {
 
   const setupWebSocket = () => {
     dataSocket.current = io(`ws://${window.location.host}/ws/${roomId}/`);
-  
-    dataSocket.current.on('connect', () => {
-      console.log('웹 소켓 연결 성공!');
+
+    dataSocket.current.on("connect", () => {
+      console.log("웹 소켓 연결 성공!");
     });
-  
-    dataSocket.current.on('maleuser change', (data) => {
-      console.log('서버로부터 메시지 수신:', data);
+
+    dataSocket.current.on("maleuser change", (data) => {
+      console.log("서버로부터 메시지 수신:", data);
       fetchData();
     });
-  
+
     return () => {
       dataSocket.current.disconnect();
     };
@@ -67,57 +66,56 @@ const RoomBody = ({roomId}) => {
     // 그 외의 레디 상태 업데이트 등의 로직 추가
   };
 
-    const fetchData = async () => {
-      try {
-        const roomResponse = await fetch(
-          `http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/${roomId}/`,
-          {
-            method: "GET",
-            mode: "cors",
-            headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json"
-            }
-          }
-        );
-        const MaleusersResponse = await fetch(
-          `http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/${roomId}/`,
-          {
-            method: "GET",
-            mode: "cors",
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        );
-        const FemaleusersResponse = await fetch(
-          `http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/${roomId}/`,
-          {
-            method: "GET",
-            mode: "cors",
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        );
+  const fetchData = async () => {
+    try {
+      const roomResponse = await fetch(
+        `http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/${roomId}/`,
+        {
+          method: "GET",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
+      const MaleusersResponse = await fetch(
+        `http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/${roomId}/`,
+        {
+          method: "GET",
+          mode: "cors",
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      );
+      const FemaleusersResponse = await fetch(
+        `http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/${roomId}/`,
+        {
+          method: "GET",
+          mode: "cors",
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      );
 
-        const roomdata = await roomResponse.json();
-        const maledata = await MaleusersResponse.json();
-        const femaledata = await FemaleusersResponse.json();
-        setRoomName(roomdata.rname);
-        setLocation(roomdata.location);
-        setTime(roomdata.created_at);
-        setMeetingnum(roomdata.meetingnum);
-        setMaleusers(roomdata.menInfos);
-        setFemaleusers(roomdata.womenInfos);
+      const roomdata = await roomResponse.json();
+      const maledata = await MaleusersResponse.json();
+      const femaledata = await FemaleusersResponse.json();
+      setRoomName(roomdata.rname);
+      setLocation(roomdata.location);
+      setTime(roomdata.created_at);
+      setMeetingnum(roomdata.meetingnum);
+      setMaleusers(roomdata.menInfos);
+      setFemaleusers(roomdata.womenInfos);
 
-        console.log(roomdata)
-        console.log(maledata)
-        console.log(femaledata)
-
-      } catch (error) {
-        console.error("Error fetching room info:", error);
-      }
+      console.log(roomdata);
+      console.log(maledata);
+      console.log(femaledata);
+    } catch (error) {
+      console.error("Error fetching room info:", error);
+    }
   };
 
   useEffect(() => {
@@ -143,10 +141,9 @@ const RoomBody = ({roomId}) => {
 
     const checkAllUsersReady = async () => {
       if (!anyNotReady && isMaleFemaleEqual && isMaleFemaleOver2) {
-        if(/*day1*/ true)
-          setShowReadyConfirmModal(true);
-        if(/*day2*/ false) {
-            const isMutualSelected = true;
+        if (/*day1*/ true) setShowReadyConfirmModal(true);
+        if (/*day2*/ false) {
+          const isMutualSelected = true;
 
           if (!isMutualSelected) {
             try {
@@ -206,7 +203,12 @@ const RoomBody = ({roomId}) => {
   return (
     // 기본 방 구조
     <RootBodyContainer>
-      <InfoBox roomName={roomName} location={location} time={time} meetingnum={meetingnum} />
+      <InfoBox
+        roomName={roomName}
+        location={location}
+        time={time}
+        meetingnum={meetingnum}
+      />
       <ChatBox users={isMale ? filteredMaleUsers : filteredFemaleUsers} />
       <UserBox
         users={
@@ -224,10 +226,10 @@ const RoomBody = ({roomId}) => {
             : filteredMaleUsers.map((user) => ({ ...user, gender: "Male" }))
         }
       />
-      <ReadyBox 
-        onGenderChange={handleGenderChange} 
-        isMale={isMale} 
-        onReadyButtonClick={handleReadyButtonClick} 
+      <ReadyBox
+        onGenderChange={handleGenderChange}
+        isMale={isMale}
+        onReadyButtonClick={handleReadyButtonClick}
       />
       <UserCardBox
         users={
