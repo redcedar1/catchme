@@ -24,9 +24,9 @@ def kakaoPaylogic(request):
         "quantity": "1",# 상품 개수
         "total_amount": "5000",# 가격
         "tax_free_amount": "0",# 상품 비과세
-        "approval_url": "http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/kakaopay/approval",
-        "cancel_url": "http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080",
-        "fail_url": "http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080",
+        "approval_url": "http://ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com:8080/kakaopay/approval",
+        "cancel_url": "http://ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com:8080",
+        "fail_url": "http://ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com:8080",
     }
 
     res = requests.post(URL, headers=headers, params=params)

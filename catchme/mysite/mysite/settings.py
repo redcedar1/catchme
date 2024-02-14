@@ -45,14 +45,18 @@ INSTALLED_APPS = [
     'websocket',
 
 ]
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000/','http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000/','http://ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com:8080']
 
 ASGI_APPLICATION = 'mysite.routing.application'
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
+<<<<<<< HEAD
             "hosts": [('ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com', 6379)],
+=======
+            "hosts": [('ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com', 6379)],
+>>>>>>> origin/main
         },
     },
 }

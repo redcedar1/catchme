@@ -41,7 +41,7 @@ def kakaoLoginLogic(request):
     access_token = request.session.get("access_token",None) #어떻게 access_token을 받아올것인가.
     if True: #access_token을 사용하지 않으면 어떻게 카카오로그인 되어있는지 확인할것인가.
         _restApiKey = '5e0af453ab97a10d3d73f26da031db2a'
-        _redirectUrl = 'http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/main/kakaoLoginLogicRedirect'
+        _redirectUrl = 'http://ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com:8080/main/kakaoLoginLogicRedirect'
         _url = f'https://kauth.kakao.com/oauth/authorize?client_id={_restApiKey}&redirect_uri={_redirectUrl}&response_type=code'
         return JsonResponse({'_url':_url})#이 url로 접속하면 kakaoLoginLogicRedirect 로 카카오서버가 정보를 쏴주므로, 클라이언트에서 이링크로 redirect시켜주면됨 
     else:
@@ -52,7 +52,7 @@ def kakaoLoginLogic(request):
 def kakaoLoginLogicRedirect(request):
     _qs = request.GET['code']
     _restApiKey = '5e0af453ab97a10d3d73f26da031db2a'
-    _redirect_uri = 'http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/main/kakaoLoginLogicRedirect'
+    _redirect_uri = 'http://ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com:8080/main/kakaoLoginLogicRedirect'
     _url = f'https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={_restApiKey}&redirect_uri={_redirect_uri}&code={_qs}'
     _res = requests.post(_url) # post형식으로 온 정보를
     _result = _res.json() #json화 한 후
@@ -73,7 +73,14 @@ def kakaoLoginLogicRedirect(request):
             ismale = True
         )
         user.save()
+<<<<<<< HEAD
     return JsonResponse({'kid' : user.kid})
+=======
+    else:
+        user = userInfo.objects.get(kid = account_info['id'])
+
+    return redirect("https://catchme-smoky.vercel.app/login")
+>>>>>>> origin/main
 #kid 를 통해서 사용자의 정보를 조회한후있는지 없는지 반환
 
         
