@@ -34,15 +34,24 @@ const RectangleTable = styled.div`
   z-index: -1;
 `;
 
+<<<<<<< HEAD
 const RoomBody = ({ roomId }) => {
+=======
+const RoomBody = ({roomId}) => {
+
+  const [user, setUser] = useState(null);
+
+>>>>>>> 2065092f12894383fb4d2bf8b388eab665575e36
   const [roomName, setRoomName] = useState("");
   const [location, setLocation] = useState("");
   const [time, setTime] = useState("");
   const [meetingnum, setMeetingnum] = useState("");
   const [maleusers, setMaleusers] = useState([]);
   const [femaleusers, setFemaleusers] = useState([]);
+  const [isReady, setIsReady] = useState(false);
   const dataSocket = useRef(null);
 
+<<<<<<< HEAD
   const setupWebSocket = () => {
     dataSocket.current = io(`ws://${window.location.host}/ws/${roomId}/`);
 
@@ -58,13 +67,67 @@ const RoomBody = ({ roomId }) => {
     return () => {
       dataSocket.current.disconnect();
     };
+=======
+  const handleReadyButtonClick = async () => {
+    if (isReady) {
+      // 레디 상태일 때 버튼을 누르면 웹소켓 연결을 종료
+      if (dataSocket.current) {
+        dataSocket.current.close();
+        dataSocket.current = null;
+      }
+      setIsReady(false);
+    } else {
+
+      /* try {
+        // 카카오에서 사용자 정보 가져오기
+        const kakaoResponse = await fetch("https://kapi.kakao.com/v2/user/me", {
+          headers: {
+            Authorization: `Bearer ${kakaoAccessToken}`, // Kakao Access Token이 필요
+          },
+        });
+
+        if (!kakaoResponse.ok) {
+          throw new Error("Failed to fetch Kakao user information");
+        }
+
+        const kakaoUserData = await kakaoResponse.json();
+        */
+
+        // 사용자 정보 상태에 저장
+        setUser({
+          kid: 1001
+          //nickname: kakaoUserData.properties.nickname,
+          //profileImage: kakaoUserData.properties.profile_image,
+        });
+      // 레디 상태가 아닐 때 버튼을 누르면 웹소켓 연결
+      dataSocket.current = new WebSocket(`ws://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8000/ws/room/${roomId.roomId}/`);
+
+      dataSocket.current.onopen = () => {
+        console.log('웹 소켓 연결 성공!');
+        // 웹소켓 연결이 성공하면 서버로 'ready' 메시지
+        dataSocket.current.send(JSON.stringify({ message: 'ready', kid: user.kid }));
+      };
+
+      dataSocket.current.onmessage = (e) => {
+        const data = JSON.parse(e.data);
+        console.log('서버로부터 메시지 수신:', data);
+      };
+
+      setIsReady(true);
+    } /* catch (error) {
+      console.error("Error handling ready button click:", error);
+    } */
+>>>>>>> 2065092f12894383fb4d2bf8b388eab665575e36
   };
 
-  const handleReadyButtonClick = () => {
-    // 유저가 레디를 누를 때 웹 소켓 연결을 설정
-    //setupWebSocket();
-    // 그 외의 레디 상태 업데이트 등의 로직 추가
-  };
+  useEffect(() => {
+    return () => {
+      if (dataSocket.current) {
+        dataSocket.current.close();
+      }
+    };
+  }, []);
+
 
   const fetchData = async () => {
     try {
@@ -110,12 +173,18 @@ const RoomBody = ({ roomId }) => {
       setMaleusers(roomdata.menInfos);
       setFemaleusers(roomdata.womenInfos);
 
+<<<<<<< HEAD
       console.log(roomdata);
       console.log(maledata);
       console.log(femaledata);
     } catch (error) {
       console.error("Error fetching room info:", error);
     }
+=======
+      } catch (error) {
+        console.error("Error fetching room info:", error);
+      }
+>>>>>>> 2065092f12894383fb4d2bf8b388eab665575e36
   };
 
   useEffect(() => {
@@ -222,14 +291,24 @@ const RoomBody = ({ roomId }) => {
       <UserBox
         users={
           isMale
-            ? filteredFemaleUsers.map((user) => ({ ...user, gender: "Female" }))
-            : filteredMaleUsers.map((user) => ({ ...user, gender: "Male" }))
+            ? filteredFemaleUsers.map((user) => ({ ...user, gender: "Female", roomId: "roomId" }))
+            : filteredMaleUsers.map((user) => ({ ...user, gender: "Male", roomId: "roomId" }))
         }
       />
+<<<<<<< HEAD
       <ReadyBox
         onGenderChange={handleGenderChange}
         isMale={isMale}
         onReadyButtonClick={handleReadyButtonClick}
+=======
+      <ReadyBox 
+        onGenderChange={handleGenderChange} 
+        isMale={isMale} 
+        onReadyButtonClick={handleReadyButtonClick} 
+        roomId={roomId}
+        isReady={isReady}
+        setIsReady={setIsReady}
+>>>>>>> 2065092f12894383fb4d2bf8b388eab665575e36
       />
       <UserCardBox
         users={
@@ -281,5 +360,6 @@ const RoomBody = ({ roomId }) => {
     </RootBodyContainer>
   );
 };
+
 
 export default RoomBody;

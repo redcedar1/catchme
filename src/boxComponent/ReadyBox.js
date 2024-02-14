@@ -45,13 +45,12 @@ font-weight: 900;
 letter-spacing: 0.92px;
 `;
 
-const ReadyBox = ( { onGenderChange, isMale, onReadyButtonClick  } ) => {
+const ReadyBox = ( { onGenderChange, isMale, onReadyButtonClick, roomId, isReady, setIsReady } ) => {
 
-  const [isReady, setReady] = useState(false);
   const [isMaleUser, setMale] = useState(isMale);
 
   const handleReadyClick = () => {
-    setReady(!isReady);
+    setIsReady(!isReady);
     sendReadyStatusToServer();
     onReadyButtonClick();
   };
@@ -102,7 +101,7 @@ const ReadyBox = ( { onGenderChange, isMale, onReadyButtonClick  } ) => {
         return;
       }
       const response = 
-      await fetch('http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/1/api/room_info/1', {
+      await fetch(`http://ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com:8080/room/api/room_info/${roomId}/`, {
         // 현재 클라이언트 유저로 접근
         method: "POST",
         mode: 'cors',
