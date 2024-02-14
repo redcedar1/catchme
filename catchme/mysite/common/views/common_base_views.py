@@ -74,6 +74,7 @@ def kakaoLoginLogicRedirect(request):
         )
         user.save()
     return JsonResponse({'kid' : user.kid})
+#kid 를 통해서 사용자의 정보를 조회한후있는지 없는지 반환
 
         
         
