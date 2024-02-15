@@ -7,6 +7,9 @@ class DataConsumer(AsyncWebsocketConsumer):
     # user_ready 메시지를 처리하는 메서드
     async def user_ready(self, event):
         pass
+
+    async def user_not_ready(self, event):
+        pass
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'data_%s' % self.room_name
