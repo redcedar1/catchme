@@ -32,7 +32,7 @@ class menInfo(models.Model):
     face = models.CharField(max_length=10, null=True, blank=True)
     hobby = models.CharField(max_length=100, null=True, blank=True)
     animal = models.CharField(max_length=20, null=True, blank=True) #animal 속성 추가
-
+    location = models.CharField(max_length=50, null=True, blank=True)
     #레디 여부
     ready = models.BooleanField(default=False)
     #참가자 평균 나이
@@ -101,7 +101,7 @@ class womenInfo(models.Model):
     face = models.CharField(max_length=10, null=True, blank=True)
     hobby = models.CharField(max_length=100, null=True, blank=True)
     animal = models.CharField(max_length=20, null=True, blank=True) #animal 속성 추가
-
+    location = models.CharField(max_length=50, null=True, blank=True)
     #레디 여부
     ready = models.BooleanField(default=False)
     #참가자 평균 나이
@@ -153,7 +153,8 @@ class room(models.Model):
     location = models.CharField(max_length=50, null=True, blank=True)
     #매칭 진행 중 여부
     matching = models.BooleanField(default=False)
-
+    #몇대몇 미팅하는지
+    each_match = models.IntegerField(default = 0)
 
     def __str__(self):
         return str(self.pk)
