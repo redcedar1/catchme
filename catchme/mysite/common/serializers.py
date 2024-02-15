@@ -13,6 +13,18 @@ class WomenPartySerializer(serializers.ModelSerializer):
 
 class MenInfoSerializer(serializers.ModelSerializer):
     menPartys = MenPartySerializer(many = True, read_only = True, source = 'men_party')
+    w_crush_kid = serializers.SerializerMethodField()
+    w_match_kid = serializers.SerializerMethodField()
+    def get_w_crush_kid(self, obj):
+        if obj.w_crush:#w_crush 있으면 kid반환 없으면 none반환
+            return obj.w_crush.user.kid
+        return None
+
+    def get_w_match_kid(self,obj) :
+        if obj.w_match:
+            return obj.w_match.user.kid
+        return None
+
     class Meta:
         model = menInfo
         fields = '__all__'
@@ -20,6 +32,12 @@ class MenInfoSerializer(serializers.ModelSerializer):
 
 class WomenInfoSerializer(serializers.ModelSerializer):
     womenPartys = WomenPartySerializer(many = True, read_only = True, source = 'women_party')
+    m_match_kid = serializers.SerializerMethodField()
+
+    def get_m_match_kid(self,obj):
+        if obj.m_match:
+            return obj.m_match.user.kid
+        return None
     class Meta:
         model = womenInfo
         fields = '__all__'

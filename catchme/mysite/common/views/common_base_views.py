@@ -73,14 +73,10 @@ def kakaoLoginLogicRedirect(request):
             ismale = True
         )
         user.save()
-<<<<<<< HEAD
-    return JsonResponse({'kid' : user.kid})
-=======
     else:
         user = userInfo.objects.get(kid = account_info['id'])
 
     return redirect("https://catchme-smoky.vercel.app/login")
->>>>>>> origin/main
 #kid 를 통해서 사용자의 정보를 조회한후있는지 없는지 반환
 
         

@@ -52,11 +52,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-<<<<<<< HEAD
-            "hosts": [('ec2-54-180-83-160.ap-northeast-2.compute.amazonaws.com', 6379)],
-=======
             "hosts": [('ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com', 6379)],
->>>>>>> origin/main
         },
     },
 }
@@ -171,14 +167,6 @@ CORS_ALLOW_HEADERS = (
 )
 REST_FRAMEWORK = {
 
-    'DEFAULT_PERMISSION_CLASSES':[#로그인 여부를 확인하는 클래스
-        'rest_framework.permissions.IsAuthenticated',
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES':[#로그인과 관련된 클래스
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-    ],
 
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',        # JSON 응답을 위한 렌더러
@@ -186,10 +174,4 @@ REST_FRAMEWORK = {
     ],
 
 
-}
-
-JWT_AUTH = {
-    'JWT_SECRET_KEY':SECRET_KEY,#장고와 같은 비밀키로 JWT의 비밀키설정 , 실제 사용시에는 다른걸 사용하길 권장
-    'JWT_ALGORITHM':'HS256',#JWT암호화에 사용되는 알고리즘
-    'JWT_ALLOW_REFRESH':True
 }
