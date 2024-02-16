@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -41,8 +42,18 @@ INSTALLED_APPS = [
     'room',
     'kakaopay',
     'corsheaders',
+
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    'rest_framework.authtoken',
     'websocket',
+    
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.kakao',
 
 ]
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000/','http://ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com:8080']
@@ -167,6 +178,15 @@ CORS_ALLOW_HEADERS = (
 )
 REST_FRAMEWORK = {
 
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+    ),
 
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',        # JSON 응답을 위한 렌더러
@@ -175,3 +195,29 @@ REST_FRAMEWORK = {
 
 
 }
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'SIGNING_KEY': SECRET_KEY,
+}
+
+SITE_ID = 1
+
+SOCIALACCOUNT_PROVIDERS = {
+    'kakao': {
+        'APP': {
+            'client_id': '5e0af453ab97a10d3d73f26da031db2a',
+            'secret': '1023656',
+            'key': ''
+        }
+    }
+}
+
+#ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+#ACCOUNT_EMAIL_REQUIRED = True
+#ACCOUNT_UNIQUE_EMAIL = True
+#ACCOUNT_USERNAME_REQUIRED = False
+#ACCOUNT_AUTHENTICATION_METHOD = 'email'
+#ACCOUNT_EMAIL_VERIFICATION = 'none'
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#REST_USE_JWT = True
