@@ -45,15 +45,10 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
-    'dj_rest_auth',
-    'dj_rest_auth.registration',
+
     'rest_framework.authtoken',
     'websocket',
     
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.kakao',
 
 ]
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000/','http://ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com:8080']
