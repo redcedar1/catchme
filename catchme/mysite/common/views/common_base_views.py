@@ -12,7 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 def index(request):
     
-    return render(request, "common/index.html")
+    return render(request,"index.html")
 
 @login_required(login_url='common:kakaoLoginLogic')
 def introduction(request):

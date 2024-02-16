@@ -106,7 +106,7 @@ DATABASES = {
     }
 }
 
-
+AUTH_USER_MODEL = 'common.userInfo'
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -174,7 +174,8 @@ CORS_ALLOW_HEADERS = (
 REST_FRAMEWORK = {
 
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
+        #'rest_framework.permissions.IsAuthenticated',
     ),
 
     'DEFAULT_AUTHENTICATION_CLASSES': (

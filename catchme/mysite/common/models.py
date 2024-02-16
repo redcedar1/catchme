@@ -1,12 +1,53 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
-class userInfo(models.Model):
-    #사용자 카톡 고유 번호(기본키)
+from django.contrib.auth.models import BaseUserManager
+
+class CustomUserManager(BaseUserManager):
+    use_in_migrations = True
+
+    def create_user(self, kid, password=None, **extra_fields):
+        if not kid:
+            raise ValueError('The kid field must be set')
+        user = self.model(kid=kid, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, kid, password=None, **extra_fields):
+        """
+        Create and save a SuperUser with the given kid and password.
+        """
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self.create_user(kid, password, **extra_fields)
+
+    def get_by_natural_key(self, kid):
+        return self.get(**{self.model.USERNAME_FIELD: kid})
+
+class userInfo(AbstractBaseUser, PermissionsMixin):
+    objects = CustomUserManager()
+     #사용자 카톡 고유 번호(기본키)
     kid = models.BigIntegerField(primary_key=True, db_index=True)
     #사용자 위치 정보
     location = models.CharField(max_length=50)
     ismale = models.BooleanField()
+
+    is_staff = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
+
+    USERNAME_FIELD = 'kid'
+    REQUIRED_FIELDS = ['location', 'ismale']
+
+    def __str__(self):
+        return str(self.kid)
 
 
 class menInfo(models.Model):

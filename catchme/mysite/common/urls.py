@@ -1,7 +1,10 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from common.views import common_base_views , common_user_views
-
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 app_name = "common"
 urlpatterns = [
@@ -16,6 +19,9 @@ urlpatterns = [
     #common_user_views.py
     path('api/user_info/<str:kid>',common_user_views.UserView.as_view()),# str을 int로 바꾸는 과정 필요
     path('api/user_info/<str:kid>/notice',common_user_views.UserNoticeView.as_view()),
-
+    
+    #simplejwt token
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
 ]
