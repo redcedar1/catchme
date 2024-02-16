@@ -3,8 +3,6 @@ from django.contrib.auth import views as auth_views
 from common.views import common_base_views , common_user_views
 
 
-
-
 app_name = "common"
 urlpatterns = [
     #common_base_views.py
@@ -18,6 +16,6 @@ urlpatterns = [
     #common_user_views.py
     path('api/user_info/<str:kid>',common_user_views.UserView.as_view()),# str을 int로 바꾸는 과정 필요
     path('api/user_info/<str:kid>/notice',common_user_views.UserNoticeView.as_view()),
-    
+
 
 ]

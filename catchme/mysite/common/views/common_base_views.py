@@ -1,10 +1,13 @@
 from django.shortcuts import get_object_or_404, render,redirect
 from django.http import HttpResponse, JsonResponse
+
+from ..serializers import UserInfoSerializer
 from ..models import *
 from django.middleware.csrf import get_token
 import requests
 from django.contrib.auth.decorators import login_required
 from rest_framework import generics, status
+from rest_framework_simplejwt.tokens import RefreshToken
 # Create your views here.
 
 def index(request):
@@ -39,7 +42,7 @@ def introduction(request):
 
 def kakaoLoginLogic(request):
     access_token = request.session.get("access_token",None) #어떻게 access_token을 받아올것인가.
-    if True: #access_token을 사용하지 않으면 어떻게 카카오로그인 되어있는지 확인할것인가.
+    if True: #access_token을 사용하지 않으면 어떻게 카카오로그인 되어있는지 확인할것인가. jwt 토큰 확인하면 된다.
         _restApiKey = '5e0af453ab97a10d3d73f26da031db2a'
         _redirectUrl = 'http://ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com:8080/main/kakaoLoginLogicRedirect'
         _url = f'https://kauth.kakao.com/oauth/authorize?client_id={_restApiKey}&redirect_uri={_redirectUrl}&response_type=code'
@@ -76,9 +79,16 @@ def kakaoLoginLogicRedirect(request):
     else:
         user = userInfo.objects.get(kid = account_info['id'])
 
-    return redirect("https://catchme-smoky.vercel.app/login")
+    refresh = RefreshToken.for_user(user)
+    tokens = {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
+    print(tokens)
+    return HttpResponse({"user": UserInfoSerializer(user).data, "tokens": tokens})
+    #return redirect("https://catchme-smoky.vercel.app/login")
 #kid 를 통해서 사용자의 정보를 조회한후있는지 없는지 반환
-
+#반환할때 jwt 같이 반환해서 kid에 해당하는 사용자가 로그인 되어있는 사용자라는 사실을 반환
         
         
 
