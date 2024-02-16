@@ -85,7 +85,7 @@ def kakaoLoginLogicRedirect(request):
         'access': str(refresh.access_token),
     }
     print(tokens)
-    return HttpResponse({"user": UserInfoSerializer(user).data, "tokens": tokens})
+    return JsonResponse({"user": UserInfoSerializer(user).data, "tokens": tokens})
     #return redirect("https://catchme-smoky.vercel.app/login")
 #kid 를 통해서 사용자의 정보를 조회한후있는지 없는지 반환
 #반환할때 jwt 같이 반환해서 kid에 해당하는 사용자가 로그인 되어있는 사용자라는 사실을 반환
