@@ -79,17 +79,19 @@ def kakaoLoginLogicRedirect(request):
     else:
         user = userInfo.objects.get(kid = account_info['id'])
 
-    refresh = RefreshToken.for_user(user)
+    refresh = RefreshToken.for_user(user)#refreshToken은 User모델을 상정하기 때문에 User모델 대신 userInfo모델을 전송
     tokens = {
         'refresh': str(refresh),
         'access': str(refresh.access_token),
     }
-    print(tokens)
     return JsonResponse({"user": UserInfoSerializer(user).data, "tokens": tokens})
     #return redirect("https://catchme-smoky.vercel.app/login")
-#kid 를 통해서 사용자의 정보를 조회한후있는지 없는지 반환
-#반환할때 jwt 같이 반환해서 kid에 해당하는 사용자가 로그인 되어있는 사용자라는 사실을 반환
-        
+#카카오 로그인을 진행해야 카카오 서버의 보안과정을 거쳐서 백엔드 서버로 kid를 포함한 
+#user정보를 전송 => user정보가 전송 되면 그 유저 정보를 토대로 jwt토큰 생성
+#jwt토큰을 클라이언트에게 반환하면, 로그인 한 사용자에 해당하는 jwt토큰을 클라이언트에게 전송한 것이기 때문에
+#클라이언트는 그 토큰을 로컬 스토리지에 저장해서 백엔드에 정보를 요청할때마다 토큰을 로컬스토리지에서 꺼내서 같이 요청
+#로그인 안한 사용자는 서버가 jwt토큰을 발행해주지 않으므로, 사용자는 반드시 로그인을 해야함
+
         
 
     

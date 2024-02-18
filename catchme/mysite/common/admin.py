@@ -21,8 +21,7 @@ admin.site.register(payment)
 admin.site.register(Notice)
 
 class UserCreationForm(forms.ModelForm):
-   """A form for creating new users. Includes all the required
-   fields, plus a repeated password."""
+   """유저 생성 폼 근데 패스워드 확인 두번하는건 superuser create할때 하려고 한거"""
    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
 
@@ -30,8 +29,8 @@ class UserCreationForm(forms.ModelForm):
        model = userInfo
        fields = ('kid', 'location')
 
-   def clean_password2(self):
-       # Check that the two password entries match
+   def clean_password2(self): #
+       # 비밀번호 두번작성 한거 확인
        password1 = self.cleaned_data.get("password1")
        password2 = self.cleaned_data.get("password2")
        if password1 and password2 and password1 != password2:
@@ -47,32 +46,34 @@ class UserCreationForm(forms.ModelForm):
 
 
 class UserChangeForm(forms.ModelForm):
-   """A form for updating users. Includes all the fields on
-   the user, but replaces the password field with admin's
-   disabled password hash display field.
+   """기존 유저의 정보를 수정하는 폼
+    비밀번호 필드는 ReadOnlyPasswordHashField로 설정되어 있어, 비밀번호 해시를 보여주되 수정은 불가능
    """
    password = ReadOnlyPasswordHashField()
 
    class Meta:
        model = userInfo
        fields = ('kid', 'location','ismale','is_staff','is_admin')
+
+
 class UserAdmin(BaseUserAdmin):
-   # The forms to add and change user instances
+   """
+    관리자 사이트에서 유저 모델을 어떻게 표시할지 정의하는 클래스
+    UserCreationForm과 UserChangeForm을 사용하여 유저 생성 및 수정 기능을 제공
+    """
    form = UserChangeForm
    add_form = UserCreationForm
 
    # The fields to be used in displaying the User model.
    # These override the definitions on the base UserAdmin
    # that reference specific fields on auth.User.
+   #list_display는 관리자 사이트에서 유저 목록을 어떤 필드로 표시할지 설정하는 속성
    list_display = ('kid', 'location', 'ismale')
 
-   # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
-   # overrides get_fieldsets to use this attribute when creating a user.
-   
+   #search_fields는 관리자 사이트에서 유저를 검색할 때 사용할 필드를 설정하는 속성
    search_fields = ('kid',)
-
    filter_horizontal = ()
 
 
-# Now register the new UserAdmin...
+#UserAdmin을 관리자 사이트에 등록 이렇게 하면 관리자 사이트에서 UserAdmin 설정에 따라 유저 모델관리가능
 admin.site.register(User, UserAdmin)

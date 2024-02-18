@@ -5,20 +5,19 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 from django.contrib.auth.models import BaseUserManager
 
 class CustomUserManager(BaseUserManager):
+    #CustomUserManager 클래스는 유저 생성 및 관리를 담당하는 매니저 클래스
     use_in_migrations = True
 
-    def create_user(self, kid, password=None, **extra_fields):
-        if not kid:
+    def create_user(self, kid, password=None, **extra_fields):#일반user 생성 메서드
+        if not kid:#kid만 필수
             raise ValueError('The kid field must be set')
         user = self.model(kid=kid, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, kid, password=None, **extra_fields):
-        """
-        Create and save a SuperUser with the given kid and password.
-        """
+    def create_superuser(self, kid, password=None, **extra_fields):#superuser 생성 메서드
+
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
@@ -28,12 +27,20 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('Superuser must have is_superuser=True.')
 
         return self.create_user(kid, password, **extra_fields)
-
-    def get_by_natural_key(self, kid):
+    #get_by_natural_key 메서드는 자연 키를 이용해 유저를 조회하는 메서드
+    def get_by_natural_key(self, kid):#natural_key를 참조해야 할때 username이 아닌 kid로 수정
         return self.get(**{self.model.USERNAME_FIELD: kid})
 
-class userInfo(AbstractBaseUser, PermissionsMixin):
-    objects = CustomUserManager()
+class userInfo(AbstractBaseUser, PermissionsMixin): 
+    """
+    장고의 기본 제공 클래스인 User모델을 상속한 userInfo모델을 제작하여 추후에 simpleJWT를 사용할 환경 구성(simpleJWT는 전부 User을 사용한다고 가정한다)
+    userInfo가 User 모델을 상속하기 때문에 CustomUserManager()클래스로 superuser, staff, 일반 user create용 메서드 제작 
+    PermissionsMixin은 Django에서 제공하는 권한 관련 필드(is_superuser, is_staff, user_permissions)를 추가해주는 믹스인 클래스
+    
+    """
+    
+    
+    objects = CustomUserManager() #컨트롤 매니저로 CustomUserManager 사용
      #사용자 카톡 고유 번호(기본키)
     kid = models.BigIntegerField(primary_key=True, db_index=True)
     #사용자 위치 정보
@@ -43,11 +50,11 @@ class userInfo(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
 
-    USERNAME_FIELD = 'kid'
-    REQUIRED_FIELDS = ['location', 'ismale']
+    USERNAME_FIELD = 'kid'#userName_field로 User 모델, 즉 기본 장고 User모델의 username(id)를 대체
+    REQUIRED_FIELDS = ['location', 'ismale']#createsuperuser사용할때 물어볼 field
 
     def __str__(self):
-        return str(self.kid)
+        return str(self.kid)#return은 str이어야 한다
 
 
 class menInfo(models.Model):
