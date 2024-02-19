@@ -1,11 +1,11 @@
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
-
+from rest_framework.views import APIView
 from common.models import *
 from common.serializers import *
 
-class UserView(generics.APIView):
+class UserView(APIView):
     def get(self,request, kid):
         kid = int(kid)
         userinfo = get_object_or_404(userInfo, kid = kid)
