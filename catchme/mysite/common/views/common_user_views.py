@@ -14,7 +14,7 @@ class UserView(generics.ListAPIView):
     
     def post(self,request,kid):
         kid = int(kid)
-        Response({"message": "처리가 완료되었습니다."},status=status.HTTP_200_OK)
+        return Response({"message": "처리가 완료되었습니다."},status=status.HTTP_200_OK)
 
 
 class UserNoticeView(generics.ListAPIView):
