@@ -5,7 +5,7 @@ from rest_framework import generics, status
 from common.models import *
 from common.serializers import *
 
-class UserView(generics.ListAPIView):
+class UserView(generics.APIView):
     def get(self,request, kid):
         kid = int(kid)
         userinfo = get_object_or_404(userInfo, kid = kid)
