@@ -17,10 +17,10 @@ class UserView(APIView):
         # 예를 들어, 요청 데이터를 검증하고 모델을 저장하는 로직
         kid = int(kid)
         userinfo = get_object_or_404(userInfo,kid = kid)
-        w_crush_data = request.data.get("w_crush")
-        if w_crush_data:
+        w_crush_kid_data = request.data.get("w_crush_kid")
+        if w_crush_kid_data:
             # w_crush 속성 업데이트
-            userinfo.w_crush = w_crush_data
+            userinfo.w_crush_kid = w_crush_kid_data
             userinfo.save()
             return Response({"message": "w_crush가 업데이트되었습니다."}, status=status.HTTP_200_OK)
         else:
