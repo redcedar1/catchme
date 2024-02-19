@@ -11,6 +11,11 @@ class UserView(generics.ListAPIView):
         userinfo = get_object_or_404(userInfo, kid = kid)
         serializer = UserInfoSerializer(userinfo)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self,request,kid):
+        kid = int(kid)
+        Response(status=status.HTTP_200_OK)
+
 
 class UserNoticeView(generics.ListAPIView):
     def get(self, request, kid):
