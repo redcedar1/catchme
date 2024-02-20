@@ -36,39 +36,38 @@ class DataConsumer(AsyncWebsocketConsumer):
 
         if message_type == 'ready' and kid is not None:
             try:
-                await self.update_user_ready(kid, True)
+                is_updated = await self.update_user_ready(kid, True)
             except userInfo.DoesNotExist:
                 print(f"No user with kid {kid} exists.")
                 return
 
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {
-                    'type': 'user_ready',
-                    'message': f'User {kid} is ready.'
-                }
-            )
+            if is_updated:
+                await self.send(text_data=json.dumps({'message': 'api 리랜더링'}))
+
         elif message_type == 'not_ready' and kid is not None:
             try:
-                await self.update_user_ready(kid, False)
+                is_updated = await self.update_user_ready(kid, False)
             except userInfo.DoesNotExist:
                 print(f"No user with kid {kid} exists.")
                 return
 
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {
-                    'type': 'user_not_ready',
-                    'message': f'User {kid} is not ready.'
-                }
-            )
+            if is_updated:
+                await self.send(text_data=json.dumps({'message': 'api 리랜더링'}))
 
     # 데이터베이스 업데이트 함수
     @sync_to_async
     def update_user_ready(self, kid, ready):
         from common.models import userInfo, menInfo, womenInfo
         user = userInfo.objects.get(kid=kid)
+        is_updated = False
         if user.ismale:
-            menInfo.objects.filter(user=user).update(ready=ready)
+            current_ready = menInfo.objects.filter(user=user).first().ready
+            if current_ready != ready:
+                menInfo.objects.filter(user=user).update(ready=ready)
+                is_updated = True
         else:
-            womenInfo.objects.filter(user=user).update(ready=ready)
+            current_ready = womenInfo.objects.filter(user=user).first().ready
+            if current_ready != ready:
+                womenInfo.objects.filter(user=user).update(ready=ready)
+                is_updated = True
+        return is_updated
