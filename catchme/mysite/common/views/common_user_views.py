@@ -23,7 +23,7 @@ class UserViewSet(ModelViewSet): #url 설정 해야함
         #modal id를 부여해야함 -> 남자한테만 뜨는 모달창이기 때문
         kid = kwargs.get('pk')
         userinfo = get_object_or_404(userInfo,kid = kid)
-
+        
         if userinfo.ismale:
             user = userinfo.man_userInfo.get()
             w_crush_kid_data = request.data.get("w_crush_kid")
