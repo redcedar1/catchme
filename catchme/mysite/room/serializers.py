@@ -43,31 +43,3 @@ class SelectedRoomSerializer(serializers.ModelSerializer):
     class Meta :
         model = room
         fields = '__all__'
-
-class MenPercentageSerializer(serializers.ModelSerializer):
-    matching_count = serializers.SerializerMethodField()
-    total_conditions = serializers.SerializerMethodField()
-
-    class Meta:
-        model = menInfo
-        fields = '__all__'
-
-    def get_matching_count(self, obj):
-        return getattr(obj, 'matching_count', None)
-
-    def get_total_conditions(self, obj):
-        return getattr(obj, 'total_conditions', None)
-
-class WomenPercentageSerializer(serializers.ModelSerializer):
-    matching_count = serializers.SerializerMethodField()
-    total_conditions = serializers.SerializerMethodField()
-
-    class Meta:
-        model = womenInfo
-        fields = '__all__'
-
-    def get_matching_count(self, obj):
-        return getattr(obj, 'matching_count', None)
-
-    def get_total_conditions(self, obj):
-        return getattr(obj, 'total_conditions', None)
