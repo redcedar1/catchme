@@ -29,9 +29,6 @@ class DataConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
-        # 해당 사용자의 채팅 메시지 삭제
-        del self.chats[self.scope['user'].kid]
-
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message_type = text_data_json.get('type')
