@@ -29,6 +29,9 @@ class DataConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
+        # 해당 사용자의 채팅 메시지 삭제
+        del self.chats[self.scope['user'].kid]
+
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message_type = text_data_json.get('type')
@@ -53,6 +56,23 @@ class DataConsumer(AsyncWebsocketConsumer):
 
             if is_updated:
                 await self.send(text_data=json.dumps({'message': 'api 리랜더링'}))
+
+
+
+        elif message_type == 'selected_bubble':
+
+            chat_message = text_data_json.get('chat')
+
+            if chat_message is not None:
+
+                await self.send(text_data=json.dumps({'message': 'api 리랜더링'}))
+
+    async def send_chat_message(self, event):
+        # 웹소켓으로 메시지를 보낼 때 실행되는 메서드
+        message = event['message']
+        await self.send(text_data=json.dumps({
+            'message': message
+        }))
 
     # 데이터베이스 업데이트 함수
     @sync_to_async
