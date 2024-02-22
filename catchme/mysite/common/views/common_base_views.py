@@ -45,13 +45,14 @@ class kakaoLoginView(APIView):
     def post(self, request):
         try:
             code = request.data.get("code") # 프론트에서 보내준 code로 token을 구해와야한다 !! 
+            print(code)
             access_token = requests.post(
                 "https://kauth.kakao.com/oauth/token",
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
                 data={
                     "grant_type": "authorization_code",
                     "client_id": "273e3f916e59df62a965cb94d235f29e",
-                    "redirect_uri": "https://http://localhost:3000/login",
+                    "redirect_uri": "http://localhost:3000/login",
                     "code": code
                 },
             )
