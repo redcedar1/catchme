@@ -16,12 +16,12 @@ urlpatterns = [
     #common_base_views.py
     path('',common_base_views.index, name='index'),
     path('introduction/',common_base_views.introduction, name = "introduction"),
-    path('kakaoLogin/',common_base_views.kakaoLoginView.as_view(),name="kakaoLoginLogic"),
+    path('kakaoLogin',common_base_views.kakaoLoginView.as_view(),name="kakaoLoginLogic"),
     path('kakaoLogout/', common_base_views.kakaoLogout,name="kakaoLogout"),
     path('csrf/',common_base_views.csrf),
     
     #common_user_views.py
-    path('api/user_info/<str:kid>/notice',common_user_views.UserNoticeView.as_view()),
+    path('api/user_info/<str:kid>/notice/',common_user_views.UserNoticeView.as_view()),
     
     #changing to viewset
     path('', include(userRouter.urls)),
