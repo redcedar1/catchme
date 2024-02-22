@@ -12,7 +12,8 @@ from django.middleware.csrf import get_token
 import requests
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-
+from django.db.models import F
+from django.db.models import Count
 def index(request):
     return render(request,"room/room.html")
 
@@ -42,7 +43,23 @@ def matchingRoom(request):
 class RoomListView(generics.ListAPIView):
     queryset = room.objects.all()
     # queryset = room.objects.filter(readynum=4).prefetch_related('men_infos', 'women_infos') #readynum이 4인 객체들만 직렬화
+    # 아니면 아래처럼 함수로 만들기
     serializer_class = RoomSerializer
+
+    def get_queryset(self):
+        rname_search = self.request.GET.get('kw', None)
+        order = self.request.GET.get('order', None)
+        queryset = room.objects.all().exclude(matching=True)
+
+        if rname_search is not None:
+            queryset = queryset.filter(rname__contains=rname_search)
+
+        if order == '인원많은순':
+            queryset = queryset.annotate(mnum=Count('men_infos'), wnum=Count('women_infos')).annotate(total_num=F('mnum') + F('wnum')).order_by('-total_num')
+
+        return queryset
+
+
 
 
 class SelectedRoomView(APIView):

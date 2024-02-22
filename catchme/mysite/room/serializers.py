@@ -22,7 +22,7 @@ class RoomSerializer(serializers.ModelSerializer):
 
     class Meta :
         model = room
-        fields = ('rno','rname','mnum','wnum','each_match')
+        fields = ('rno','rname','mnum','wnum','each_match','matching')
 
 class SelectedRoomSerializer(serializers.ModelSerializer):
     menInfos = MenInfoSerializer(many = True, read_only = True, source = 'men_infos')# source에 등록한 것은 model에서 related_name항목

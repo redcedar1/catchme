@@ -204,8 +204,12 @@ class room(models.Model):
     #몇대몇 미팅하는지
     each_match = models.IntegerField(default = 0)
 
+    class Meta:
+        ordering = ['-created_at']
+        
     def __str__(self):
         return str(self.pk)
+    
 
 class matchingInfo(models.Model):
     #매칭정보의 고유번호(매칭정보의 기본키)

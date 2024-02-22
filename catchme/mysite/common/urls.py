@@ -26,6 +26,7 @@ urlpatterns = [
     
     #changing to viewset
     path('', include(userRouter.urls)),
+    
     #simplejwt token
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
