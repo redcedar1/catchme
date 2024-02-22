@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
 from common.models import room, menInfo, womenInfo, userInfo
-from ..serializers import RoomSerializer, WomenPercentageSerializer, MenPercentageSerializer, SelectedRoomSerializer
+from ..serializers import RoomSerializer, SelectedRoomSerializer
 from django.middleware.csrf import get_token
 import requests
 from django.contrib.auth.decorators import login_required
