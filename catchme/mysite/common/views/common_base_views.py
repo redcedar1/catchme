@@ -42,9 +42,9 @@ def introduction(request):
             return render(request, "common/introduction.html")
 
 class kakaoLoginView(APIView):
-    def post(self, request):
+    def get(self, request):
         try:
-            code = request.data.get("code") # 프론트에서 보내준 code로 token을 구해와야한다 !! 
+            code = request.GET.get("code") # 프론트에서 보내준 code로 token을 구해와야한다 !! 
             access_token = requests.post(
                 "https://kauth.kakao.com/oauth/token",
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
