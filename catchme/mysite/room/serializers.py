@@ -22,7 +22,8 @@ class RoomSerializer(serializers.ModelSerializer):
 
     class Meta :
         model = room
-        fields = ('rno','rname','mnum','wnum','each_match','matching')
+
+        fields = ('rno','rname','mnum','wnum','each_match','location','matching')
 
 class SelectedRoomSerializer(serializers.ModelSerializer):
     menInfos = MenInfoSerializer(many = True, read_only = True, source = 'men_infos')# source에 등록한 것은 model에서 related_name항목
@@ -43,31 +44,3 @@ class SelectedRoomSerializer(serializers.ModelSerializer):
     class Meta :
         model = room
         fields = '__all__'
-
-class MenPercentageSerializer(serializers.ModelSerializer):
-    matching_count = serializers.SerializerMethodField()
-    total_conditions = serializers.SerializerMethodField()
-
-    class Meta:
-        model = menInfo
-        fields = '__all__'
-
-    def get_matching_count(self, obj):
-        return getattr(obj, 'matching_count', None)
-
-    def get_total_conditions(self, obj):
-        return getattr(obj, 'total_conditions', None)
-
-class WomenPercentageSerializer(serializers.ModelSerializer):
-    matching_count = serializers.SerializerMethodField()
-    total_conditions = serializers.SerializerMethodField()
-
-    class Meta:
-        model = womenInfo
-        fields = '__all__'
-
-    def get_matching_count(self, obj):
-        return getattr(obj, 'matching_count', None)
-
-    def get_total_conditions(self, obj):
-        return getattr(obj, 'total_conditions', None)

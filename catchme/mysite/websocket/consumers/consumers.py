@@ -54,15 +54,16 @@ class DataConsumer(AsyncWebsocketConsumer):
             if is_updated:
                 await self.send(text_data=json.dumps({'message': 'api 리랜더링'}))
 
-
-
         elif message_type == 'selected_bubble':
-
             chat_message = text_data_json.get('chat')
-
             if chat_message is not None:
-
-                await self.send(text_data=json.dumps({'message': 'api 리랜더링'}))
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        'type': 'chat_message',
+                        'message': chat_message,
+                    }
+                )
 
     async def send_chat_message(self, event):
         # 웹소켓으로 메시지를 보낼 때 실행되는 메서드
