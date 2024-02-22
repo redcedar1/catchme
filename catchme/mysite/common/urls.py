@@ -16,8 +16,7 @@ urlpatterns = [
     #common_base_views.py
     path('',common_base_views.index, name='index'),
     path('introduction/',common_base_views.introduction, name = "introduction"),
-    path('kakaoLoginLogic/',common_base_views.kakaoLoginLogic,name="kakaoLoginLogic"),
-    path('kakaoLoginLogicRedirect/', common_base_views.kakaoLoginLogicRedirect,name="kakaoLoginLogicRedirect"),
+    path('kakaoLogin/',common_base_views.kakaoLoginView.as_view(),name="kakaoLoginLogic"),
     path('kakaoLogout/', common_base_views.kakaoLogout,name="kakaoLogout"),
     path('csrf/',common_base_views.csrf),
     

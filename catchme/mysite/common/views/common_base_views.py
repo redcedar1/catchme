@@ -1,12 +1,13 @@
 from django.shortcuts import get_object_or_404, render,redirect
 from django.http import HttpResponse, JsonResponse
-
+from rest_framework.response import Response
 from ..serializers import UserInfoSerializer
 from ..models import *
 from django.middleware.csrf import get_token
 import requests
 from django.contrib.auth.decorators import login_required
 from rest_framework import generics, status
+from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 # Create your views here.
 
@@ -40,53 +41,45 @@ def introduction(request):
         else:#페이지 요청이면 자기소개 페이지로
             return render(request, "common/introduction.html")
 
-def kakaoLoginLogic(request):
-    access_token = request.session.get("access_token",None) #어떻게 access_token을 받아올것인가.
-    if True: #access_token을 사용하지 않으면 어떻게 카카오로그인 되어있는지 확인할것인가. jwt 토큰 확인하면 된다.
-        _restApiKey = '5e0af453ab97a10d3d73f26da031db2a'
-        _redirectUrl = 'http://ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com:8080/main/kakaoLoginLogicRedirect'
-        _url = f'https://kauth.kakao.com/oauth/authorize?client_id={_restApiKey}&redirect_uri={_redirectUrl}&response_type=code'
-        return JsonResponse({'_url':_url})#이 url로 접속하면 kakaoLoginLogicRedirect 로 카카오서버가 정보를 쏴주므로, 클라이언트에서 이링크로 redirect시켜주면됨 
-    else:
-        #이미 로그인 되어있으므로 로그인 되어있다는 것을 프론트에 알려줌
-        #else부분 아직 코드 미완성
-        return HttpResponse("이미 로그인 되어 있습니다.")
+class kakaoLoginView(APIView):
+    def post(self, request):
+        try:
+            code = request.data.get("code") # 프론트에서 보내준 code로 token을 구해와야한다 !! 
+            access_token = requests.post(
+                "https://kauth.kakao.com/oauth/token",
+                headers={"Content-Type": "application/x-www-form-urlencoded"},
+                data={
+                    "grant_type": "authorization_code",
+                    "client_id": "273e3f916e59df62a965cb94d235f29e",
+                    "redirect_uri": "https://catchme-smoky.vercel.app/login",
+                    "code": code
+                },
+            )
+            access_token = access_token.json().get("access_token")
+            account_info = requests.get("https://kapi.kakao.com/v2/user/me",
+                                headers={"Authorization": f"Bearer {access_token}"}).json()
+            if not userInfo.objects.filter(kid = account_info['id']).exists():#db상에 kid가 없는 유저라면 introduction하라는 답변을 response, 있는 유저면 db조회 후 로그인 처리할지말지
+                user = userInfo.objects.create(#db에 유저 생성 -> 이부분을 introduction과 연계해야함,
+                    kid = account_info['id'],
+                    location = "경기도 고양시",
+                    ismale = True
+                )
+                user.save()
+            else:
+                user = userInfo.objects.get(kid = account_info['id'])
 
-def kakaoLoginLogicRedirect(request):
-    _qs = request.GET['code']
-    _restApiKey = '5e0af453ab97a10d3d73f26da031db2a'
-    _redirect_uri = 'http://ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com:8080/main/kakaoLoginLogicRedirect'
-    _url = f'https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={_restApiKey}&redirect_uri={_redirect_uri}&code={_qs}'
-    _res = requests.post(_url) # post형식으로 온 정보를
-    _result = _res.json() #json화 한 후
-    
-    #_result에는
-    #{"access_token": "4kTs7hAc4-mOdEVRogHgyYQhKXLy4EQ-F6sKPXLqAAABjZuZgbLMISgqRbFCUQ", "token_type": "bearer",
-    #"refresh_token": "NGs7hKNqR6Ll7u1HNhVdShh0BxCimnhJfCgKPXLqAAABjZuZga_MISgqRbFCUQ", "expires_in": 21599, "refresh_token_expires_in": 5183999}
-    #이런 정보들이 들어가있음
+            refresh = RefreshToken.for_user(user)#refreshToken은 User모델을 상정하기 때문에 User모델 대신 userInfo모델을 전송
+            tokens = {
+                'kid' : user.kid,
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            }
+            return Response({'tokens': tokens}, status=status.HTTP_200_OK)
+            
+        except Exception:
+            return Response(status=status.HTTP_400_BAD_REQUEST)  
 
-    #로그인 성공 후 access 토큰 저장 =>   _result['access_token']
-    account_info = requests.get("https://kapi.kakao.com/v2/user/me",
-                                headers={"Authorization": f"Bearer {_result['access_token']}"}).json()
-    
-    if not userInfo.objects.filter(kid = account_info['id']).exists():#db상에 kid가 없는 유저라면 introduction하라는 답변을 response, 있는 유저면 db조회 후 로그인 처리할지말지
-        user = userInfo.objects.create(#db에 유저 생성 -> 이부분을 introduction과 연계해야함,
-            kid = account_info['id'],
-            location = "경기도 고양시",
-            ismale = True
-        )
-        user.save()
-    else:
-        user = userInfo.objects.get(kid = account_info['id'])
 
-    refresh = RefreshToken.for_user(user)#refreshToken은 User모델을 상정하기 때문에 User모델 대신 userInfo모델을 전송
-    tokens = {
-        'kid' : user.kid,
-        'refresh': str(refresh),
-        'access': str(refresh.access_token),
-    }
-    return JsonResponse({"tokens": tokens})
-    #return redirect("https://catchme-smoky.vercel.app/login")
 #카카오 로그인을 진행해야 카카오 서버의 보안과정을 거쳐서 백엔드 서버로 kid를 포함한 
 #user정보를 전송 => user정보가 전송 되면 그 유저 정보를 토대로 jwt토큰 생성
 #jwt토큰을 클라이언트에게 반환하면, 로그인 한 사용자에 해당하는 jwt토큰을 클라이언트에게 전송한 것이기 때문에
