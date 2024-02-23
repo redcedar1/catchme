@@ -13,7 +13,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 def index(request):
     
-    return render(request,"index.html")
+    return HttpResponse("반갑습니다 캐치미의 api 서버입니다 - 태일,기정-")
 
 @login_required(login_url='common:kakaoLoginLogic')
 def introduction(request):
@@ -52,7 +52,7 @@ class kakaoLoginView(APIView):
                 data={
                     "grant_type": "authorization_code",
                     "client_id": "273e3f916e59df62a965cb94d235f29e",
-                    "redirect_uri": "http://localhost:3000/login",
+                    "redirect_uri": "https://catchme-smoky.vercel.app/login",
                     "code": code
                 },
             )
