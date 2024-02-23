@@ -47,14 +47,14 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
 
     'drf_yasg',
-    
+
 
     'rest_framework.authtoken',
     'websocket',
     
 
 ]
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000/','http://ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com:8080']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000/','http://ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com:8080','https://api.catchmenow.co.kr']
 
 ASGI_APPLICATION = 'mysite.routing.application'
 CHANNEL_LAYERS = {
