@@ -44,11 +44,16 @@ class UserNoticeView(APIView):
         userinfo = get_object_or_404(userInfo, kid = kid)
         serializer = UserNoticeSerializer(userinfo)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    def delete(self,request,kid):#아직 작성중
+    def delete(self,request,kid,*args, **kwargs):#아직 작성중
         kid = int(kid)
-        userinfo = get_object_or_404(userInfo, kid = kid)
-    
+        ids_to_delete = request.data.get('ids', [])
+        if not ids_to_delete:
+            return Response({"error": "IDs 리스트가 제공되지 않았습니다."}, status=status.HTTP_400_BAD_REQUEST)
+        notices = Notice.objects.filter(id__in=ids_to_delete)
+        notices.delete()
+        return Response({"message": "알림이 삭제되었습니다."}, status=status.HTTP_200_OK)
     def put(self, request, kid, *args, **kwargs):
+        kid = int(kid)
         ids_to_update = request.data.get('ids', [])
         if not ids_to_update:
             return Response({"error": "IDs 리스트가 제공되지 않았습니다."}, status=status.HTTP_400_BAD_REQUEST)
