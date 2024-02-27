@@ -125,6 +125,7 @@ class Notice(models.Model):
     #알림 생성 시간
     created_at = models.DateTimeField(auto_now_add=True)
 
+    readed = models.BooleanField(default = False)
     class Meta:
         ordering = ['-created_at']
 
