@@ -21,6 +21,22 @@ def index(request):
 def matchingRoom(request):
     return True
 
+@csrf_exempt
+def selectedRoom(request):
+    if request.method == "POST":
+        data = json.loads(request.body)  # JSON 데이터 파싱
+        kid = data.get('kid')
+        ready = data.get('ready')  # ready 값 가져오기
+
+        selected_user = get_object_or_404(userInfo, kid=kid)
+        men_info_instance = selected_user.meninfo_set.first()  # meninfo_set 사용
+        if men_info_instance:
+            men_info_instance.ready = not ready  # ready 값을 반전시키지 않고 직접 설정
+            men_info_instance.save()
+        return HttpResponse("post Ssip Ganeung?")
+
+    return HttpResponse("Get SSap Ganeung")
+
 class RoomListView(APIView):
     queryset = room.objects.all()
     # queryset = room.objects.filter(readynum=4).prefetch_related('men_infos', 'women_infos') #readynum이 4인 객체들만 직렬화
