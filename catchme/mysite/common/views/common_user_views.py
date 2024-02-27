@@ -37,9 +37,13 @@ class UserViewSet(ModelViewSet): #url 설정 해야함
         return Response({"message": "w_crush가 업데이트되었습니다."}, status=status.HTTP_200_OK)
 
 
-class UserNoticeView(generics.ListAPIView):
+class UserNoticeView(APIView):
     def get(self, request, kid):
         kid = int(kid)
         userinfo = get_object_or_404(userInfo, kid = kid)
         serializer = UserNoticeSerializer(userinfo)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    def delete(self,request,kid):#아직 작성중
+        kid = int(kid)
+        userinfo = get_object_or_404(userInfo, kid = kid)
+        
