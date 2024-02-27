@@ -65,7 +65,7 @@ class DataConsumer(AsyncWebsocketConsumer):
                     }
                 )
 
-    async def send_chat_message(self, event):
+    async def chat_message(self, event):
         # 웹소켓으로 메시지를 보낼 때 실행되는 메서드
         message = event['message']
         await self.send(text_data=json.dumps({
