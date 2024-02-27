@@ -84,7 +84,7 @@ class SelectedRoomView(APIView):
 # 이상형 조건에 부합하는 상위 방 5개 조회 가능한 클래스
 class RoomListIdealView(APIView):
     def get(self, request, *args, **kwargs):
-        user_id = 0
+        user_id = 1001
         user_info = userInfo.objects.get(kid=user_id)
         if user_info.ismale == True:
             return self.getMenIdealRoomList()
@@ -93,7 +93,7 @@ class RoomListIdealView(APIView):
 
     def getMenIdealRoomList(self):
         # 남성 사용자 정보 조회
-        user_id = 0
+        user_id = 1001
         user_info = userInfo.objects.get(kid=user_id)
         men_info = user_info.man_userInfo.first()
 
@@ -153,7 +153,7 @@ class RoomListIdealView(APIView):
 
     def getWomenIdealRoomList(self):
         # 여성 사용자 정보 조회
-        user_id = 0
+        user_id = 1001
         user_info = userInfo.objects.get(kid=user_id)
         women_info = user_info.woman_userInfo.first()
 
