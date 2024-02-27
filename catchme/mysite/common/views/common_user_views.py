@@ -1,11 +1,12 @@
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_list_or_404, get_object_or_404
 from rest_framework import generics, status
 from rest_framework.viewsets import ViewSet
 from rest_framework.views import APIView
 from common.models import *
 from common.serializers import *
 from rest_framework.viewsets import ModelViewSet
+from django.views.decorators.csrf import csrf_exempt
 
 class UserViewSet(ModelViewSet): #url 설정 해야함
 
@@ -46,4 +47,13 @@ class UserNoticeView(APIView):
     def delete(self,request,kid):#아직 작성중
         kid = int(kid)
         userinfo = get_object_or_404(userInfo, kid = kid)
-        
+    
+    def put(self, request, kid, *args, **kwargs):
+        ids_to_update = request.data.get('ids', [])
+        if not ids_to_update:
+            return Response({"error": "IDs 리스트가 제공되지 않았습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        notices = Notice.objects.filter(id__in=ids_to_update)
+        updated_count = notices.update(readed=True)
+
+        return Response({"message": f"{updated_count}개의 알림이 업데이트되었습니다."}, status=status.HTTP_200_OK)

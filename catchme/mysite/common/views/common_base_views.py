@@ -100,4 +100,3 @@ def kakaoLogout(request):
 def csrf(request):
     csrf_token = get_token(request)
     return JsonResponse({"csrfToken": csrf_token})
-

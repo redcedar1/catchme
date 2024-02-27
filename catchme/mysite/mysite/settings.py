@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     
 
 ]
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000/','http://ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com:8080','https://api.catchmenow.co.kr']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000/','http://ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com:8080','https://api.catchmenow.co.kr','http://localhost:8000/']
 
 ASGI_APPLICATION = 'mysite.routing.application'
 CHANNEL_LAYERS = {
