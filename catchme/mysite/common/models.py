@@ -233,6 +233,7 @@ class menParty(models.Model):
     #리더 남성
     leader_man = models.ForeignKey('menInfo', on_delete=models.CASCADE,related_name = 'men_party')
     #친구 정보
+    nickname = models.CharField(max_length=20,null=True,blank=True)
     age = models.IntegerField(null=True)
     animal = models.CharField(max_length=20, null=True, blank=True)
     job = models.CharField(max_length=50, null=True, blank=True)
@@ -252,6 +253,7 @@ class womenParty(models.Model):
     #리더 여성
     leader_woman = models.ForeignKey('womenInfo', on_delete=models.CASCADE,related_name = 'women_party')
     #친구 정보
+    nickname = models.CharField(max_length=20,null =True,blank = True)
     age = models.IntegerField(null=True)
     animal = models.CharField(max_length=20, null=True, blank=True)
     job = models.CharField(max_length=50, null=True, blank=True)
