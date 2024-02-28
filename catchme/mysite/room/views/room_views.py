@@ -335,6 +335,3 @@ class UserIdealPercentageView(APIView):
         serializer = PercentageSerializer(ideal_men_list, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
-        serializer = RoomSerializer(room.objects.filter(rno__in=matching_rooms), many=True)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
