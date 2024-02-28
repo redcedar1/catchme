@@ -44,3 +44,21 @@ class SelectedRoomSerializer(serializers.ModelSerializer):
     class Meta :
         model = room
         fields = '__all__'
+
+class PercentageSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    nickname = serializers.CharField()
+    participate_room = serializers.CharField()
+    matching_count = serializers.SerializerMethodField()
+    total_conditions = serializers.SerializerMethodField()
+
+    def get_matching_count(self, obj):
+        return getattr(obj, 'matching_count', None)
+
+    def get_total_conditions(self, obj):
+        return getattr(obj, 'total_conditions', None)
+
+    class Meta :
+        model = userInfo
+
+        fields = ('id', 'nickname', 'participate_room')

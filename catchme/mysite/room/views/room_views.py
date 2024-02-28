@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
 from common.models import room, menInfo, womenInfo, userInfo
-from ..serializers import RoomSerializer, SelectedRoomSerializer
+from ..serializers import RoomSerializer, SelectedRoomSerializer, PercentageSerializer
 from django.middleware.csrf import get_token
 import requests
 from django.contrib.auth.decorators import login_required
@@ -210,6 +210,131 @@ class RoomListIdealView(APIView):
             if len(matching_rooms) == 5:
                 break
 
+        serializer = RoomSerializer(room.objects.filter(rno__in=matching_rooms), many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class UserIdealPercentageView(APIView):
+    def get(self, request, *args, **kwargs):
+        user_id = 1001
+        user_info = userInfo.objects.get(kid=user_id)
+        if user_info.ismale == True:
+            return self.getMenIdealPercentage()
+        elif user_info.ismale == False:
+            return self.getWomenIdealPercentage()
+
+    def getMenIdealPercentage(self):
+        # 남성 사용자 정보 조회
+        user_id = 1001
+        user_info = userInfo.objects.get(kid=user_id)
+        men_info = user_info.man_userInfo.first()
+
+        # 여성 유저 필터링 (이상형 조건에 부합하는 여성들)
+        matching_women = womenInfo.objects.exclude(participate_room__isnull=True)
+        start_age, end_age = map(int, men_info.w_age.split('-'))
+        start_height, end_height = map(int, men_info.w_height.split('-'))
+        jobs = men_info.w_job.split(',')
+        schools = men_info.w_school.split(',')
+        majors = men_info.w_major.split(',')
+        mbtis = men_info.w_mbti.split(',')
+        bodies = men_info.w_body.split(',')
+        eyes = men_info.w_eyes.split(',')
+        faces = men_info.w_face.split(',')
+        hobbies = men_info.w_hobby.split(',')
+        animals = men_info.w_animal.split(',')
+
+        for woman in matching_women:
+            matching_count = 0
+            if matching_women.filter(age__range=(start_age, end_age), id=woman.id).exists():
+                matching_count += 1
+            if matching_women.filter(job__in=jobs, id=woman.id).exists():
+                matching_count += 1
+            if matching_women.filter(school__in=schools, id=woman.id).exists():
+                matching_count += 1
+            if matching_women.filter(major__in=majors, id=woman.id).exists():
+                matching_count += 1
+            if matching_women.filter(mbti__in=mbtis, id=woman.id).exists():
+                matching_count += 1
+            if matching_women.filter(height__range=(start_height, end_height), id=woman.id).exists():
+                matching_count += 1
+            if matching_women.filter(body__in=bodies, id=woman.id).exists():
+                matching_count += 1
+            if matching_women.filter(eyes__in=eyes, id=woman.id).exists():
+                matching_count += 1
+            if matching_women.filter(face__in=faces, id=woman.id).exists():
+                matching_count += 1
+            if matching_women.filter(hobby__in=hobbies, id=woman.id).exists():
+                matching_count += 1
+            if matching_women.filter(animal__in=animals, id=woman.id).exists():
+                matching_count += 1
+
+            woman.matching_count = matching_count
+
+            woman.total_conditions = int(matching_count / 11 * 100)
+
+        ideal_women_list = sorted(matching_women, key=lambda x: -x.matching_count)
+
+        serializer = PercentageSerializer(ideal_women_list, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def getWomenIdealPercentage(self):
+        # 여성 사용자 정보 조회
+        user_id = 1001
+        user_info = userInfo.objects.get(kid=user_id)
+        women_info = user_info.woman_userInfo.first()
+
+        # 남성 유저 필터링 (이상형 조건에 부합하는 남성들)
+        matching_men = menInfo.objects.exclude(participate_room__isnull=True)
+        start_age, end_age = map(int, women_info.m_age.split('-'))
+        start_height, end_height = map(int, women_info.m_height.split('-'))
+        jobs = women_info.m_job.split(',')
+        schools = women_info.m_school.split(',')
+        majors = women_info.m_major.split(',')
+        armies = women_info.m_army.split(',')
+        mbtis = women_info.m_mbti.split(',')
+        bodies = women_info.m_body.split(',')
+        eyes = women_info.m_eyes.split(',')
+        faces = women_info.m_face.split(',')
+        hobbies = women_info.m_hobby.split(',')
+        animals = women_info.m_animal.split(',')
+
+        for man in matching_men:
+            matching_count = 0
+            if matching_men.filter(age__range=(start_age, end_age), id=man.id).exists():
+                matching_count += 1
+            if matching_men.filter(job__in=jobs, id=man.id).exists():
+                matching_count += 1
+            if matching_men.filter(school__in=schools, id=man.id).exists():
+                matching_count += 1
+            if matching_men.filter(major__in=majors, id=man.id).exists():
+                matching_count += 1
+            if matching_men.filter(army__in=armies, id=man.id).exists():
+                matching_count += 1
+            if matching_men.filter(mbti__in=mbtis, id=man.id).exists():
+                matching_count += 1
+            if matching_men.filter(height__range=(start_height, end_height), id=man.id).exists():
+                matching_count += 1
+            if matching_men.filter(body__in=bodies, id=man.id).exists():
+                matching_count += 1
+            if matching_men.filter(eyes__in=eyes, id=man.id).exists():
+                matching_count += 1
+            if matching_men.filter(face__in=faces, id=man.id).exists():
+                matching_count += 1
+            if matching_men.filter(hobby__in=hobbies, id=man.id).exists():
+                matching_count += 1
+            if matching_men.filter(animal__in=animals, id=man.id).exists():
+                matching_count += 1
+
+            man.matching_count = matching_count
+
+            man.total_conditions = int(matching_count / 12 * 100)
+
+        ideal_men_list = sorted(matching_men, key=lambda x: -x.matching_count)
+
+        serializer = PercentageSerializer(ideal_men_list, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
         serializer = RoomSerializer(room.objects.filter(rno__in=matching_rooms), many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
