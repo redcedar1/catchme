@@ -52,11 +52,15 @@ class PercentageSerializer(serializers.Serializer):
     matching_count = serializers.SerializerMethodField()
     total_conditions = serializers.SerializerMethodField()
 
+    def __init__(self, *args, **kwargs):
+        self.matching_info = kwargs.pop('matching_info', {})
+        super().__init__(*args, **kwargs)
+
     def get_matching_count(self, obj):
-        return getattr(obj, 'matching_count', None)
+        return self.matching_info.get(obj.id, {}).get('matching_count', 0)
 
     def get_total_conditions(self, obj):
-        return getattr(obj, 'total_conditions', None)
+        return self.matching_info.get(obj.id, {}).get('total_conditions', 0)
 
     class Meta :
         model = userInfo

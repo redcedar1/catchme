@@ -12,7 +12,7 @@ from django.middleware.csrf import get_token
 import requests
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from django.db.models import F
+from django.db.models import F, Q
 from django.db.models import Count
 
 def index(request):
@@ -55,7 +55,7 @@ class RoomListView(APIView):
             queryset = queryset.annotate(mnum=Count('men_infos'), wnum=Count('women_infos')).annotate(total_num=F('mnum') + F('wnum')).order_by('-total_num')
 
         return queryset
-    
+
     def get(self, request, *args, **kwargs):
         queryset = self.get_queryset()  # get_queryset 메서드 사용
         serializer = RoomSerializer(queryset, many=True)
@@ -80,7 +80,7 @@ class SelectedRoomView(APIView):
         selected_room = get_object_or_404(room, rno=r_no)
         selected_room.delete()
         return Response({"message": "방이 성공적으로 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
-  
+
 # 이상형 조건에 부합하는 상위 방 5개 조회 가능한 클래스
 class RoomListIdealView(APIView):
     def get(self, request, *args, **kwargs):
@@ -243,38 +243,38 @@ class UserIdealPercentageView(APIView):
         hobbies = men_info.w_hobby.split(',')
         animals = men_info.w_animal.split(',')
 
+        conditions = [
+            Q(age__range=(start_age, end_age)),
+            Q(job__in=jobs),
+            Q(school__in=schools),
+            Q(major__in=majors),
+            Q(mbti__in=mbtis),
+            Q(height__range=(start_height, end_height)),
+            Q(body__in=bodies),
+            Q(eyes__in=eyes),
+            Q(face__in=faces),
+            Q(hobby__in=hobbies),
+            Q(animal__in=animals)
+        ]
+
+        # 여성과 매칭 정보를 저장할 딕셔너리
+        matching_info = {}
+
         for woman in matching_women:
             matching_count = 0
-            if matching_women.filter(age__range=(start_age, end_age), id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(job__in=jobs, id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(school__in=schools, id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(major__in=majors, id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(mbti__in=mbtis, id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(height__range=(start_height, end_height), id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(body__in=bodies, id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(eyes__in=eyes, id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(face__in=faces, id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(hobby__in=hobbies, id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(animal__in=animals, id=woman.id).exists():
-                matching_count += 1
+            for condition in conditions:
+                if woman in matching_women.filter(condition):
+                    matching_count += 1
 
-            woman.matching_count = matching_count
+            matching_info[woman.id] = {
+                'matching_count': matching_count,
+                'total_conditions': int(matching_count / len(conditions) * 100)
+            }
 
-            woman.total_conditions = int(matching_count / 11 * 100)
+        # 매칭 카운트에 따라 여성 리스트를 정렬
+        ideal_women_list = sorted(matching_women, key=lambda x: -matching_info[x.id]['matching_count'])
 
-        ideal_women_list = sorted(matching_women, key=lambda x: -x.matching_count)
-
-        serializer = PercentageSerializer(ideal_women_list, many=True)
+        serializer = PercentageSerializer(ideal_women_list, many=True, matching_info=matching_info)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -299,40 +299,39 @@ class UserIdealPercentageView(APIView):
         hobbies = women_info.m_hobby.split(',')
         animals = women_info.m_animal.split(',')
 
+        conditions = [
+            Q(age__range=(start_age, end_age)),
+            Q(job__in=jobs),
+            Q(school__in=schools),
+            Q(major__in=majors),
+            Q(mbti__in=mbtis),
+            Q(army__in=armies),
+            Q(height__range=(start_height, end_height)),
+            Q(body__in=bodies),
+            Q(eyes__in=eyes),
+            Q(face__in=faces),
+            Q(hobby__in=hobbies),
+            Q(animal__in=animals)
+        ]
+
+        # 여성과 매칭 정보를 저장할 딕셔너리
+        matching_info = {}
+
         for man in matching_men:
             matching_count = 0
-            if matching_men.filter(age__range=(start_age, end_age), id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(job__in=jobs, id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(school__in=schools, id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(major__in=majors, id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(army__in=armies, id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(mbti__in=mbtis, id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(height__range=(start_height, end_height), id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(body__in=bodies, id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(eyes__in=eyes, id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(face__in=faces, id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(hobby__in=hobbies, id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(animal__in=animals, id=man.id).exists():
-                matching_count += 1
+            for condition in conditions:
+                if man in matching_men.filter(condition):
+                    matching_count += 1
 
-            man.matching_count = matching_count
+            matching_info[man.id] = {
+                'matching_count': matching_count,
+                'total_conditions': int(matching_count / len(conditions) * 100)
+            }
 
-            man.total_conditions = int(matching_count / 12 * 100)
+        # 매칭 카운트에 따라 여성 리스트를 정렬
+        ideal_men_list = sorted(matching_men, key=lambda x: -matching_info[x.id]['matching_count'])
 
-        ideal_men_list = sorted(matching_men, key=lambda x: -x.matching_count)
-
-        serializer = PercentageSerializer(ideal_men_list, many=True)
+        serializer = PercentageSerializer(ideal_men_list, many=True, matching_info=matching_info)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
