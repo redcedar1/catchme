@@ -45,7 +45,7 @@ class UserNoticeView(APIView):
         serializer = UserNoticeSerializer(userinfo)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def delete(self,request,kid,*args, **kwargs):#아직 작성중
+    def delete(self,request,kid,*args, **kwargs):
         kid = int(kid)
         ids_to_delete = request.data.get('ids', [])
         if not ids_to_delete:
@@ -64,3 +64,4 @@ class UserNoticeView(APIView):
         updated_count = notices.update(readed=True)
 
         return Response({"message": f"{updated_count}개의 알림이 업데이트되었습니다."}, status=status.HTTP_200_OK)
+
