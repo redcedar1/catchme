@@ -84,7 +84,7 @@ class SelectedRoomView(APIView):
 # 이상형 조건에 부합하는 상위 방 5개 조회 가능한 클래스
 class RoomListIdealView(APIView):
     def get(self, request, *args, **kwargs):
-        user_id = 1001
+        user_id = 0
         user_info = userInfo.objects.get(kid=user_id)
         if user_info.ismale == True:
             return self.getMenIdealRoomList()
@@ -93,7 +93,7 @@ class RoomListIdealView(APIView):
 
     def getMenIdealRoomList(self):
         # 남성 사용자 정보 조회
-        user_id = 1001
+        user_id = 0
         user_info = userInfo.objects.get(kid=user_id)
         men_info = user_info.man_userInfo.first()
 
@@ -111,37 +111,35 @@ class RoomListIdealView(APIView):
         hobbies = men_info.w_hobby.split(',')
         animals = men_info.w_animal.split(',')
 
+        conditions = [
+            Q(age__range=(start_age, end_age)),
+            Q(job__in=jobs),
+            Q(school__in=schools),
+            Q(major__in=majors),
+            Q(mbti__in=mbtis),
+            Q(height__range=(start_height, end_height)),
+            Q(body__in=bodies),
+            Q(eyes__in=eyes),
+            Q(face__in=faces),
+            Q(hobby__in=hobbies),
+            Q(animal__in=animals)
+        ]
+
+        matching_info = {}
+
         for woman in matching_women:
             matching_count = 0
-            if matching_women.filter(age__range=(start_age, end_age), id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(job__in=jobs, id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(school__in=schools, id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(major__in=majors, id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(mbti__in=mbtis, id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(height__range=(start_height, end_height), id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(body__in=bodies, id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(eyes__in=eyes, id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(face__in=faces, id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(hobby__in=hobbies, id=woman.id).exists():
-                matching_count += 1
-            if matching_women.filter(animal__in=animals, id=woman.id).exists():
-                matching_count += 1
+            for condition in conditions:
+                if woman in matching_women.filter(condition):
+                    matching_count += 1
 
-            woman.matching_count = matching_count
+            matching_info[woman.id] = {
+                'matching_count': matching_count
+            }
 
-        # 매칭된 여성 유저들을 매칭 카운트 기준으로 정렬하여 상위 5개 방 조회
-        matching_women = sorted(matching_women, key=lambda x: -x.matching_count)
+        ideal_women_list = sorted(matching_women, key=lambda x: -matching_info[x.id]['matching_count'])
         matching_rooms = []
-        for woman in matching_women:
+        for woman in ideal_women_list:
             if woman.participate_room.rno not in matching_rooms:
                 matching_rooms.append(woman.participate_room.rno)
             if len(matching_rooms) == 5:
@@ -153,7 +151,7 @@ class RoomListIdealView(APIView):
 
     def getWomenIdealRoomList(self):
         # 여성 사용자 정보 조회
-        user_id = 1001
+        user_id = 0
         user_info = userInfo.objects.get(kid=user_id)
         women_info = user_info.woman_userInfo.first()
 
@@ -172,39 +170,36 @@ class RoomListIdealView(APIView):
         hobbies = women_info.m_hobby.split(',')
         animals = women_info.m_animal.split(',')
 
+        conditions = [
+            Q(age__range=(start_age, end_age)),
+            Q(job__in=jobs),
+            Q(school__in=schools),
+            Q(major__in=majors),
+            Q(mbti__in=mbtis),
+            Q(army__in=armies),
+            Q(height__range=(start_height, end_height)),
+            Q(body__in=bodies),
+            Q(eyes__in=eyes),
+            Q(face__in=faces),
+            Q(hobby__in=hobbies),
+            Q(animal__in=animals)
+        ]
+
+        matching_info = {}
+
         for man in matching_men:
             matching_count = 0
-            if matching_men.filter(age__range=(start_age, end_age), id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(job__in=jobs, id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(school__in=schools, id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(major__in=majors, id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(army__in=armies, id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(mbti__in=mbtis, id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(height__range=(start_height, end_height), id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(body__in=bodies, id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(eyes__in=eyes, id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(face__in=faces, id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(hobby__in=hobbies, id=man.id).exists():
-                matching_count += 1
-            if matching_men.filter(animal__in=animals, id=man.id).exists():
-                matching_count += 1
+            for condition in conditions:
+                if man in matching_men.filter(condition):
+                    matching_count += 1
 
-            man.matching_count = matching_count
+            matching_info[man.id] = {
+                'matching_count': matching_count
+            }
 
-        # 매칭된 남성 유저들을 매칭 카운트 기준으로 정렬하여 상위 5개 방 조회
-        matching_men = sorted(matching_men, key=lambda x: -x.matching_count)
+        ideal_men_list = sorted(matching_men, key=lambda x: -matching_info[x.id]['matching_count'])
         matching_rooms = []
-        for man in matching_men:
+        for man in ideal_men_list:
             if man.participate_room.rno not in matching_rooms:
                 matching_rooms.append(man.participate_room.rno)
             if len(matching_rooms) == 5:
