@@ -61,7 +61,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('https://api.catchmenow.co.kr', 6379)],
+            "hosts": [('api.catchmenow.co.kr', 6379)],
         },
     },
 }
