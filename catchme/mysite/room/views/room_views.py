@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import F, Q
 from django.db.models import Count
-
+from rest_framework.permissions import IsAuthenticated
 def index(request):
     return render(request,"room/room.html")
 
@@ -38,6 +38,7 @@ def selectedRoom(request):
     return HttpResponse("Get SSap Ganeung")
 
 class RoomListView(APIView):
+    #permission_classes = [IsAuthenticated]
     queryset = room.objects.all()
     # queryset = room.objects.filter(readynum=4).prefetch_related('men_infos', 'women_infos') #readynum이 4인 객체들만 직렬화
     # 아니면 아래처럼 함수로 만들기
@@ -53,7 +54,10 @@ class RoomListView(APIView):
 
         if order == '인원많은순':
             queryset = queryset.annotate(mnum=Count('men_infos'), wnum=Count('women_infos')).annotate(total_num=F('mnum') + F('wnum')).order_by('-total_num')
-
+        
+        #elif order == "우리동네":
+        #    user = self.request.user
+        #    queryset = queryset.filter(location=user.location)
         return queryset
 
     def get(self, request, *args, **kwargs):

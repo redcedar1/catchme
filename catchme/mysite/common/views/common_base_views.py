@@ -9,6 +9,9 @@ from django.contrib.auth.decorators import login_required
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.decorators import api_view
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 # Create your views here.
 
 def index(request):
@@ -100,3 +103,35 @@ def kakaoLogout(request):
 def csrf(request):
     csrf_token = get_token(request)
     return JsonResponse({"csrfToken": csrf_token})
+
+
+
+###여기 아래는 jwt토큰 관련 테스트###
+@api_view(['GET'])
+def test_usercreate_view(request):
+    user = userInfo.objects.create(#db에 유저 생성 -> 이부분을 introduction과 연계해야함,
+                    kid = 12341234,
+                    location = "경기도 고양시",
+                    ismale = True
+                )
+    refresh = RefreshToken.for_user(user)#refreshToken은 User모델을 상정하기 때문에 User모델 대신 userInfo모델을 전송
+    tokens = {
+        'kid' : user.kid,
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
+    return Response({'tokens': tokens}, status=status.HTTP_200_OK)
+
+class TestJWTTokenView(APIView):
+    # 인증된 사용자만 접근 가능하도록 권한 설정
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        # 사용자 정보를 딕셔너리 형태로 생성
+        user_info = {
+            "kid":user.kid,
+            "location":user.location,
+            "ismale":user.ismale
+        }
+        return Response({"user_info": user_info}, status=status.HTTP_200_OK)

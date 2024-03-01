@@ -7,7 +7,7 @@ from common.models import *
 from common.serializers import *
 from rest_framework.viewsets import ModelViewSet
 from django.views.decorators.csrf import csrf_exempt
-
+from rest_framework.decorators import action
 class UserViewSet(ModelViewSet): #url 설정 해야함
 
     queryset = userInfo.objects.all()
@@ -23,7 +23,7 @@ class UserViewSet(ModelViewSet): #url 설정 해야함
     def update(self, request,*args, **kwargs):
         #modal id를 부여해야함 -> 남자한테만 뜨는 모달창이기 때문
         kid = kwargs.get('pk')
-        userinfo = get_object_or_404(userInfo,kid = kid)
+        userinfo = get_object_or_404(userInfo, kid = kid)
         
         if userinfo.ismale:
             user = userinfo.man_userInfo.get()
@@ -36,7 +36,38 @@ class UserViewSet(ModelViewSet): #url 설정 해야함
         else:
             pass
         return Response({"message": "w_crush가 업데이트되었습니다."}, status=status.HTTP_200_OK)
+    
+    @action(detail = True, methods = ['post'])
+    def join_party(self, request,**kwargs):#나중에 kwargs가 아니라 request.user 이런식으로 더 안전하게 정보 가져오기
+        #userinfo = get_object_or_404(userInfo, kid=request.user.kid) 이렇게
+        kid = kwargs.get('pk')
+        userinfo = get_object_or_404(userInfo, kid = kid)
+        
+        if userinfo.ismale:
 
+            user = userinfo.man_userInfo.get()
+
+            data = request.data.copy()
+            data['leader_man'] = user.id
+
+            serializer = MenPartySerializer(data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            user = userinfo.woman_userInfo.get()
+
+            data = request.data.copy()
+            data['leader_woman'] = user.id
+
+            serializer = WomenPartySerializer(data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserNoticeView(APIView):
     def get(self, request, kid):

@@ -30,4 +30,8 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
+    path('api/usercreatetest/',common_base_views.test_usercreate_view),
+    path('api/jwttokentest/',common_base_views.TestJWTTokenView.as_view()),
+    
+
 ]
