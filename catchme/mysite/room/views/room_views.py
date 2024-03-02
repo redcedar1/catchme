@@ -252,7 +252,6 @@ class UserIdealPercentageView(APIView):
             Q(animal__in=animals)
         ]
 
-        # 여성과 매칭 정보를 저장할 딕셔너리
         matching_info = {}
 
         for woman in matching_women:
@@ -266,8 +265,8 @@ class UserIdealPercentageView(APIView):
                 'total_conditions': int(matching_count / len(conditions) * 100)
             }
 
-        # 매칭 카운트에 따라 여성 리스트를 정렬
         ideal_women_list = sorted(matching_women, key=lambda x: -matching_info[x.id]['matching_count'])
+        ideal_women_list = [woman for woman in ideal_women_list if matching_info[woman.id]['total_conditions'] >= 60]
 
         serializer = PercentageSerializer(ideal_women_list, many=True, matching_info=matching_info)
 
@@ -309,7 +308,6 @@ class UserIdealPercentageView(APIView):
             Q(animal__in=animals)
         ]
 
-        # 여성과 매칭 정보를 저장할 딕셔너리
         matching_info = {}
 
         for man in matching_men:
@@ -323,8 +321,8 @@ class UserIdealPercentageView(APIView):
                 'total_conditions': int(matching_count / len(conditions) * 100)
             }
 
-        # 매칭 카운트에 따라 여성 리스트를 정렬
         ideal_men_list = sorted(matching_men, key=lambda x: -matching_info[x.id]['matching_count'])
+        ideal_men_list = [man for man in ideal_men_list if matching_info[man.id]['total_conditions'] >= 60]
 
         serializer = PercentageSerializer(ideal_men_list, many=True, matching_info=matching_info)
 
