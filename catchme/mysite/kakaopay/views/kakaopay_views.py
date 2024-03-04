@@ -8,7 +8,7 @@ def index(request):
     return render(request, "kakaopay/index.html")
 
 def kakaoPaylogic(request):
-    kakao_id = 0 #테스트용, 실제로는 access_token을 이용해 카톡 고유 번호 10자리를 받아야함
+    kakao_id = 1001 #테스트용, 실제로는 access_token을 이용해 카톡 고유 번호 10자리를 받아야함
     user_info = userInfo.objects.get(kid=kakao_id)
 
     URL = 'https://kapi.kakao.com/v1/payment/ready'
@@ -24,9 +24,9 @@ def kakaoPaylogic(request):
         "quantity": "1",# 상품 개수
         "total_amount": "5000",# 가격
         "tax_free_amount": "0",# 상품 비과세
-        "approval_url": "http://ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com:8080/kakaopay/approval",
-        "cancel_url": "http://ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com:8080",
-        "fail_url": "http://ec2-54-180-82-92.ap-northeast-2.compute.amazonaws.com:8080",
+        "approval_url": "https://api.catchmenow.co.kr/kakaopay/approval",
+        "cancel_url": "https://api.catchmenow.co.kr",
+        "fail_url": "https://api.catchmenow.co.kr",
     }
 
     res = requests.post(URL, headers=headers, params=params)
@@ -37,7 +37,7 @@ def kakaoPaylogic(request):
     return redirect(next_url)
 
 def approval(request):
-    kakao_id = 0
+    kakao_id = 1001
     user_info = userInfo.objects.get(kid=kakao_id)
 
     URL = 'https://kapi.kakao.com/v1/payment/approve'
