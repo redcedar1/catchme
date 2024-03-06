@@ -14,6 +14,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 # Create your views here.
 
+
+
+
 def index(request):
     
     return HttpResponse("반갑습니다 캐치미의 api 서버입니다 - 태일,기정-")
