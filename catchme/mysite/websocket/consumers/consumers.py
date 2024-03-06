@@ -91,6 +91,7 @@ class DataConsumer(AsyncWebsocketConsumer):
                 is_updated = True
         return is_updated
 
+    @sync_to_async
     def update_user_chat(self, kid, chat):
         from common.models import userInfo, menInfo, womenInfo
         user = userInfo.objects.get(kid=kid)
