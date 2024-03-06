@@ -57,6 +57,7 @@ class DataConsumer(AsyncWebsocketConsumer):
         elif message_type == 'selected_bubble':
             chat_message = text_data_json.get('chat')
             if chat_message is not None:
+                await self.update_user_chat(kid, chat_message)
                 await self.channel_layer.group_send(
                     self.room_group_name,
                     {
