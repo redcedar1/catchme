@@ -57,6 +57,7 @@ class DataConsumer(AsyncWebsocketConsumer):
         elif message_type == 'selected_bubble':
             chat_message = text_data_json.get('chat')
             if chat_message is not None:
+                await self.update_user_chat(kid, chat_message)
                 await self.channel_layer.group_send(
                     self.room_group_name,
                     {
@@ -89,3 +90,12 @@ class DataConsumer(AsyncWebsocketConsumer):
                 womenInfo.objects.filter(user=user).update(ready=ready)
                 is_updated = True
         return is_updated
+
+    @sync_to_async
+    def update_user_chat(self, kid, chat):
+        from common.models import userInfo, menInfo, womenInfo
+        user = userInfo.objects.get(kid=kid)
+        if user.ismale:
+            menInfo.objects.filter(user=user).update(chat=chat)
+        else:
+            womenInfo.objects.filter(user=user).update(chat=chat)

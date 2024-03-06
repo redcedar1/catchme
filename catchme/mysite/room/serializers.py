@@ -46,7 +46,7 @@ class SelectedRoomSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class PercentageSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
+    id = serializers.SerializerMethodField()
     nickname = serializers.CharField()
     participate_room = serializers.CharField()
     matching_count = serializers.SerializerMethodField()
@@ -55,6 +55,9 @@ class PercentageSerializer(serializers.Serializer):
     def __init__(self, *args, **kwargs):
         self.matching_info = kwargs.pop('matching_info', {})
         super().__init__(*args, **kwargs)
+
+    def get_id(self, obj):
+        return obj.user.kid
 
     def get_matching_count(self, obj):
         return self.matching_info.get(obj.id, {}).get('matching_count', 0)
@@ -68,7 +71,7 @@ class PercentageSerializer(serializers.Serializer):
         fields = ('id', 'nickname', 'participate_room')
 
 class SecondRecommendationSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
+    id = serializers.SerializerMethodField()
     nickname = serializers.CharField()
     matching_count = serializers.SerializerMethodField()
     total_conditions = serializers.SerializerMethodField()
@@ -76,6 +79,9 @@ class SecondRecommendationSerializer(serializers.Serializer):
     def __init__(self, *args, **kwargs):
         self.matching_info = kwargs.pop('matching_info', {})
         super().__init__(*args, **kwargs)
+
+    def get_id(self, obj):
+        return obj.user.kid
 
     def get_matching_count(self, obj):
         return self.matching_info.get(obj.id, {}).get('matching_count', 0)

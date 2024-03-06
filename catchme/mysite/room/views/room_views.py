@@ -88,7 +88,7 @@ class SelectedRoomView(APIView):
 # 이상형 조건에 부합하는 상위 방 5개 조회 가능한 클래스
 class RoomListIdealView(APIView):
     def get(self, request, *args, **kwargs):
-        user_id = 0
+        user_id = 1001
         user_info = userInfo.objects.get(kid=user_id)
         if user_info.ismale == True:
             return self.getMenIdealRoomList()
@@ -97,7 +97,7 @@ class RoomListIdealView(APIView):
 
     def getMenIdealRoomList(self):
         # 남성 사용자 정보 조회
-        user_id = 0
+        user_id = 1001
         user_info = userInfo.objects.get(kid=user_id)
         men_info = user_info.man_userInfo.first()
 
@@ -155,7 +155,7 @@ class RoomListIdealView(APIView):
 
     def getWomenIdealRoomList(self):
         # 여성 사용자 정보 조회
-        user_id = 0
+        user_id = 1001
         user_info = userInfo.objects.get(kid=user_id)
         women_info = user_info.woman_userInfo.first()
 
@@ -256,7 +256,6 @@ class UserIdealPercentageView(APIView):
             Q(animal__in=animals)
         ]
 
-        # 여성과 매칭 정보를 저장할 딕셔너리
         matching_info = {}
 
         for woman in matching_women:
@@ -270,8 +269,8 @@ class UserIdealPercentageView(APIView):
                 'total_conditions': int(matching_count / len(conditions) * 100)
             }
 
-        # 매칭 카운트에 따라 여성 리스트를 정렬
         ideal_women_list = sorted(matching_women, key=lambda x: -matching_info[x.id]['matching_count'])
+        ideal_women_list = [woman for woman in ideal_women_list if matching_info[woman.id]['total_conditions'] >= 60]
 
         serializer = PercentageSerializer(ideal_women_list, many=True, matching_info=matching_info)
 
@@ -313,7 +312,6 @@ class UserIdealPercentageView(APIView):
             Q(animal__in=animals)
         ]
 
-        # 여성과 매칭 정보를 저장할 딕셔너리
         matching_info = {}
 
         for man in matching_men:
@@ -327,7 +325,124 @@ class UserIdealPercentageView(APIView):
                 'total_conditions': int(matching_count / len(conditions) * 100)
             }
 
-        # 매칭 카운트에 따라 여성 리스트를 정렬
+        ideal_men_list = sorted(matching_men, key=lambda x: -matching_info[x.id]['matching_count'])
+        ideal_men_list = [man for man in ideal_men_list if matching_info[man.id]['total_conditions'] >= 60]
+
+        serializer = PercentageSerializer(ideal_men_list, many=True, matching_info=matching_info)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class RoomPercentageView(APIView):
+    def get(self, request, *args, **kwargs):
+        user_id = 1001
+        user_info = userInfo.objects.get(kid=user_id)
+        if user_info.ismale == True:
+            return self.getMenRoomPercentage()
+        elif user_info.ismale == False:
+            return self.getWomenRoomPercentage()
+
+    def getMenRoomPercentage(self):
+        # 남성 사용자 정보 조회
+        user_id = 1001
+        user_info = userInfo.objects.get(kid=user_id)
+        men_info = user_info.man_userInfo.first()
+
+        # 여성 유저 필터링 (이상형 조건에 부합하는 여성들)
+        matching_women = womenInfo.objects.filter(participate_room=men_info.participate_room)
+        start_age, end_age = map(int, men_info.w_age.split('-'))
+        start_height, end_height = map(int, men_info.w_height.split('-'))
+        jobs = men_info.w_job.split(',')
+        schools = men_info.w_school.split(',')
+        majors = men_info.w_major.split(',')
+        mbtis = men_info.w_mbti.split(',')
+        bodies = men_info.w_body.split(',')
+        eyes = men_info.w_eyes.split(',')
+        faces = men_info.w_face.split(',')
+        hobbies = men_info.w_hobby.split(',')
+        animals = men_info.w_animal.split(',')
+
+        conditions = [
+            Q(age__range=(start_age, end_age)),
+            Q(job__in=jobs),
+            Q(school__in=schools),
+            Q(major__in=majors),
+            Q(mbti__in=mbtis),
+            Q(height__range=(start_height, end_height)),
+            Q(body__in=bodies),
+            Q(eyes__in=eyes),
+            Q(face__in=faces),
+            Q(hobby__in=hobbies),
+            Q(animal__in=animals)
+        ]
+
+        matching_info = {}
+
+        for woman in matching_women:
+            matching_count = 0
+            for condition in conditions:
+                if woman in matching_women.filter(condition):
+                    matching_count += 1
+
+            matching_info[woman.id] = {
+                'matching_count': matching_count,
+                'total_conditions': int(matching_count / len(conditions) * 100)
+            }
+
+        ideal_women_list = sorted(matching_women, key=lambda x: -matching_info[x.id]['matching_count'])
+
+        serializer = PercentageSerializer(ideal_women_list, many=True, matching_info=matching_info)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def getWomenRoomPercentage(self):
+        # 여성 사용자 정보 조회
+        user_id = 1001
+        user_info = userInfo.objects.get(kid=user_id)
+        women_info = user_info.woman_userInfo.first()
+
+        # 남성 유저 필터링 (이상형 조건에 부합하는 남성들)
+        matching_men = menInfo.objects.filter(participate_room=women_info.participate_room)
+        start_age, end_age = map(int, women_info.m_age.split('-'))
+        start_height, end_height = map(int, women_info.m_height.split('-'))
+        jobs = women_info.m_job.split(',')
+        schools = women_info.m_school.split(',')
+        majors = women_info.m_major.split(',')
+        armies = women_info.m_army.split(',')
+        mbtis = women_info.m_mbti.split(',')
+        bodies = women_info.m_body.split(',')
+        eyes = women_info.m_eyes.split(',')
+        faces = women_info.m_face.split(',')
+        hobbies = women_info.m_hobby.split(',')
+        animals = women_info.m_animal.split(',')
+
+        conditions = [
+            Q(age__range=(start_age, end_age)),
+            Q(job__in=jobs),
+            Q(school__in=schools),
+            Q(major__in=majors),
+            Q(mbti__in=mbtis),
+            Q(army__in=armies),
+            Q(height__range=(start_height, end_height)),
+            Q(body__in=bodies),
+            Q(eyes__in=eyes),
+            Q(face__in=faces),
+            Q(hobby__in=hobbies),
+            Q(animal__in=animals)
+        ]
+
+        matching_info = {}
+
+        for man in matching_men:
+            matching_count = 0
+            for condition in conditions:
+                if man in matching_men.filter(condition):
+                    matching_count += 1
+
+            matching_info[man.id] = {
+                'matching_count': matching_count,
+                'total_conditions': int(matching_count / len(conditions) * 100)
+            }
+
         ideal_men_list = sorted(matching_men, key=lambda x: -matching_info[x.id]['matching_count'])
 
         serializer = PercentageSerializer(ideal_men_list, many=True, matching_info=matching_info)

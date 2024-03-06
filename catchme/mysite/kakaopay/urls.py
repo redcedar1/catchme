@@ -5,6 +5,6 @@ app_name = "kakaopay"
 
 urlpatterns = [
     path('', kakaopay_views.index, name="index"),
-    path('kakaoPaylogic/', kakaopay_views.kakaoPaylogic, name="kakaoPaylogic"),
-    path('approval/', kakaopay_views.approval, name="approval"),
+    path('kakaoPaylogic/', kakaopay_views.KakaoPayView.as_view(), name="kakaoPaylogic"),
+    path('approval/', kakaopay_views.KakaoPayApprovalView.as_view(), name="kakaoPayApproval"),
 ]
