@@ -89,3 +89,11 @@ class DataConsumer(AsyncWebsocketConsumer):
                 womenInfo.objects.filter(user=user).update(ready=ready)
                 is_updated = True
         return is_updated
+
+    def update_user_chat(self, kid, chat):
+        from common.models import userInfo, menInfo, womenInfo
+        user = userInfo.objects.get(kid=kid)
+        if user.ismale:
+            menInfo.objects.filter(user=user).update(chat=chat)
+        else:
+            womenInfo.objects.filter(user=user).update(chat=chat)
