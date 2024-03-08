@@ -227,7 +227,6 @@ class matchingInfo(models.Model):
         return str(self.pk)
 
 
-#친구 이름 속성 삭제
 class menParty(models.Model):
     id = models.AutoField(primary_key=True)
     #리더 남성

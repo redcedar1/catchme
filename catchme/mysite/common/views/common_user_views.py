@@ -36,7 +36,6 @@ class UserViewSet(ModelViewSet): #url 설정 해야함
         else:
             pass
         return Response({"message": "w_crush가 업데이트되었습니다."}, status=status.HTTP_200_OK)
-    
     @action(detail = True, methods = ['post'])
     def join_party(self, request,**kwargs):#나중에 kwargs가 아니라 request.user 이런식으로 더 안전하게 정보 가져오기
         #userinfo = get_object_or_404(userInfo, kid=request.user.kid) 이렇게
@@ -68,6 +67,22 @@ class UserViewSet(ModelViewSet): #url 설정 해야함
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+    @action(detail=True, methods=['delete'], url_path='delete_party/(?P<name>[^/.]+)')
+    def delete_party(self, request,**kwargs):
+        kid = kwargs.get('pk')
+        name = kwargs.get('name')
+        userinfo = get_object_or_404(userInfo, kid = kid)
+        
+        if userinfo.ismale:
+            user = userinfo.man_userInfo.get()
+            menParty.objects.filter(leader_man=user, nickname=name).delete()
+            return Response({"message": "친구가 삭제되었습니다."}, status=status.HTTP_200_OK)
+        else:
+            user = userinfo.woman_userInfo.get()
+            womenParty.objects.filter(leader_woman=user, nickname=name).delete()
+            return Response({"message": "친구가 삭제되었습니다."}, status=status.HTTP_200_OK)
+
 
 class UserNoticeView(APIView):
     def get(self, request, kid):
