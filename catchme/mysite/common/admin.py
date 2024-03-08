@@ -13,7 +13,7 @@ from django.core.exceptions import ValidationError
 admin.site.register(menInfo)
 admin.site.register(womenInfo)
 admin.site.register(room)
-admin.site.register(matchingInfo)
+admin.site.register(matchingHistory)
 admin.site.register(menParty)
 admin.site.register(womenParty)
 admin.site.register(userInfo)

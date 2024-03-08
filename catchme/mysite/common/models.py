@@ -212,16 +212,10 @@ class room(models.Model):
         return str(self.pk)
     
 
-class matchingInfo(models.Model):
-    #매칭정보의 고유번호(매칭정보의 기본키)
-    matchingnum = models.CharField(max_length=10, primary_key=True)
-    #매칭이 성사된 방 
-    matched_room = models.ForeignKey('room', on_delete=models.SET_NULL, null=True, blank=True, db_column='matched_room')
-
-    #매칭된 남성
-    matched_man = models.ForeignKey('menInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='matched_man')
-    #매칭된 여성
-    matched_woman = models.ForeignKey('womenInfo', on_delete=models.SET_NULL, null=True, blank=True, db_column='matched_woman')
+class matchingHistory(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(userInfo, on_delete = models.CASCADE, related_name = 'matchingHistory_userInfo')
+    matched_user = models.IntegerField(null=True, blank=True) 
 
     def __str__(self):
         return str(self.pk)

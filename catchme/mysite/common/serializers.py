@@ -72,3 +72,18 @@ class UserNoticeSerializer(serializers.ModelSerializer):
     class Meta:
         model = userInfo
         fields = '__all__'
+
+
+
+class MatchingHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = matchingHistory
+        fields = '__all__'
+
+class UserMatchingHistorySerializer(serializers.ModelSerializer):
+    matching_history = MatchingHistorySerializer(many = True, read_only = True, source = 'matchingHistory_userInfo')
+    
+    class Meta:
+        model = userInfo
+        fields = '__all__'
+ 

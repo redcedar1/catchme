@@ -111,3 +111,18 @@ class UserNoticeView(APIView):
 
         return Response({"message": f"{updated_count}개의 알림이 업데이트되었습니다."}, status=status.HTTP_200_OK)
 
+class UserMatchingHistoryView(APIView):
+    def get(self, request, kid):
+        kid = int(kid)
+        userinfo = get_object_or_404(userInfo, kid = kid)
+        serializer = UserMatchingHistorySerializer(userinfo)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def delete(self,request,kid,*args, **kwargs):
+        kid = int(kid)
+        ids_to_delete = request.data.get('ids', [])
+        if not ids_to_delete:
+            return Response({"error": "IDs 리스트가 제공되지 않았습니다."}, status=status.HTTP_400_BAD_REQUEST)
+        notices = matchingHistory.objects.filter(id__in=ids_to_delete)
+        notices.delete()
+        return Response({"message": "매칭기록이이 삭제되었습니다."}, status=status.HTTP_200_OK)

@@ -22,9 +22,10 @@ urlpatterns = [
 
     #common_user_views.py
     path('api/user_info/<str:kid>/notice/',common_user_views.UserNoticeView.as_view()),
+    path('api/user_info/<str:kid>/matching_history/',common_user_views.UserMatchingHistoryView.as_view()),
 
     #changing to viewset
-    path('', include(userRouter.urls)),
+    path('', include(userRouter.urls)), 
     
     #simplejwt token
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
