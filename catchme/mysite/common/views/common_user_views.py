@@ -68,19 +68,19 @@ class UserViewSet(ModelViewSet): #url 설정 해야함
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
-    @action(detail=True, methods=['delete'], url_path='delete_party/(?P<name>[^/.]+)')
+    @action(detail=True, methods=['delete'])
     def delete_party(self, request,**kwargs):
         kid = kwargs.get('pk')
-        name = kwargs.get('name')
+        ids_to_delete = request.data.get('ids', [])
         userinfo = get_object_or_404(userInfo, kid = kid)
-        
+
         if userinfo.ismale:
             user = userinfo.man_userInfo.get()
-            menParty.objects.filter(leader_man=user, nickname=name).delete()
+            menParty.objects.filter(leader_man=user, id__in=ids_to_delete).delete()
             return Response({"message": "친구가 삭제되었습니다."}, status=status.HTTP_200_OK)
         else:
             user = userinfo.woman_userInfo.get()
-            womenParty.objects.filter(leader_woman=user, nickname=name).delete()
+            womenParty.objects.filter(leader_woman=user, id__in=ids_to_delete).delete()
             return Response({"message": "친구가 삭제되었습니다."}, status=status.HTTP_200_OK)
 
 
