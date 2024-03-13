@@ -12,35 +12,36 @@ from rest_framework.permissions import IsAuthenticated
 
 
 class UserViewSet(ModelViewSet): #url 설정 해야함
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
 
     queryset = userInfo.objects.all()
     serializer_class = UserInfoSerializer
-    @action(detail = True, methods = ['post'])
+    @action(detail = True, methods = ['post'])#detail은 single object를 반환한다는 것
     def introduction(self, request, *args, **kwargs):
         user = request.user #인증된 사용자 객체면 request.user값 안에 model에서 참조하는 userinfo의 kid가 있다.
         kid = kwargs.get('pk')
         if user.kid != int(kid):#model에 저장된 kid와 요청하는 페이지의 kid가 같은지 확인
+            
             return Response({"message": "허가되지 않은 접근입니다."}, status=status.HTTP_401_UNAUTHORIZED) 
-        data = request.data.copy()
-        user.location = data['location']
-        user.ismale = data['ismale']
         
-        print(data)
-        print(user.ismale)
-        userinfo = get_object_or_404(userInfo, kid=kid)
+        data = request.data.copy()
+        
+        user_serializer = self.get_serializer(instance=user, data=request.data, partial=True)
+        if user_serializer.is_valid():
+            
+            user_serializer.save()
+
         if user.ismale == True:
             
-            serializer = MenInfoSerializer(data=data)
-            if serializer.is_valid():
-                serializer.save(user=userinfo)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            print(serializer.errors)
+            men_info_serializer = MenInfoSerializer(data = request.data)
+            if men_info_serializer.is_valid():
+                men_info_serializer.save()
+                return Response(user_serializer.data, status=status.HTTP_201_CREATED)
         else:
-            serializer = WomenInfoSerializer(data =data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            women_info_serializer = WomenInfoSerializer(data =data)
+            if women_info_serializer.is_valid():
+                women_info_serializer.save()
+                return Response(user_serializer.data, status=status.HTTP_201_CREATED)
             
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
@@ -116,6 +117,7 @@ class UserViewSet(ModelViewSet): #url 설정 해야함
 
 
 class UserNoticeView(APIView):
+    #permission_classes = [IsAuthenticated]
     def get(self, request, kid):
         kid = int(kid)
         userinfo = get_object_or_404(userInfo, kid = kid)
@@ -143,6 +145,7 @@ class UserNoticeView(APIView):
         return Response({"message": f"{updated_count}개의 알림이 업데이트되었습니다."}, status=status.HTTP_200_OK)
 
 class UserMatchingHistoryView(APIView):
+    #permission_classes = [IsAuthenticated]
     def get(self, request, kid):
         kid = int(kid)
         userinfo = get_object_or_404(userInfo, kid = kid)
