@@ -44,8 +44,8 @@ class userInfo(AbstractBaseUser, PermissionsMixin):
      #사용자 카톡 고유 번호(기본키)
     kid = models.BigIntegerField(primary_key=True, db_index=True)
     #사용자 위치 정보
-    location = models.CharField(max_length=50)
-    ismale = models.BooleanField()
+    location = models.CharField(max_length=50,null=True, blank=True)
+    ismale = models.BooleanField(blank=True,default=False)
 
     is_staff = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)

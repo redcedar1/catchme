@@ -8,10 +8,41 @@ from common.serializers import *
 from rest_framework.viewsets import ModelViewSet
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+
+
 class UserViewSet(ModelViewSet): #url 설정 해야함
+    permission_classes = [IsAuthenticated]
 
     queryset = userInfo.objects.all()
     serializer_class = UserInfoSerializer
+    @action(detail = True, methods = ['post'])
+    def introduction(self, request, *args, **kwargs):
+        user = request.user #인증된 사용자 객체면 request.user값 안에 model에서 참조하는 userinfo의 kid가 있다.
+        kid = kwargs.get('pk')
+        if user.kid != int(kid):#model에 저장된 kid와 요청하는 페이지의 kid가 같은지 확인
+            return Response({"message": "허가되지 않은 접근입니다."}, status=status.HTTP_401_UNAUTHORIZED) 
+        data = request.data.copy()
+        user.location = data['location']
+        user.ismale = data['ismale']
+        
+        print(data)
+        print(user.ismale)
+        userinfo = get_object_or_404(userInfo, kid=kid)
+        if user.ismale == True:
+            
+            serializer = MenInfoSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save(user=userinfo)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            print(serializer.errors)
+        else:
+            serializer = WomenInfoSerializer(data =data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            
+        return Response(status = status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, *args, **kwargs):
         kid = kwargs.get('pk')  # 'pk'는 URL에서 전달된 객체의 식별자
@@ -19,7 +50,7 @@ class UserViewSet(ModelViewSet): #url 설정 해야함
         userinfo = get_object_or_404(userInfo, kid=kid)
         serializer = UserInfoSerializer(userinfo)
         return Response(serializer.data)
-    
+    #여기에 action으로 수정해야함. w_crush_kid를 수정하는건 굉장히 partial한작업인데 update로 처리하고잇으므로
     def update(self, request,*args, **kwargs):
         #modal id를 부여해야함 -> 남자한테만 뜨는 모달창이기 때문
         kid = kwargs.get('pk')

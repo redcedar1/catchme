@@ -33,6 +33,6 @@ urlpatterns = [
 
     path('api/usercreatetest/',common_base_views.test_usercreate_view),
     path('api/jwttokentest/',common_base_views.TestJWTTokenView.as_view()),
-    
+    path('api/posttest/',common_base_views.posttest.as_view()),
 
 ]

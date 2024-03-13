@@ -66,11 +66,8 @@ class kakaoLoginView(APIView):
             account_info = requests.get("https://kapi.kakao.com/v2/user/me",
                                 headers={"Authorization": f"Bearer {access_token}"}).json()
             if not userInfo.objects.filter(kid = account_info['id']).exists():#db상에 kid가 없는 유저라면 introduction하라는 답변을 response, 있는 유저면 db조회 후 로그인 처리할지말지
-                user = userInfo.objects.create(#db에 유저 생성 -> 이부분을 introduction과 연계해야함,
-                    kid = account_info['id'],
-                    location = "경기도 고양시",
-                    ismale = True
-                )
+                user = userInfo.objects.create(#db에 유저 생성 -> 이부분을 introduction과 연계해야함
+                    kid = account_info['id'])
                 user.save()
             else:
                 user = userInfo.objects.get(kid = account_info['id'])
@@ -113,9 +110,7 @@ def csrf(request):
 @api_view(['GET'])
 def test_usercreate_view(request):
     user = userInfo.objects.create(#db에 유저 생성 -> 이부분을 introduction과 연계해야함,
-                    kid = 12341234,
-                    location = "경기도 고양시",
-                    ismale = True
+                    kid = 12341234
                 )
     refresh = RefreshToken.for_user(user)#refreshToken은 User모델을 상정하기 때문에 User모델 대신 userInfo모델을 전송
     tokens = {
@@ -133,8 +128,10 @@ class TestJWTTokenView(APIView):
         user = request.user
         # 사용자 정보를 딕셔너리 형태로 생성
         user_info = {
-            "kid":user.kid,
-            "location":user.location,
-            "ismale":user.ismale
+            "kid":user.kid
         }
         return Response({"user_info": user_info}, status=status.HTTP_200_OK)
+
+class posttest(APIView):
+    def post(self,request):
+        return Response({"data" : request.data},status=status.HTTP_200_OK)
