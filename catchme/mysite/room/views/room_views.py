@@ -45,12 +45,12 @@ class RoomListView(APIView):
     serializer_class = RoomSerializer
 
     def get_queryset(self):
-        rname_search = self.request.GET.get('kw', None)
+        kw = self.request.GET.get('kw', None)
         order = self.request.GET.get('order', None)
         queryset = room.objects.all().exclude(matching=True)#matching중인 방 제외
 
-        if rname_search is not None:
-            queryset = queryset.filter(rname__contains=rname_search)
+        if kw :
+            queryset = queryset.filter(Q(rname__contains=kw) | Q(location__contains=kw)) #검색키워드가 rname이나 location에 포함되어있으면 표시
 
         if order == '인원많은순':
             queryset = queryset.annotate(mnum=Count('men_infos'), wnum=Count('women_infos')).annotate(total_num=F('mnum') + F('wnum')).order_by('-total_num')
