@@ -47,6 +47,7 @@ class RoomListView(APIView):
     def get_queryset(self):
         kw = self.request.GET.get('kw', None)
         order = self.request.GET.get('order', None)
+        location = self.request.GET.get('location', None)
         queryset = room.objects.all().exclude(matching=True)#matching중인 방 제외
 
         if kw :
@@ -55,9 +56,9 @@ class RoomListView(APIView):
         if order == '인원많은순':
             queryset = queryset.annotate(mnum=Count('men_infos'), wnum=Count('women_infos')).annotate(total_num=F('mnum') + F('wnum')).order_by('-total_num')
         
-        #elif order == "우리동네":
-        #    user = self.request.user
-        #    queryset = queryset.filter(location=user.location)
+        if location == "우리동네":
+            #user = self.request.user
+            queryset = queryset.filter(location="강남")#(location=user.location)
         return queryset
 
     def get(self, request, *args, **kwargs):
