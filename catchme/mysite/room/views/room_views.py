@@ -508,7 +508,9 @@ class RoomSecondRecommendationView(APIView):
                 'total_conditions': int(matching_count / len(conditions) * 100)
             }
 
-        ideal_woman = max(matching_women, key=lambda x: -matching_info[x.id]['matching_count'])
+        ideal_women_list = sorted(matching_women, key=lambda x: -matching_info[x.id]['matching_count'])
+
+        ideal_woman = ideal_women_list[0]
 
         serializer = SecondRecommendationSerializer(ideal_woman, matching_info=matching_info)
 
@@ -565,7 +567,9 @@ class RoomSecondRecommendationView(APIView):
                 'total_conditions': int(matching_count / len(conditions) * 100)
             }
 
-        ideal_man = max(matching_men, key=lambda x: -matching_info[x.id]['matching_count'])
+        ideal_men_list = sorted(matching_men, key=lambda x: -matching_info[x.id]['matching_count'])
+
+        ideal_man = ideal_men_list[0]
 
         serializer = SecondRecommendationSerializer(ideal_man, matching_info=matching_info)
 
