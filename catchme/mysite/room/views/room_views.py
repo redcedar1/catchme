@@ -91,7 +91,8 @@ class RoomListIdealView(APIView):
         mbtis = men_info.w_mbti.split(',')
         bodies = men_info.w_body.split(',')
         eyes = men_info.w_eyes.split(',')
-        faces = men_info.w_face.split(',')
+        face_type = men_info.w_face.get("type", "")
+        face_tone = men_info.w_face.get("tone", "")
         hobbies = men_info.w_hobby.split(',')
         animals = men_info.w_animal.split(',')
 
@@ -104,7 +105,7 @@ class RoomListIdealView(APIView):
             Q(height__range=(start_height, end_height)),
             Q(body__in=bodies),
             Q(eyes__in=eyes),
-            Q(face__in=faces),
+            Q(face__type=face_type, face__tone=face_tone),
             Q(hobby__in=hobbies),
             Q(animal__in=animals)
         ]
@@ -150,7 +151,8 @@ class RoomListIdealView(APIView):
         mbtis = women_info.m_mbti.split(',')
         bodies = women_info.m_body.split(',')
         eyes = women_info.m_eyes.split(',')
-        faces = women_info.m_face.split(',')
+        face_type = women_info.m_face.get("type", "")
+        face_tone = women_info.m_face.get("tone", "")
         hobbies = women_info.m_hobby.split(',')
         animals = women_info.m_animal.split(',')
 
@@ -164,7 +166,7 @@ class RoomListIdealView(APIView):
             Q(height__range=(start_height, end_height)),
             Q(body__in=bodies),
             Q(eyes__in=eyes),
-            Q(face__in=faces),
+            Q(face__type=face_type, face__tone=face_tone),
             Q(hobby__in=hobbies),
             Q(animal__in=animals)
         ]
@@ -193,6 +195,7 @@ class RoomListIdealView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+# 이상형 퍼센트가 60이상인 사람들을 조회하는 클래스
 class UserIdealPercentageView(APIView):
     def get(self, request, *args, **kwargs):
         user_id = 1001
@@ -218,7 +221,8 @@ class UserIdealPercentageView(APIView):
         mbtis = men_info.w_mbti.split(',')
         bodies = men_info.w_body.split(',')
         eyes = men_info.w_eyes.split(',')
-        faces = men_info.w_face.split(',')
+        face_type = men_info.w_face.get("type", "")
+        face_tone = men_info.w_face.get("tone", "")
         hobbies = men_info.w_hobby.split(',')
         animals = men_info.w_animal.split(',')
 
@@ -231,7 +235,7 @@ class UserIdealPercentageView(APIView):
             Q(height__range=(start_height, end_height)),
             Q(body__in=bodies),
             Q(eyes__in=eyes),
-            Q(face__in=faces),
+            Q(face__type=face_type, face__tone=face_tone),
             Q(hobby__in=hobbies),
             Q(animal__in=animals)
         ]
@@ -273,7 +277,8 @@ class UserIdealPercentageView(APIView):
         mbtis = women_info.m_mbti.split(',')
         bodies = women_info.m_body.split(',')
         eyes = women_info.m_eyes.split(',')
-        faces = women_info.m_face.split(',')
+        face_type = women_info.m_face.get("type", "")
+        face_tone = women_info.m_face.get("tone", "")
         hobbies = women_info.m_hobby.split(',')
         animals = women_info.m_animal.split(',')
 
@@ -287,7 +292,7 @@ class UserIdealPercentageView(APIView):
             Q(height__range=(start_height, end_height)),
             Q(body__in=bodies),
             Q(eyes__in=eyes),
-            Q(face__in=faces),
+            Q(face__type=face_type, face__tone=face_tone),
             Q(hobby__in=hobbies),
             Q(animal__in=animals)
         ]
@@ -312,6 +317,7 @@ class UserIdealPercentageView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+# 방 내에서 이상형 퍼센트를 내림차순으로 조회하는 클래스
 class RoomPercentageView(APIView):
     def get(self, request, *args, **kwargs):
         user_id = 1001
@@ -337,7 +343,8 @@ class RoomPercentageView(APIView):
         mbtis = men_info.w_mbti.split(',')
         bodies = men_info.w_body.split(',')
         eyes = men_info.w_eyes.split(',')
-        faces = men_info.w_face.split(',')
+        face_type = men_info.w_face.get("type", "")
+        face_tone = men_info.w_face.get("tone", "")
         hobbies = men_info.w_hobby.split(',')
         animals = men_info.w_animal.split(',')
 
@@ -350,7 +357,7 @@ class RoomPercentageView(APIView):
             Q(height__range=(start_height, end_height)),
             Q(body__in=bodies),
             Q(eyes__in=eyes),
-            Q(face__in=faces),
+            Q(face__type=face_type, face__tone=face_tone),
             Q(hobby__in=hobbies),
             Q(animal__in=animals)
         ]
@@ -391,7 +398,8 @@ class RoomPercentageView(APIView):
         mbtis = women_info.m_mbti.split(',')
         bodies = women_info.m_body.split(',')
         eyes = women_info.m_eyes.split(',')
-        faces = women_info.m_face.split(',')
+        face_type = women_info.m_face.get("type", "")
+        face_tone = women_info.m_face.get("tone", "")
         hobbies = women_info.m_hobby.split(',')
         animals = women_info.m_animal.split(',')
 
@@ -405,7 +413,7 @@ class RoomPercentageView(APIView):
             Q(height__range=(start_height, end_height)),
             Q(body__in=bodies),
             Q(eyes__in=eyes),
-            Q(face__in=faces),
+            Q(face__type=face_type, face__tone=face_tone),
             Q(hobby__in=hobbies),
             Q(animal__in=animals)
         ]
@@ -429,6 +437,7 @@ class RoomPercentageView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+# 방 내에서 매칭된 사람들을 제외한 나머지 사람들 중 가장 이상형에 부합하는 사람 조회하는 클래스
 class RoomSecondRecommendationView(APIView):
     def get(self, request, *args, **kwargs):
         user_id = 1001
@@ -456,7 +465,8 @@ class RoomSecondRecommendationView(APIView):
         mbtis = men_info.w_mbti.split(',')
         bodies = men_info.w_body.split(',')
         eyes = men_info.w_eyes.split(',')
-        faces = men_info.w_face.split(',')
+        face_type = men_info.w_face.get("type", "")
+        face_tone = men_info.w_face.get("tone", "")
         hobbies = men_info.w_hobby.split(',')
         animals = men_info.w_animal.split(',')
 
@@ -469,7 +479,7 @@ class RoomSecondRecommendationView(APIView):
             Q(height__range=(start_height, end_height)),
             Q(body__in=bodies),
             Q(eyes__in=eyes),
-            Q(face__in=faces),
+            Q(face__type=face_type, face__tone=face_tone),
             Q(hobby__in=hobbies),
             Q(animal__in=animals)
         ]
@@ -514,7 +524,8 @@ class RoomSecondRecommendationView(APIView):
         mbtis = women_info.m_mbti.split(',')
         bodies = women_info.m_body.split(',')
         eyes = women_info.m_eyes.split(',')
-        faces = women_info.m_face.split(',')
+        face_type = women_info.m_face.get("type", "")
+        face_tone = women_info.m_face.get("tone", "")
         hobbies = women_info.m_hobby.split(',')
         animals = women_info.m_animal.split(',')
 
@@ -528,7 +539,7 @@ class RoomSecondRecommendationView(APIView):
             Q(height__range=(start_height, end_height)),
             Q(body__in=bodies),
             Q(eyes__in=eyes),
-            Q(face__in=faces),
+            Q(face__type=face_type, face__tone=face_tone),
             Q(hobby__in=hobbies),
             Q(animal__in=animals)
         ]
