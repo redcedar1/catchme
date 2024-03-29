@@ -30,18 +30,26 @@ class UserViewSet(ModelViewSet): #url 설정 해야함
         if user_serializer.is_valid():
             
             user_serializer.save()
-
+        else:
+            print(user_serializer.error)
         if user.ismale == True:
             
             men_info_serializer = MenInfoSerializer(data = request.data)
             if men_info_serializer.is_valid():
+                print("men valid")
                 men_info_serializer.save()
                 return Response(user_serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                print(men_info_serializer.errors)
+            
         else:
             women_info_serializer = WomenInfoSerializer(data =data)
             if women_info_serializer.is_valid():
+                print("women valid")
                 women_info_serializer.save()
                 return Response(user_serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                print(women_info_serializer.errors)
             
         return Response(status = status.HTTP_400_BAD_REQUEST)
 

@@ -15,6 +15,18 @@ class MenInfoSerializer(serializers.ModelSerializer):
     menPartys = MenPartySerializer(many = True, read_only = True, source = 'men_party')
     w_crush_kid = serializers.SerializerMethodField()
     w_match_kid = serializers.SerializerMethodField()
+
+    hobby = serializers.ListField(
+        child=serializers.CharField(),
+        required=False
+    )
+    keyword = serializers.ListField(
+        child=serializers.CharField(),
+        required=False
+    )
+    face = serializers.JSONField()
+    w_face = serializers.JSONField()
+
     def get_w_crush_kid(self, obj):
         if obj.w_crush:#w_crush 있으면 kid반환 없으면 none반환
             return obj.w_crush.user.kid
@@ -33,6 +45,17 @@ class MenInfoSerializer(serializers.ModelSerializer):
 class WomenInfoSerializer(serializers.ModelSerializer):
     womenPartys = WomenPartySerializer(many = True, read_only = True, source = 'women_party')
     m_match_kid = serializers.SerializerMethodField()
+
+    hobby = serializers.ListField(
+        child=serializers.CharField(),
+        required=False
+    )
+    keyword = serializers.ListField(
+        child=serializers.CharField(),
+        required=False
+    )
+    face = serializers.JSONField()
+    m_face = serializers.JSONField()
 
     def get_m_match_kid(self,obj):
         if obj.m_match:

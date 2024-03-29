@@ -77,10 +77,12 @@ class menInfo(models.Model):
     height = models.IntegerField(null=True, blank=True)
     body = models.CharField(max_length=10, null=True, blank=True)
     eyes = models.CharField(max_length=10, null=True, blank=True)
-    face = models.CharField(max_length=10, null=True, blank=True)
-    hobby = models.CharField(max_length=100, null=True, blank=True)
+    face = models.JSONField(null=True, blank=True)
+    hobby = models.JSONField(null=True, blank=True)
     animal = models.CharField(max_length=20, null=True, blank=True) #animal 속성 추가
     location = models.CharField(max_length=50, null=True, blank=True)
+    keyword = models.JSONField(null=True, blank=True)
+
     #레디 여부
     ready = models.BooleanField(default=False)
     #참가자 평균 나이
@@ -94,7 +96,7 @@ class menInfo(models.Model):
     w_height = models.CharField(max_length=10, null=True, blank=True)
     w_body = models.CharField(max_length=10, null=True, blank=True)
     w_eyes = models.CharField(max_length=10, null=True, blank=True)
-    w_face = models.CharField(max_length=10, null=True, blank=True)
+    w_face = models.JSONField(null=True, blank=True)
     w_hobby = models.CharField(max_length=100, null=True, blank=True)
     w_animal = models.CharField(max_length=20, null=True, blank=True) #w_animal 속성 추가
 
@@ -147,10 +149,11 @@ class womenInfo(models.Model):
     height = models.IntegerField(null=True, blank=True)
     body = models.CharField(max_length=10, null=True, blank=True)
     eyes = models.CharField(max_length=10, null=True, blank=True)
-    face = models.CharField(max_length=10, null=True, blank=True)
-    hobby = models.CharField(max_length=100, null=True, blank=True)
+    face = models.JSONField(null=True, blank=True)
+    hobby = models.JSONField(null=True, blank=True)
     animal = models.CharField(max_length=20, null=True, blank=True) #animal 속성 추가
     location = models.CharField(max_length=50, null=True, blank=True)
+    keyword = models.JSONField(null=True, blank=True)
     #레디 여부
     ready = models.BooleanField(default=False)
     #참가자 평균 나이
@@ -165,7 +168,7 @@ class womenInfo(models.Model):
     m_height = models.CharField(max_length=10, null=True, blank=True)
     m_body = models.CharField(max_length=10, null=True, blank=True)
     m_eyes = models.CharField(max_length=10, null=True, blank=True)
-    m_face = models.CharField(max_length=10, null=True, blank=True)
+    m_face = models.JSONField(null=True, blank=True)
     m_hobby = models.CharField(max_length=100, null=True, blank=True)
     m_animal = models.CharField(max_length=20, null=True, blank=True) #m_animal 속성 추가
 

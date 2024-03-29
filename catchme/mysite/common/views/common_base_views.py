@@ -109,15 +109,22 @@ def csrf(request):
 ###여기 아래는 jwt토큰 관련 테스트###
 @api_view(['GET'])
 def test_usercreate_view(request):
-    user = userInfo.objects.create(#db에 유저 생성 -> 이부분을 introduction과 연계해야함,
-                    kid = 12341234
-                )
-    refresh = RefreshToken.for_user(user)#refreshToken은 User모델을 상정하기 때문에 User모델 대신 userInfo모델을 전송
-    tokens = {
-        'kid' : user.kid,
-        'refresh': str(refresh),
-        'access': str(refresh.access_token),
-    }
+    for i in range(2001,2010):
+
+        user = userInfo.objects.create(#db에 유저 생성 -> 이부분을 introduction과 연계해야함,
+                        password = i,
+                        kid = i,
+                        location = str(i)+"의장소",
+                        ismale = False 
+                    )
+        refresh = RefreshToken.for_user(user)#refreshToken은 User모델을 상정하기 때문에 User모델 대신 userInfo모델을 전송
+        tokens = {
+            'kid' : user.kid,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+        print(i," : ",tokens["access"])
+
     return Response({'tokens': tokens}, status=status.HTTP_200_OK)
 
 class TestJWTTokenView(APIView):
