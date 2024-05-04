@@ -215,6 +215,16 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://cachetest2-zyuu45.serverless.apn2.cache.amazonaws.com:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
 #ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 #ACCOUNT_EMAIL_REQUIRED = True
 #ACCOUNT_UNIQUE_EMAIL = True
