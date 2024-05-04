@@ -16,6 +16,9 @@ from django.db.models import F, Q
 from django.db.models import Count
 from rest_framework.permissions import IsAuthenticated
 
+from ...redis.redis_utils import redis_client
+
+
 class RoomListView(APIView):
     #permission_classes = [IsAuthenticated]
     queryset = room.objects.all()
@@ -78,6 +81,14 @@ class RoomListIdealView(APIView):
     def getMenIdealRoomList(self):
         # 남성 사용자 정보 조회
         user_id = 1001
+        cache_key = f"men_ideal_room_{user_id}"
+
+        # Redis에서 캐시된 데이터 조회
+        cached_data = redis_client.get(cache_key)
+        if cached_data:
+            # 캐시된 데이터가 있다면, 바로 반환
+            return Response(json.loads(cached_data), status=status.HTTP_200_OK)
+
         user_info = userInfo.objects.get(kid=user_id)
         men_info = user_info.man_userInfo.first()
 
@@ -132,11 +143,21 @@ class RoomListIdealView(APIView):
 
         serializer = RoomSerializer(room.objects.filter(rno__in=matching_rooms), many=True)
 
+        redis_client.set(cache_key, json.dumps(serializer.data), ex=3600)  # 1시간 동안 유효
+
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def getWomenIdealRoomList(self):
         # 여성 사용자 정보 조회
         user_id = 1001
+        cache_key = f"women_ideal_room_{user_id}"
+
+        # Redis에서 캐시된 데이터 조회
+        cached_data = redis_client.get(cache_key)
+        if cached_data:
+            # 캐시된 데이터가 있다면, 바로 반환
+            return Response(json.loads(cached_data), status=status.HTTP_200_OK)
+
         user_info = userInfo.objects.get(kid=user_id)
         women_info = user_info.woman_userInfo.first()
 
@@ -192,6 +213,8 @@ class RoomListIdealView(APIView):
                 break
 
         serializer = RoomSerializer(room.objects.filter(rno__in=matching_rooms), many=True)
+
+        redis_client.set(cache_key, json.dumps(serializer.data), ex=3600)  # 1시간 동안 유효
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
