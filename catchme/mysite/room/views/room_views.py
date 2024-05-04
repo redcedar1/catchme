@@ -16,7 +16,7 @@ from django.db.models import F, Q
 from django.db.models import Count
 from rest_framework.permissions import IsAuthenticated
 
-from redis.redis_utils import redis_client
+from cachingapp.redis_utils import redis_client
 
 
 class RoomListView(APIView):
