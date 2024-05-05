@@ -1,6 +1,8 @@
-
+import logging
 
 import json
+
+from django.core.cache import cache
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -18,6 +20,9 @@ from rest_framework.permissions import IsAuthenticated
 
 from cachingapp.redis_utils import redis_client
 
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class RoomListView(APIView):
     #permission_classes = [IsAuthenticated]
@@ -60,8 +65,23 @@ class RoomListView(APIView):
 
 class SelectedRoomView(APIView):
     def get(self, request, r_no):
-        selected_room = get_object_or_404(room, rno=r_no)
-        serializer = SelectedRoomSerializer(selected_room)
+        # 캐시 키 생성
+        cache_key = f"room_{r_no}"
+        # 캐시에서 데이터 가져오기 시도
+        cached_room = cache.get(cache_key)
+
+        if cached_room is not None:
+            # 캐시에서 데이터를 성공적으로 가져온 경우
+            logger.info(f"Cache hit for {cache_key}")
+            serializer = SelectedRoomSerializer(cached_room)
+        else:
+            # 캐시에 데이터가 없는 경우, DB에서 데이터를 가져온다.
+            logger.info(f"Cache miss for {cache_key}. Fetching from database.")
+            selected_room = get_object_or_404(room, rno=r_no)
+            serializer = SelectedRoomSerializer(selected_room)
+            # 가져온 데이터를 캐시에 저장
+            cache.set(cache_key, selected_room, timeout=60 * 15)  # 15분 동안 캐시 유지
+
         return Response(serializer.data, status=status.HTTP_200_OK)
     def delete(self, request, r_no, *args, **kwargs):
         selected_room = get_object_or_404(room, rno=r_no)
