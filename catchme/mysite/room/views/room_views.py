@@ -18,8 +18,6 @@ from django.db.models import F, Q
 from django.db.models import Count
 from rest_framework.permissions import IsAuthenticated
 
-from cachingapp.redis_utils import redis_client
-
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
